@@ -1,0 +1,26 @@
+#create {
+    width: 550px;
+    height: 440px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    outline-style: solid;
+    background-color: chocolate;
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
+#crbutton {
+    margin-top: -330px;
+}
+
+#createForm {
+    width: 550px;
+    height: 440px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    outline-style: solid;
+    background-color: chocolate;
+    position: relative;
+}

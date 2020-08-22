@@ -1,0 +1,18 @@
+#newPlaylist {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    outline-style: solid;
+    position: relative;
+}
+
+#header {
+    height: 90;
+}
+
+#npbutton {
+    float: right;
+    font-size: 30px;
+    margin-top: 3px;
+}

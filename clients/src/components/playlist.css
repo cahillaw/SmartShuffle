@@ -1,0 +1,38 @@
+#playlist {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    outline-style: solid;
+    position: relative;
+}
+
+#mosaic {
+    height: 87px;
+    float: right;
+    margin-top: -11px;
+    margin-right: -19px;
+
+}
+
+#spinner {
+    float: right;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+#header {
+    height: 90px;
+}
+
+#deletebuttonpl {
+    position: absolute;
+    margin-top: -15px;
+    margin-left: 385px;
+}
+
+#editbuttonpl {
+    position: absolute;
+    margin-top: -15px;
+    margin-left: 290px;
+}

@@ -1,0 +1,45 @@
+#preset {
+    width: 550px;
+    height: 440px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    outline-style: solid;
+    background-color: chocolate;
+    position: relative;
+}
+
+#pname {
+    margin-left: 5px;
+}
+
+#rlimit {
+    margin-top: 6px;
+    margin-right: 10px;
+    float: right;
+}
+
+#button {
+    float: right;
+    margin-top: 3px;
+    margin-right: 5px;
+}
+
+#deletebutton {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 5px;
+    margin-left: 442px;
+}
+
+#editbutton {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 5px;
+    margin-left: 348px;
+}
+
+#playlists {
+    overflow-y: scroll;
+    height: 350px;
+    margin-top: 20px;
+}
