@@ -96,12 +96,14 @@ class Create extends React.Component {
     clickSubmitHandler() {
       if(this.state.name !== '' && (this.state.repeatLimit >= 0 && this.state.repeatLimit <= 50) ) {
         this.createNewPreset();
+        /*
         setTimeout(() => {
           this.props.getUserPageInfo()
           }, 200);
         this.setState({
           clicked: false
         })
+        */
       } else {
         this.setState({
           showError: true
@@ -127,6 +129,10 @@ class Create extends React.Component {
         response.json().then((data) => {
           if (response.status === 201) {
             console.log(data)
+            this.props.addNewPreset(data)
+            this.setState({
+              clicked: false
+            })
           } else {
             console.log("non 200 status code")
           }

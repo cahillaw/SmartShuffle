@@ -9,8 +9,6 @@ class Home extends React.Component {
     constructor (props) {
       super(props)
       this.state = {
-        access_token: '',
-        refresh_token: '',
         presetsdata: '',
         loggedIn: true
       }
@@ -22,13 +20,7 @@ class Home extends React.Component {
           loggedIn: false
         })
       } else {
-        this.setState ({
-          access_token: "Bearer " + this.props.location.state.access_token,
-          refresh_token: this.props.location.state.refresh_token
-        })
-        setTimeout(() => {
-          this.getUserPageInfo()
-          }, 1);
+        this.getUserPageInfo()
       }
     }
 
@@ -49,9 +41,12 @@ class Home extends React.Component {
         <div key={ps.presetId}>
           <Preset 
             data = {ps}
-            access_token = {this.state.access_token}
-            refresh_token = {this.state.refresh_token}
+            access_token = {"Bearer " + this.props.location.state.access_token}
+            refresh_token = {this.props.location.state.refresh_token}
             getUserPageInfo = {this.getUserPageInfo}
+            addNewPlaylist = {this.addNewPlaylist}
+            deletePreset = {this.deletePreset}
+            deletePlaylist = {this.deletePlaylist}
           />
         </div>
         );
@@ -69,10 +64,9 @@ class Home extends React.Component {
                   <div id = "container">
                     {presets}
                     <Create 
-                      access_token = {this.state.access_token}
-                      refresh_token = {this.state.refresh_token}
+                      access_token = {"Bearer " + this.props.location.state.access_token}
+                      refresh_token = {this.props.location.state.refresh_token}
                       addNewPreset = {this.addNewPreset}
-                      getUserPageInfo = {this.getUserPageInfo}
                     />
                   </div>
                 </Col>
@@ -87,9 +81,57 @@ class Home extends React.Component {
       )
     }
       
-    //currently unused, might of not worked because was using presetsdata2
     addNewPreset = (ps) => {
       var presets = this.state.presetsdata.concat(ps)
+      this.setState({
+        presetsdata: presets
+      })
+      console.log(presets)
+    }
+
+    addNewPlaylist = (pl, psid) => {
+      var presets = this.state.presetsdata
+      for(var i = 0; i<presets.length; i++) {
+        if (presets[i].presetId == psid) {
+          presets[i].playlists = presets[i].playlists.concat(pl)
+          break
+        }
+      }
+
+      this.setState({
+        presetsdata: presets
+      })
+      console.log(presets)
+    }
+
+    deletePreset = (psid) => {
+      var presets = this.state.presetsdata
+      for(var i = 0; i<presets.length; i++) {
+        if (presets[i].presetId == psid) {
+          presets.splice(i, 1)
+          break
+        }
+      }
+
+      this.setState({
+        presetsdata: presets
+      })
+      console.log(presets)
+    } 
+
+    deletePlaylist = (psid, plid) => {
+      var presets = this.state.presetsdata
+      for(var i = 0; i<presets.length; i++) {
+        if (presets[i].presetId == psid) {
+          for(var j = 0; i<presets[i].playlists.length; j++) {
+            if(presets[i].playlists[j].playlistID == plid) {
+              presets[i].playlists.splice(j, 1)
+              break
+            }
+          }
+        }
+      }
+
       this.setState({
         presetsdata: presets
       })
@@ -102,11 +144,12 @@ class Home extends React.Component {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.state.access_token 
+          'Authorization': "Bearer " + this.props.location.state.access_token 
         }
       })
       .then((response) => {
         response.json().then((data) => {
+          console.log(data)
           if (response.status === 200) {
             this.setState({
               presetsdata: data

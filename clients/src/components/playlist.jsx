@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './playlist.css'
-import { Button, Card, Accordion, Spinner } from 'react-bootstrap'
+import { Button, Card, Accordion, Spinner, Modal } from 'react-bootstrap'
 import EditPlaylist from './editPlaylist'
 
 class Playlist extends React.Component {
@@ -20,6 +20,41 @@ class Playlist extends React.Component {
     }
 
     render = () => {
+      function DeletePlaylist(props) {
+        const [show, setShow] = useState(false);
+      
+        const handleClose = () => {
+          setShow(false);
+        }
+
+        const handleDelete = () => {
+          setShow(false);
+          props.clickDeletePL();
+        }
+        const handleShow = () => setShow(true);
+
+        return (
+          <>
+            <Button id = "deletebuttonpl" variant= "dark" size= "sm" onClick={handleShow}>Delete playlist</Button>{' '}
+      
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Delete Playlist</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>Are you sure you want to delete this playlist?</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button variant="dark" onClick={handleDelete}>
+                  Delete Playlist
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </>
+        );
+      }
+
       const { edit } = this.state;
       return (
         <Accordion id = "playlist">
@@ -38,7 +73,7 @@ class Playlist extends React.Component {
               <br></br>
               Playlist Weight: {this.props.data.weight}
               <div>
-                <Button id = "deletebuttonpl" variant= "dark" size= "sm" onClick={() => this.clickDeletePL()}>Delete Playlist</Button>{' '}
+                <DeletePlaylist clickDeletePL={this.clickDeletePL}></DeletePlaylist>
                 <Button id = "editbuttonpl" variant= "dark" size= "sm" onClick={this.clickEditPL}>Edit Playlist</Button> {
                   edit ? 
                   <div>
@@ -61,11 +96,8 @@ class Playlist extends React.Component {
       )
     }
 
-    clickDeletePL() {
+    clickDeletePL = () => {
       this.deletePlaylist();
-      setTimeout(() => {
-        this.props.getUserPageInfo()
-        }, 200);
     }
 
     clickEditPL = () => {
@@ -85,6 +117,7 @@ class Playlist extends React.Component {
       })
       .then((response) => {
         if (response.status === 200) {
+          this.props.deletePlaylist(this.props.data.presetID, this.props.data.playlistID)
           console.log("deleted")
         } else {
           console.log("failed to delete")
@@ -93,6 +126,7 @@ class Playlist extends React.Component {
     }
 
     getPlaylistImageAndNumTracks() {
+      console.log("redid call")
       var url = "https://api.spotify.com/v1/playlists/" + this.props.data.uri
       fetch(url, {
         method: 'get',

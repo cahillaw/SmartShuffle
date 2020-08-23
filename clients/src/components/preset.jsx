@@ -64,6 +64,7 @@ class Preset extends React.Component {
           access_token = {this.props.access_token}
           refresh_token = {this.props.refresh_token}
           getUserPageInfo = {this.props.getUserPageInfo}
+          deletePlaylist = {this.props.deletePlaylist}
         />
       </div>
       );
@@ -94,6 +95,7 @@ class Preset extends React.Component {
                 refresh_token = {this.props.refresh_token}
                 data = {this.props.data}
                 getUserPageInfo = {this.props.getUserPageInfo}
+                addNewPlaylist = {this.props.addNewPlaylist}
                />
             </div>
             <div>
@@ -106,9 +108,6 @@ class Preset extends React.Component {
 
     clickDelete = () => {
       this.deletePreset();
-      setTimeout(() => {
-        this.props.getUserPageInfo()
-        }, 200);
     }
 
     clickAddPlaylist() {
@@ -153,6 +152,7 @@ class Preset extends React.Component {
       .then((response) => {
         if (response.status === 200) {
           console.log("deleted")
+          this.props.deletePreset(this.props.data.presetId)
         } else {
           console.log("failed to delete")
         }

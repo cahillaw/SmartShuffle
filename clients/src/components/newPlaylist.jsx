@@ -13,9 +13,20 @@ class NewPlaylist extends React.Component {
         numTracks: -1,
         weight: 0,
         showError: false,
-        errorMessage: ''
+        errorMessage: '',
+        isToggled: false
       }
     }
+
+    /*
+     componentDidMount () {
+      if(this.state.isToggled) {
+        this.setState({
+          isToggled: false
+        })
+      }
+    }
+    */
 
     render = () => {
       const ErrorAlert = () => {
@@ -35,11 +46,11 @@ class NewPlaylist extends React.Component {
           <Accordion id ="newPlaylist">
             <Card>
               <Card.Header id="header">
-              <Accordion.Toggle id="toggle" as={Button}  variant= "dark" size= "sm" eventKey="0" >
+              <Accordion.Toggle id="toggle" as={Button} onClick={this.toggleAccord} variant= "dark" size= "sm" eventKey="0">
                   Add New Playlist
               </Accordion.Toggle>
               </Card.Header>
-              <Accordion.Collapse eventKey="0">
+              <Accordion.Collapse eventKey={this.state.isToggled ? "0" : "1"}>
               <Card.Body>
               <Form>
                 <Form.Group controlId="plname">
@@ -103,6 +114,11 @@ class NewPlaylist extends React.Component {
       })
     }
     
+    toggleAccord = () => {
+      this.setState({ isToggled: !this.state.isToggled})
+      console.log(this.state.isToggled)
+    }
+
     toggleChange = () => {
       this.setState({
         isChecked: !this.state.isChecked,
@@ -185,62 +201,16 @@ class NewPlaylist extends React.Component {
           }
         })
         .then((res) => {
-          if(res.status >= 400) {
+          if(res.status >= 400 || !valid) {
             this.setState({
-              errorMessage: "Error: Invalid Spotify Playlist URI"
+              errorMessage: "Error: Invalid Spotify Playlist URI",
+              showError: true
             })
-            valid = false
-          } 
+          } else {
+            this.createNewPlaylist();
+          }
         })
       }
-      setTimeout(() => {
-        if(!valid){
-          this.setState({
-            showError: true
-          })
-        } else {
-          this.createNewPlaylist();
-          setTimeout(() => {
-            this.props.getUserPageInfo()
-            this.setState({
-              isChecked: true,
-              name: '',
-              uri: '',
-              order: true,
-              numTracks: -1,
-              weight: 0,
-              showError: false,
-              errorMessage: ''
-            })
-            }, 200);
-        }
-      }, 200);
-
-      if(!valid){
-        this.setState({
-          showError: true
-        })
-      } 
-    }
-
-    validateURI = () => {
-      var url = "https://api.spotify.com/v1/playlists/" + this.state.uri
-      fetch(url, {
-        method: 'get',
-        headers: {
-          'Authorization': this.props.access_token
-        }
-      })
-      .then((res) => {
-        if(res.status >= 400) {
-          this.setState({
-            errorMessage: "Error: Invalid Spotify Playlist URI"
-          })
-          return false
-        } else {
-          return true 
-        }
-      })
     }
 
     createNewPlaylist = () => {
@@ -265,7 +235,19 @@ class NewPlaylist extends React.Component {
       .then((response) => {
         response.json().then((data) => {
           if (response.status === 201) {
-            console.log(data)
+            this.props.addNewPlaylist(data, this.props.data.presetId)
+            //this.props.getUserPageInfo()
+            this.setState({
+              isChecked: true,
+              name: '',
+              uri: '',
+              order: true,
+              numTracks: -1,
+              weight: 0,
+              showError: false,
+              errorMessage: '',
+              isToggled: false
+            })
           } else {
             console.log("non 200 status code")
           }
