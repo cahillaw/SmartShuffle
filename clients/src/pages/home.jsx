@@ -10,7 +10,8 @@ class Home extends React.Component {
       super(props)
       this.state = {
         presetsdata: '',
-        loggedIn: true
+        loggedIn: true,
+        access_token: ''
       }
     }
 
@@ -20,7 +21,13 @@ class Home extends React.Component {
           loggedIn: false
         })
       } else {
-        this.getUserPageInfo()
+        if (this.state.access_token === '') {
+          this.setState({
+            access_token: "Bearer " + this.props.location.state.access_token
+          },
+          this.onATCallback
+          )
+        }
       }
     }
 
@@ -41,12 +48,15 @@ class Home extends React.Component {
         <div key={ps.presetId}>
           <Preset 
             data = {ps}
-            access_token = {"Bearer " + this.props.location.state.access_token}
+            access_token = {this.state.access_token}
             refresh_token = {this.props.location.state.refresh_token}
             getUserPageInfo = {this.getUserPageInfo}
             addNewPlaylist = {this.addNewPlaylist}
             deletePreset = {this.deletePreset}
             deletePlaylist = {this.deletePlaylist}
+            editPreset = {this.editPreset}
+            editPlaylist = {this.editPlaylist}
+            getAccessToken = {this.getAccessToken}
           />
         </div>
         );
@@ -64,9 +74,10 @@ class Home extends React.Component {
                   <div id = "container">
                     {presets}
                     <Create 
-                      access_token = {"Bearer " + this.props.location.state.access_token}
+                      access_token = {this.state.access_token}
                       refresh_token = {this.props.location.state.refresh_token}
                       addNewPreset = {this.addNewPreset}
+                      getAccessToken = {this.getAccessToken}
                     />
                   </div>
                 </Col>
@@ -81,6 +92,11 @@ class Home extends React.Component {
       )
     }
       
+    //function incase more gets added here since setState callback can only take 1
+    onATCallback() {
+      this.getUserPageInfo()
+    }
+
     addNewPreset = (ps) => {
       var presets = this.state.presetsdata.concat(ps)
       this.setState({
@@ -92,7 +108,7 @@ class Home extends React.Component {
     addNewPlaylist = (pl, psid) => {
       var presets = this.state.presetsdata
       for(var i = 0; i<presets.length; i++) {
-        if (presets[i].presetId == psid) {
+        if (presets[i].presetId === psid) {
           presets[i].playlists = presets[i].playlists.concat(pl)
           break
         }
@@ -107,7 +123,7 @@ class Home extends React.Component {
     deletePreset = (psid) => {
       var presets = this.state.presetsdata
       for(var i = 0; i<presets.length; i++) {
-        if (presets[i].presetId == psid) {
+        if (presets[i].presetId === psid) {
           presets.splice(i, 1)
           break
         }
@@ -122,10 +138,51 @@ class Home extends React.Component {
     deletePlaylist = (psid, plid) => {
       var presets = this.state.presetsdata
       for(var i = 0; i<presets.length; i++) {
-        if (presets[i].presetId == psid) {
+        if (presets[i].presetId === psid) {
           for(var j = 0; i<presets[i].playlists.length; j++) {
-            if(presets[i].playlists[j].playlistID == plid) {
+            if(presets[i].playlists[j].playlistID === plid) {
               presets[i].playlists.splice(j, 1)
+              break
+            }
+          }
+        }
+      }
+
+      this.setState({
+        presetsdata: presets
+      })
+      console.log(presets)
+    }
+
+    editPreset = (ps) => {
+      var presets = this.state.presetsdata
+      for(var i = 0; i<presets.length; i++) {
+        if (presets[i].presetId === ps.presetId) {
+          presets[i].presetName = ps.presetName
+          presets[i].repeatLimit = ps.repeatLimit
+          break
+        }
+      }
+
+      this.setState({
+        presetsdata: presets
+      })
+      console.log(presets)
+    }
+
+    editPlaylist = (psid, pl) => {
+      var presets = this.state.presetsdata
+      console.log(pl)
+      for(var i = 0; i<presets.length; i++) {
+        if (presets[i].presetId === psid) {
+          for(var j = 0; i<presets[i].playlists.length; j++) {
+            if(presets[i].playlists[j].playlistID === pl.playlistID) {
+              console.log(pl.playlistName)
+              presets[i].playlists[j].NumTracks = pl.NumTracks
+              presets[i].playlists[j].order = pl.order
+              presets[i].playlists[j].playlistName = pl.playlistName
+              presets[i].playlists[j].uri = pl.uri
+              presets[i].playlists[j].weight = pl.weight
               break
             }
           }
@@ -144,7 +201,7 @@ class Home extends React.Component {
         method: 'get',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': "Bearer " + this.props.location.state.access_token 
+          'Authorization': this.state.access_token 
         }
       })
       .then((response) => {
@@ -160,6 +217,46 @@ class Home extends React.Component {
         })
       })
     }
+
+    //taken from https://formcarry.com/documentation/fetch-api-example
+    encodeFormData = (data) => {
+      return Object.keys(data)
+          .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+          .join('&');
+    }
+
+    getAccessToken = (callback) => {
+      var client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID
+      var client_secret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
+
+      let formData = {grant_type: 'refresh_token', refresh_token: this.props.location.state.refresh_token}
+
+      fetch('https://accounts.spotify.com/api/token', {
+        method: 'post',
+        headers: {
+          'Content-Type': "application/x-www-form-urlencoded",
+          'Accept': 'application/json',
+          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+        },
+        body: this.encodeFormData(formData)
+      })
+      .then((response) => {
+        response.json().then((data) => {
+          if (response.status === 200) {
+            var newAccessToken = "Bearer " + data.access_token
+            console.log(newAccessToken)
+            this.setState ({
+              access_token: newAccessToken
+            },
+            callback()
+            )
+          } else {
+            console.log("failed to get new token")
+          }
+        })
+      })
+    }
+
 
 }
 

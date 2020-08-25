@@ -85,10 +85,6 @@ class EditPreset extends React.Component {
     clickSubmitHandler() {
       if(this.state.name !== '' && (this.state.repeatLimit >= 0 && this.state.repeatLimit <= 50) ) {
         this.editNewPreset();
-        setTimeout(() => {
-          this.props.getUserPageInfo()
-          }, 200);
-        this.props.clickEdit()
       } else {
         this.setState({
           showError: true
@@ -114,6 +110,8 @@ class EditPreset extends React.Component {
         response.json().then((data) => {
           if (response.status === 200) {
             console.log(data)
+            this.props.editPreset(data)
+            this.props.clickEdit()
           } else {
             console.log("non 200 status code")
           }

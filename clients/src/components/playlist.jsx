@@ -85,6 +85,7 @@ class Playlist extends React.Component {
                       data = {this.props.data}
                       clickEditPL = {this.clickEditPL}
                       getUserPageInfo = {this.props.getUserPageInfo}
+                      editPlaylist = {this.props.editPlaylist}
                     />
                   </div>
                   : null } 

@@ -184,37 +184,16 @@ class EditPlaylist extends React.Component {
           }
         })
         .then((res) => {
-          if(res.status >= 400) {
+          if(res.status >= 400 || !valid) {
             this.setState({
-              errorMessage: "Error: Invalid Spotify Playlist URI"
+              errorMessage: "Error: Invalid Spotify Playlist URI",
+              showError: true
             })
-            valid = false
-          } 
+          } else {
+            this.editPlaylist();
+          }
         })
       }
-      setTimeout(() => {
-        if(!valid){
-          this.setState({
-            showError: true
-          })
-        } else {
-          this.editPlaylist();
-          setTimeout(() => {
-            this.props.getUserPageInfo()
-            this.props.clickEditPL()
-            this.setState({
-              isChecked: true,
-              name: '',
-              uri: '',
-              order: true,
-              numTracks: -1,
-              weight: 0,
-              showError: false,
-              errorMessage: ''
-            })
-            }, 200);
-        }
-      }, 200);
     }
 
     editPlaylist = () => {
@@ -240,6 +219,18 @@ class EditPlaylist extends React.Component {
         response.json().then((data) => {
           if (response.status === 200) {
             console.log(data)
+            this.props.editPlaylist(this.props.data.presetID, data)
+            this.props.clickEditPL()
+            this.setState({
+              isChecked: true,
+              name: '',
+              uri: '',
+              order: true,
+              numTracks: -1,
+              weight: 0,
+              showError: false,
+              errorMessage: ''
+            })
           } else {
             console.log("non 200 status code")
           }

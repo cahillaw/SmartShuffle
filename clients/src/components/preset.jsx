@@ -11,11 +11,13 @@ class Preset extends React.Component {
       this.state = {
         access_token: '',
         refresh_token: '',
-        edit: false
+        edit: false,
+        test: true
       }
     }
 
     componentDidMount () {
+      console.log("loaded")
      // console.log(process.env.REACT_APP_SPOTIFY_CLIENT_ID)
      // console.log(process.env.REACT_APP_SPOTIFY_CLIENT_SECRET)
     }
@@ -65,6 +67,7 @@ class Preset extends React.Component {
           refresh_token = {this.props.refresh_token}
           getUserPageInfo = {this.props.getUserPageInfo}
           deletePlaylist = {this.props.deletePlaylist}
+          editPlaylist = {this.props.editPlaylist}
         />
       </div>
       );
@@ -79,6 +82,7 @@ class Preset extends React.Component {
             repeatLimit = {this.props.data.repeatLimit}
             getUserPageInfo = {this.props.getUserPageInfo}
             clickEdit = {this.clickEdit}
+            editPreset = {this.props.editPreset}
           />
         )
       }
@@ -110,32 +114,39 @@ class Preset extends React.Component {
       this.deletePreset();
     }
 
-    clickAddPlaylist() {
-      setTimeout(() => {
-        this.props.getUserPageInfo()
-        }, 500);
-    }
-
     clickEdit = () => {
       this.setState({
         edit: !this.state.edit
       })
     }
-
+    
     queueSong = () => {
+      /*
+      if (this.state.test) {
+        var auth = "somethingwrongobv"
+        this.setState({
+          test: false
+        })
+      } else {
+        var auth = this.props.access_token
+      }
+      */
+
+     // console.log(auth)
       var url = "https://shuffle.cahillaw.me/v1/queue/" + this.props.data.presetId
       fetch(url, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.props.access_token 
+          'Authorization': this.props.access_token
         }
       })
       .then((response) => {
         if (response.status === 204) {
           console.log("Song Queued!")
-        } else {
-          console.log("failed to queue song")
+        } else if (response.status === 401) {
+          console.log("access token is bad, getting new one...")
+          this.props.getAccessToken(this.queueSong)
         }
       })
     }
@@ -158,33 +169,7 @@ class Preset extends React.Component {
         }
       })
     }
-      
-    getAccessToken(refresh_token) {
-      var client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID
-      var client_secret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
-
-      fetch('https://accounts.spotify.com/api/token', {
-        method: 'post',
-        headers: {
-          'Content-Type': "application/x-www-form-urlencoded",
-          "Authorization": "Basic " + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-        },
-        body: JSON.stringify({
-          grant_type: 'refresh_token',
-          refresh_token: refresh_token
-        })
-      })
-      .then((response) => {
-        response.json().then((data) => {
-          if (response.status === 200) {
-            return  "Bearer " + data.access_token
-          } else {
-            return "no work :("
-          }
-        })
-      })
-    }
-
+    
 }
 
 export default Preset
