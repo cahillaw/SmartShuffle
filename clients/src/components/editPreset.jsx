@@ -93,30 +93,33 @@ class EditPreset extends React.Component {
     }
 
     editNewPreset = () => {
-      var url = "https://shuffle.cahillaw.me/v1/presets/" + this.props.data.presetId
-      var rl = parseInt(this.state.repeatLimit, 10)
-      fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.props.access_token 
-        },
-        body: JSON.stringify({
-          presetName: this.state.name,
-          repeatLimit: rl
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/presets/" + this.props.data.presetId
+        var rl = parseInt(this.state.repeatLimit, 10)
+        fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.props.access_token 
+          },
+          body: JSON.stringify({
+            presetName: this.state.name,
+            repeatLimit: rl
+          })
         })
-      })
-      .then((response) => {
-        response.json().then((data) => {
-          if (response.status === 200) {
-            console.log(data)
-            this.props.editPreset(data)
-            this.props.clickEdit()
-          } else {
-            console.log("non 200 status code")
-          }
+        .then((response) => {
+          response.json().then((data) => {
+            if (response.status === 200) {
+              console.log(data)
+              this.props.editPreset(data)
+              this.props.clickEdit()
+            } else if (response.status === 401) {
+              console.log("access token is bad, getting new one...")
+              this.props.getAccessToken(this.editNewPreset)
+            }
+          })
         })
-      })
+      }, 0)
     }
 
 }

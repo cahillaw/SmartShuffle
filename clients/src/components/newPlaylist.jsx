@@ -214,45 +214,47 @@ class NewPlaylist extends React.Component {
     }
 
     createNewPlaylist = () => {
-      var url = "https://shuffle.cahillaw.me/v1/playlists"
-      var nT = parseInt(this.state.numTracks, 10)
-      var w = parseInt(this.state.weight, 10)
-      fetch(url, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.props.access_token 
-        },
-        body: JSON.stringify({
-          presetID: this.props.data.presetId,
-          playlistName: this.state.name,
-          uri: this.state.uri,
-          NumTracks: nT,
-          order: this.state.order,
-          weight: w
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/playlists"
+        var nT = parseInt(this.state.numTracks, 10)
+        var w = parseInt(this.state.weight, 10)
+        fetch(url, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.props.access_token 
+          },
+          body: JSON.stringify({
+            presetID: this.props.data.presetId,
+            playlistName: this.state.name,
+            uri: this.state.uri,
+            NumTracks: nT,
+            order: this.state.order,
+            weight: w
+          })
         })
-      })
-      .then((response) => {
-        response.json().then((data) => {
-          if (response.status === 201) {
-            this.props.addNewPlaylist(data, this.props.data.presetId)
-            //this.props.getUserPageInfo()
-            this.setState({
-              isChecked: true,
-              name: '',
-              uri: '',
-              order: true,
-              numTracks: -1,
-              weight: 0,
-              showError: false,
-              errorMessage: '',
-              isToggled: false
-            })
-          } else {
-            console.log("non 200 status code")
-          }
+        .then((response) => {
+          response.json().then((data) => {
+            if (response.status === 201) {
+              this.props.addNewPlaylist(data, this.props.data.presetId)
+              this.setState({
+                isChecked: true,
+                name: '',
+                uri: '',
+                order: true,
+                numTracks: -1,
+                weight: 0,
+                showError: false,
+                errorMessage: '',
+                isToggled: false
+              })
+            } else if (response.status === 401) {
+              console.log("access token is bad, getting new one...")
+              this.props.getAccessToken(this.createNewPlaylist)
+            }
+          })
         })
-      })
+      }, 0)
     }
 
 }

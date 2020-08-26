@@ -196,26 +196,30 @@ class Home extends React.Component {
     }
 
     getUserPageInfo = () => {
-      var url = "https://shuffle.cahillaw.me/v1/userpage"
-      fetch(url, {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.state.access_token 
-        }
-      })
-      .then((response) => {
-        response.json().then((data) => {
-          console.log(data)
-          if (response.status === 200) {
-            this.setState({
-              presetsdata: data
-            })
-          } else {
-            console.log("non 200 status code loading page info")
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/userpage"
+        fetch(url, {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.state.access_token 
           }
         })
-      })
+        .then((response) => {
+          response.json().then((data) => {
+            console.log(data)
+            if (response.status === 200) {
+              this.setState({
+                presetsdata: data
+              })
+            } else if (response.status === 401) {
+              console.log("access token is bad, getting new one...")
+              this.getAccessToken(this.getUserPageInfo)
+            }
+          })
+        })
+      }, 0)
+      
     }
 
     //taken from https://formcarry.com/documentation/fetch-api-example
@@ -256,7 +260,6 @@ class Home extends React.Component {
         })
       })
     }
-
 
 }
 

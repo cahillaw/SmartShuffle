@@ -197,45 +197,49 @@ class EditPlaylist extends React.Component {
     }
 
     editPlaylist = () => {
-      var url = "https://shuffle.cahillaw.me/v1/playlists/" + this.props.data.playlistID
-      var nT = parseInt(this.state.numTracks, 10)
-      var w = parseInt(this.state.weight, 10)
-      fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.props.access_token 
-        },
-        body: JSON.stringify({
-          presetID: this.props.data.presetId,
-          playlistName: this.state.name,
-          uri: this.state.uri,
-          NumTracks: nT,
-          order: this.state.order,
-          weight: w
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/playlists/" + this.props.data.playlistID
+        var nT = parseInt(this.state.numTracks, 10)
+        var w = parseInt(this.state.weight, 10)
+        fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.props.access_token 
+          },
+          body: JSON.stringify({
+            presetID: this.props.data.presetId,
+            playlistName: this.state.name,
+            uri: this.state.uri,
+            NumTracks: nT,
+            order: this.state.order,
+            weight: w
+          })
         })
-      })
-      .then((response) => {
-        response.json().then((data) => {
-          if (response.status === 200) {
-            console.log(data)
-            this.props.editPlaylist(this.props.data.presetID, data)
-            this.props.clickEditPL()
-            this.setState({
-              isChecked: true,
-              name: '',
-              uri: '',
-              order: true,
-              numTracks: -1,
-              weight: 0,
-              showError: false,
-              errorMessage: ''
-            })
-          } else {
-            console.log("non 200 status code")
-          }
+        .then((response) => {
+          response.json().then((data) => {
+            if (response.status === 200) {
+              console.log(data)
+              this.props.editPlaylist(this.props.data.presetID, data)
+              this.props.clickEditPL()
+              this.setState({
+                isChecked: true,
+                name: '',
+                uri: '',
+                order: true,
+                numTracks: -1,
+                weight: 0,
+                showError: false,
+                errorMessage: ''
+              })
+            } else if (response.status === 401) {
+              console.log("access token is bad, getting new one...")
+              this.props.getAccessToken(this.editPlaylist)
+            }
+          })
         })
-      })
+      }, 0)
+      
     }
 
 }

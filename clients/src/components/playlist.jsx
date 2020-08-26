@@ -86,6 +86,7 @@ class Playlist extends React.Component {
                       clickEditPL = {this.clickEditPL}
                       getUserPageInfo = {this.props.getUserPageInfo}
                       editPlaylist = {this.props.editPlaylist}
+                      getAccessToken = {this.props.getAccessToken}
                     />
                   </div>
                   : null } 
@@ -108,42 +109,52 @@ class Playlist extends React.Component {
     }
 
     deletePlaylist = () => { 
-      var url = "https://shuffle.cahillaw.me/v1/playlists/" + this.props.data.playlistID
-      fetch(url, {
-        method: 'delete',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.props.access_token 
-        }
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.props.deletePlaylist(this.props.data.presetID, this.props.data.playlistID)
-          console.log("deleted")
-        } else {
-          console.log("failed to delete")
-        }
-      })
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/playlists/" + this.props.data.playlistID
+        fetch(url, {
+          method: 'delete',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.props.access_token 
+          }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            this.props.deletePlaylist(this.props.data.presetID, this.props.data.playlistID)
+            console.log("deleted")
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.deletePlaylist)
+          }
+        })
+      }, 0)
     }
 
     getPlaylistImageAndNumTracks() {
-      console.log("redid call")
-      var url = "https://api.spotify.com/v1/playlists/" + this.props.data.uri
-      fetch(url, {
-        method: 'get',
-        headers: {
-          'Authorization': this.props.access_token
-        }
-      })
-      .then((res) => {
-        res.json().then((pladata) => {
-            this.setState({
-              mosaic: pladata.images[0].url,
-              totalTracks: pladata.tracks.total,
-              loading: false
-            })
+      setTimeout(() => {
+        console.log("redid call")
+        var url = "https://api.spotify.com/v1/playlists/" + this.props.data.uri
+        fetch(url, {
+          method: 'get',
+          headers: {
+            'Authorization': this.props.access_token
+          }
         })
-      })
+        .then((response) => {
+          if (response.status === 200) {
+            response.json().then((pladata) => {
+              this.setState({
+                mosaic: pladata.images[0].url,
+                totalTracks: pladata.tracks.total,
+                loading: false
+              })
+            })
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.getPlaylistImageAndNumTracks)
+          }
+        })
+      }, 0)
     }
 
     checkOrder() {

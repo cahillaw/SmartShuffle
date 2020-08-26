@@ -68,6 +68,7 @@ class Preset extends React.Component {
           getUserPageInfo = {this.props.getUserPageInfo}
           deletePlaylist = {this.props.deletePlaylist}
           editPlaylist = {this.props.editPlaylist}
+          getAccessToken = {this.props.getAccessToken}
         />
       </div>
       );
@@ -83,6 +84,7 @@ class Preset extends React.Component {
             getUserPageInfo = {this.props.getUserPageInfo}
             clickEdit = {this.clickEdit}
             editPreset = {this.props.editPreset}
+            getAccessToken = {this.props.getAccessToken}
           />
         )
       }
@@ -100,6 +102,7 @@ class Preset extends React.Component {
                 data = {this.props.data}
                 getUserPageInfo = {this.props.getUserPageInfo}
                 addNewPlaylist = {this.props.addNewPlaylist}
+                getAccessToken = {this.props.getAccessToken}
                />
             </div>
             <div>
@@ -121,53 +124,58 @@ class Preset extends React.Component {
     }
     
     queueSong = () => {
-      /*
-      if (this.state.test) {
-        var auth = "somethingwrongobv"
-        this.setState({
-          test: false
+      setTimeout(() => {
+        /*
+        if (this.state.test) {
+          var auth = "somethingwrongobv"
+          this.setState({
+            test: false
+          })
+        } else {
+          var auth = this.props.access_token
+        }
+        */
+        
+       // console.log(auth)
+        var url = "https://shuffle.cahillaw.me/v1/queue/" + this.props.data.presetId
+        fetch(url, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.props.access_token
+          }
         })
-      } else {
-        var auth = this.props.access_token
-      }
-      */
-
-     // console.log(auth)
-      var url = "https://shuffle.cahillaw.me/v1/queue/" + this.props.data.presetId
-      fetch(url, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.props.access_token
-        }
-      })
-      .then((response) => {
-        if (response.status === 204) {
-          console.log("Song Queued!")
-        } else if (response.status === 401) {
-          console.log("access token is bad, getting new one...")
-          this.props.getAccessToken(this.queueSong)
-        }
-      })
+        .then((response) => {
+          if (response.status === 204) {
+            console.log("Song Queued!")
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.queueSong)
+          }
+        })
+      }, 0)
     }
 
     deletePreset = () => { 
-      var url = "https://shuffle.cahillaw.me/v1/presets/" + this.props.data.presetId
-      fetch(url, {
-        method: 'delete',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.props.access_token 
-        }
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("deleted")
-          this.props.deletePreset(this.props.data.presetId)
-        } else {
-          console.log("failed to delete")
-        }
-      })
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/presets/" + this.props.data.presetId
+        fetch(url, {
+          method: 'delete',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.props.access_token 
+          }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("deleted")
+            this.props.deletePreset(this.props.data.presetId)
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.deletePreset)
+          }
+        })
+      }, 0)
     }
     
 }
