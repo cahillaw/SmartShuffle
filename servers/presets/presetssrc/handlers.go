@@ -392,13 +392,14 @@ func (ctx *PresetContext) QueueSong(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	code, errQueueSong := ctx.QueueSongFromPlaylist(user, preset, tracks)
+	code, uri, errQueueSong := ctx.QueueSongFromPlaylist(user, preset, tracks)
 	if errQueueSong != nil {
 		http.Error(w, errQueueSong.Error(), code)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.Write([]byte(uri))
+	w.WriteHeader(http.StatusOK)
 }
 
 //TestGPT is a test habndlker
@@ -438,7 +439,7 @@ func (ctx *PresetContext) TestGPT(w http.ResponseWriter, r *http.Request) {
 }
 
 //QueueSongFromPlaylist queues a song from a specified playlist
-func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *PlaylistTracks) (int, error) {
+func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *PlaylistTracks) (int, string, error) {
 	total := plt.Total
 	if plt.Total > 100 {
 		total = 100
@@ -450,10 +451,10 @@ func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *Pla
 		uri := plt.Tracks[index].Track.TrackURI
 		code, errQueue := Queue(user, uri)
 		if errQueue != nil {
-			return code, errQueue
+			return code, uri, errQueue
 		}
 		errAddTrack := ctx.PStore.AddRecentTrack(ps.PresetID, uri)
-		return code, errAddTrack
+		return code, uri, errAddTrack
 	}
 
 	for i := 0; i < ps.RepeatLimit; i++ {
@@ -462,7 +463,7 @@ func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *Pla
 		uri := plt.Tracks[index].Track.TrackURI
 		contains, err := ctx.PStore.InRecentTracks(uri, ps.PresetID, ps.RepeatLimit-i)
 		if err != nil {
-			return 0, err
+			return 0, uri, err
 		}
 		if contains {
 			fmt.Println("true")
@@ -470,14 +471,14 @@ func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *Pla
 		if !contains {
 			code, errQueue := Queue(user, uri)
 			if errQueue != nil {
-				return code, errQueue
+				return code, uri, errQueue
 			}
 			errAddTrack := ctx.PStore.AddRecentTrack(ps.PresetID, uri)
-			return code, errAddTrack
+			return code, uri, errAddTrack
 		}
 	}
 
-	return 666, errors.New("Hit refresh limit")
+	return 666, "", errors.New("Hit refresh limit")
 }
 
 //Queue ques the song with the specified spotify track uri
@@ -587,7 +588,7 @@ func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, error) {
 
 }
 
-//EditWeights the weights of the p
+//EditPlaylists edits the weights + other parameters of the playlist
 func (ctx *PresetContext) EditPlaylists(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPatch {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
