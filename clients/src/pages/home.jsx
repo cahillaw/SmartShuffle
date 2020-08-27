@@ -4,6 +4,7 @@ import { Jumbotron, Container, Row, Col } from 'react-bootstrap'
 import './home.css'
 import Preset from '../components/preset'
 import Create from '../components/create'
+import NowPlaying from '../components/nowPlaying'
 
 class Home extends React.Component {
     constructor (props) {
@@ -62,12 +63,23 @@ class Home extends React.Component {
         );
         return (
           <div>
-            <Jumbotron>
+            <Jumbotron id = "jumbo">
               <h1 id="title">Welcome to SmartShuffle.io</h1>
               <br></br>
               <div>Create your own custom Radio Stations and start listening! </div>
               <div>Changing the playlist is a relic of the past!</div>
             </Jumbotron>
+            <Container>
+              <Row className ="justify-content-md-center">
+                <Col md = "auto">
+                  <NowPlaying
+                    access_token = {this.state.access_token}
+                    refresh_token = {this.props.location.state.refresh_token}
+                    getAccessToken = {this.getAccessToken}
+                  ></NowPlaying>
+                </Col>
+              </Row>
+            </Container>
             <Container>
               <Row>
                 <Col>
@@ -206,17 +218,17 @@ class Home extends React.Component {
           }
         })
         .then((response) => {
-          response.json().then((data) => {
-            console.log(data)
-            if (response.status === 200) {
+          if (response.status === 200) {
+            response.json().then((data) => {
+              console.log(data)
               this.setState({
                 presetsdata: data
               })
-            } else if (response.status === 401) {
-              console.log("access token is bad, getting new one...")
-              this.getAccessToken(this.getUserPageInfo)
-            }
-          })
+            })
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.getAccessToken(this.getUserPageInfo)
+          }
         })
       }, 0)
       

@@ -6,3 +6,11 @@
     grid-column-gap: 20px;
     grid-row-gap: 20px;
 }
+
+#jumbo {
+    height: 200px;
+}
+
+#title {
+    margin-top: -30px;
+}

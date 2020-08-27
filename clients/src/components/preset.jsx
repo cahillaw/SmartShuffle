@@ -4,6 +4,7 @@ import { Button, Modal } from 'react-bootstrap'
 import Playlist from './playlist'
 import NewPlaylist from './newPlaylist'
 import EditPreset from './editPreset'
+import NowPlaying from './nowPlaying'
 
 class Preset extends React.Component {
     constructor (props) {
@@ -150,7 +151,6 @@ class Preset extends React.Component {
           if (response.status === 200) {
             response.text().then((data) => {
               console.log(data)
-          //    return data
             })
             console.log("Song Queued!")
           } else if (response.status === 401) {
@@ -185,52 +185,17 @@ class Preset extends React.Component {
     }
 
     startShuffling = () => {
-    var test = "swag"
-    this.queueSongPromise().then((result) => {
-       test = result
-       console.log(test)
-       this.skipSong()
-    })
-    setTimeout(() => {
-      console.log(test)
-    }, 3000)
-      /*
-      console.log(uri)
-      var tracks = [uri]
-      var index = 0
+      for(var i = 0; i<2; i++) {
+        this.queueSong()
+      }
       setTimeout(() => {
         this.skipSong()
-          for(var i = 0; i<1; i++) {
-            setTimeout(() => {
-              this.queueSongPromise().then(function(result) {
-                tracks.push(result)
-              })
-            }, 100)
-          }
 
-          setInterval(() => {
-            this.getCurrentPlaybackInfo().then(function(result) {
-              console.log(result);
-              if(!tracks.includes(result.item.id)) {
-                  tracks.splice(index, 0, result.item.id)
-                  index++
-              }
+        setInterval(() => {
+          this.queueSong()
+        }, 180000)
 
-              if (result.is_playing && tracks[index] !== result.item.id) {
-                for(var j = index + 1; j<tracks.length; j++) {
-                  this.queueSongPromise().then(function(result) {
-                    tracks.push(result)
-                  })
-                  if(tracks[j] === result.item.id) {
-                    index = j
-                    break
-                  } 
-                }
-              }
-            });
-          }, 3000)
-      }, 0)
-      */
+      },0)
     }
 
     test = () => {
