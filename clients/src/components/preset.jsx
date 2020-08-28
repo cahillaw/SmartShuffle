@@ -185,11 +185,12 @@ class Preset extends React.Component {
     }
 
     startShuffling = () => {
+      this.props.changeStation(this.props.data.presetId, this.props.data.presetName)
       for(var i = 0; i<2; i++) {
         this.queueSong()
       }
       setTimeout(() => {
-        this.skipSong()
+    //    this.skipSong()
 
         setInterval(() => {
           this.queueSong()

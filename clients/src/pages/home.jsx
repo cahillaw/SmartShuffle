@@ -12,7 +12,9 @@ class Home extends React.Component {
       this.state = {
         presetsdata: '',
         loggedIn: true,
-        access_token: ''
+        access_token: '',
+        curPresetID: 0,
+        curPresetName: ""
       }
     }
 
@@ -58,6 +60,7 @@ class Home extends React.Component {
             editPreset = {this.editPreset}
             editPlaylist = {this.editPlaylist}
             getAccessToken = {this.getAccessToken}
+            changeStation = {this.changeStation}
           />
         </div>
         );
@@ -76,6 +79,8 @@ class Home extends React.Component {
                     access_token = {this.state.access_token}
                     refresh_token = {this.props.location.state.refresh_token}
                     getAccessToken = {this.getAccessToken}
+                    curPresetID = {this.state.curPresetID}
+                    curPresetName = {this.state.curPresetName}
                   ></NowPlaying>
                 </Col>
               </Row>
@@ -107,6 +112,14 @@ class Home extends React.Component {
     //function incase more gets added here since setState callback can only take 1
     onATCallback() {
       this.getUserPageInfo()
+    }
+
+    changeStation = (psid, psname) => {
+      console.log("test")
+      this.setState({
+        curPresetID: psid,
+        curPresetName: psname
+      })
     }
 
     addNewPreset = (ps) => {
