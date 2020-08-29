@@ -14,7 +14,8 @@ class Home extends React.Component {
         loggedIn: true,
         access_token: '',
         curPresetID: 0,
-        curPresetName: ""
+        curPresetName: "",
+        listening: false
       }
     }
 
@@ -61,6 +62,9 @@ class Home extends React.Component {
             editPlaylist = {this.editPlaylist}
             getAccessToken = {this.getAccessToken}
             changeStation = {this.changeStation}
+            skipSong = {this.skipSong}
+            startShuffling = {this.startShuffling}
+            queueSong = {this.queueSong}
           />
         </div>
         );
@@ -81,6 +85,12 @@ class Home extends React.Component {
                     getAccessToken = {this.getAccessToken}
                     curPresetID = {this.state.curPresetID}
                     curPresetName = {this.state.curPresetName}
+                    skipSong = {this.skipSong}
+                    pause = {this.pause}
+                    play = {this.play}
+                    stopListening = {this.stopListening}
+                    changeListening = {this.changeListening}
+                    listening = {this.state.listening}
                   ></NowPlaying>
                 </Col>
               </Row>
@@ -112,14 +122,6 @@ class Home extends React.Component {
     //function incase more gets added here since setState callback can only take 1
     onATCallback() {
       this.getUserPageInfo()
-    }
-
-    changeStation = (psid, psname) => {
-      console.log("test")
-      this.setState({
-        curPresetID: psid,
-        curPresetName: psname
-      })
     }
 
     addNewPreset = (ps) => {
@@ -218,6 +220,133 @@ class Home extends React.Component {
         presetsdata: presets
       })
       console.log(presets)
+    }
+
+    stopListening = () => {
+      this.setState({
+        listening: false,
+        curPresetID: 0,
+        curPresetName: ""
+      })
+    }
+
+    changeListening = (l) => {
+      this.setState({
+        listening: l
+      })
+    }
+
+    queueSong = (psid) => {
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/queue/" + psid
+        fetch(url, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.state.access_token
+          }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            response.text().then((data) => {
+              console.log(data)
+            })
+            console.log("Song Queued!")
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.getAccessToken(this.queueSong)
+          }
+        })
+      }, 0)
+    }
+
+    startShuffling = (psid, psname) => {
+      this.setState({
+        listening: true,
+        curPresetID: psid,
+        curPresetName: psname
+      })
+      for(var i = 0; i<2; i++) {
+        this.queueSong(psid)
+      }
+      var queueEveryThree = setTimeout(() => {
+    //    this.skipSong()
+
+        setInterval(() => {
+          if(this.state.listening) {
+            this.queueSong(psid)
+          } else {
+            clearInterval(queueEveryThree)
+            this.setState({
+              listening: false
+            })
+          }
+        }, 180000)
+
+      },0)
+    }
+
+    skipSong = () => {
+      setTimeout(() => {
+        var url = "https://api.spotify.com/v1/me/player/next"
+        fetch(url, {
+          method: 'post',
+          headers: {
+            'Authorization': this.state.access_token
+          }
+        })
+        .then((response) => {
+          if (response.status === 204) {
+            console.log("song skipped")
+            if(this.state.curPresetID > 0) {
+              this.queueSong(this.state.curPresetID)
+            }
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.skipSong)
+          }
+        })
+      }, 0)
+    }
+
+    pause = () => {
+      setTimeout(() => {
+        var url = "https://api.spotify.com/v1/me/player/pause"
+        fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Authorization': this.state.access_token
+          }
+        })
+        .then((response) => {
+          if (response.status === 204) {
+            console.log("paused playback")
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.pause)
+          }
+        })
+      }, 0)
+    }
+
+    play = () => {
+      setTimeout(() => {
+        var url = "https://api.spotify.com/v1/me/player/play"
+        fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Authorization': this.state.access_token
+          }
+        })
+        .then((response) => {
+          if (response.status === 204) {
+            console.log("started playback")
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.play)
+          }
+        })
+      }, 0)
     }
 
     getUserPageInfo = () => {

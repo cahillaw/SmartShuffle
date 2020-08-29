@@ -4,7 +4,6 @@ import { Button, Modal } from 'react-bootstrap'
 import Playlist from './playlist'
 import NewPlaylist from './newPlaylist'
 import EditPreset from './editPreset'
-import NowPlaying from './nowPlaying'
 
 class Preset extends React.Component {
     constructor (props) {
@@ -13,7 +12,7 @@ class Preset extends React.Component {
         access_token: '',
         refresh_token: '',
         edit: false,
-        test: true
+        listening: false
       }
     }
 
@@ -93,8 +92,7 @@ class Preset extends React.Component {
         return (
           <div id = "preset">
             <strong id = "pname"> {this.props.data.presetName} </strong>
-            <Button id = "button" variant= "dark" size= "sm" onClick={() => this.queueSong()} >Queue Song!</Button>{' '}
-            <Button variant= "dark" size= "sm" onClick={() => this.startShuffling()} >Skip Song</Button>{' '}
+            <Button id = "button" variant= "dark" size= "sm" onClick={() => this.clickShuffle()} >Start Shuffling!</Button>{' '}
             <div id = "rlimit"> Repeat Limit: {this.props.data.repeatLimit} </div>
             <div id = "playlists">
               {playlists}
@@ -108,11 +106,16 @@ class Preset extends React.Component {
                />
             </div>
             <div>
-              <DeletePreset clickDelete={this.clickDelete} test="3"></DeletePreset>
+              <DeletePreset clickDelete={this.clickDelete}></DeletePreset>
               <Button id = "editbutton" variant= "dark" size= "sm" onClick={() => this.clickEdit()}>Edit Station</Button>{' '}
             </div>
           </div>
         )
+    }
+
+    clickShuffle = () => {
+      console.log("clicked")
+      this.props.startShuffling(this.props.data.presetId, this.props.data.presetName);
     }
 
     clickDelete = () => {
@@ -123,126 +126,6 @@ class Preset extends React.Component {
       this.setState({
         edit: !this.state.edit
       })
-    }
-    
-    queueSong = () => {
-      setTimeout(() => {
-        /*
-        if (this.state.test) {
-          var auth = "somethingwrongobv"
-          this.setState({
-            test: false
-          })
-        } else {
-          var auth = this.props.access_token
-        }
-        */
-        
-       // console.log(auth)
-        var url = "https://shuffle.cahillaw.me/v1/queue/" + this.props.data.presetId
-        fetch(url, {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': this.props.access_token
-          }
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            response.text().then((data) => {
-              console.log(data)
-            })
-            console.log("Song Queued!")
-          } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
-            this.props.getAccessToken(this.queueSong)
-          }
-        })
-      }, 0)
-    }
-
-    queueSongPromise = () => {
-      var url = "https://shuffle.cahillaw.me/v1/queue/" + this.props.data.presetId
-      return fetch(url, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.props.access_token
-        }
-      })
-      .then(function(response) {
-        if (response.status === 200) {
-          return response.text()
-        } else if (response.status === 401) {
-          console.log("access token is bad, getting new one...")
-          this.props.getAccessToken(this.queueSongPromise)
-        }
-      }).then(function(text) {
-        return text;
-      }).then(function(result) {
-        return result;
-      })
-    }
-
-    startShuffling = () => {
-      this.props.changeStation(this.props.data.presetId, this.props.data.presetName)
-      for(var i = 0; i<2; i++) {
-        this.queueSong()
-      }
-      setTimeout(() => {
-    //    this.skipSong()
-
-        setInterval(() => {
-          this.queueSong()
-        }, 180000)
-
-      },0)
-    }
-
-    test = () => {
-      this.getCurrentPlaybackInfo().then(function(result) {
-        console.log(result);
-      });
-    }
-
-    getCurrentPlaybackInfo = () => {
-      return fetch("https://api.spotify.com/v1/me/player/currently-playing", {
-        method: 'get',
-        headers: {
-          'Authorization': this.props.access_token
-        }
-      })
-      .then(function(response) {
-        if (response.status === 200) {
-          return response.json()
-        } else if (response.status === 401) {
-          console.log("access token is bad, getting new one...")
-          this.props.getAccessToken(this.getCurrentPlaybackInfo)
-        }
-      }).then(function(json) {
-        console.log(json.progress_ms)
-        return json;
-      })
-    }
-
-    skipSong = () => {
-      setTimeout(() => {
-        var url = "https://api.spotify.com/v1/me/player/next"
-        fetch(url, {
-          method: 'post',
-          headers: {
-            'Authorization': this.props.access_token
-          }
-        })
-        .then((response) => {
-          if (response.status === 204) {
-            console.log("song skipped")
-          } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
-            this.props.getAccessToken(this.skipSong)
-          }
-        })
-      }, 0)
     }
 
     deletePreset = () => { 
