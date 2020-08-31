@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './preset.css'
-import { Button, Modal } from 'react-bootstrap'
+import { Button, Modal, Form, Alert } from 'react-bootstrap'
 import Playlist from './playlist'
 import NewPlaylist from './newPlaylist'
 import EditPreset from './editPreset'
@@ -23,6 +23,21 @@ class Preset extends React.Component {
     }
 
     render = () => {
+      const ErrorAlert = () => {
+        if(!this.props.listening) {
+          return (
+            <Alert variant="danger">
+              <Alert.Heading>Cannot find Spotify Session</Alert.Heading>
+                <div>
+                  Start listening to something on Spotify to resolve this issue.
+                </div>
+            </Alert>
+          )
+        } else {
+          return null
+        }
+      }
+
       function DeletePreset(props) {
         const [show, setShow] = useState(false);
       
@@ -51,6 +66,71 @@ class Preset extends React.Component {
                 </Button>
                 <Button variant="dark" onClick={handleDelete}>
                   Delete Station
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </>
+        );
+      }
+
+      const StartShuffleModal = (props) => {
+
+        const [show, setShow] = useState(false);
+        const [numQueue, setQueue] = useState(5);
+        const [interval, setInterval] = useState(3);
+
+        const handleClose = () => {
+          setShow(!show);
+        }
+
+        const handleSubmit = () => {
+          setShow(false);
+          props.changeInModal();
+          props.startShuffling(this.props.data.presetId, this.props.data.presetName, numQueue, interval);
+        }
+
+        const handleShow = () => {
+          setShow(!show)
+        } 
+
+        const handleQueueChange = (event) => {
+          setQueue(event.target.value)
+        }
+
+        const handleIntervalChange = (event) => {
+          setInterval(event.target.value)
+        }        
+
+        return (
+          <>
+            <Button id = "button" variant= "dark" size= "sm" onClick={handleShow} >Start Shuffling!</Button>{' '}
+      
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Start Station {this.props.data.presetName}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <ErrorAlert></ErrorAlert>
+                <Form.Group controlId="startcontrols">
+                  <Form.Label><strong>Queue Songs on Startup</strong></Form.Label>
+                  <Form.Control type="number" size="sm" min="0" max ="10" placeholder="5" defaultValue="5" onChange={handleQueueChange}/>
+                  <Form.Text>
+                    The more songs you queue, the more you can skip without running out of songs in queue. If you skip songs using the in-site skip button, a song will be queued automatically so the number you intially queue doesn't matter as much.
+                  </Form.Text>
+                  <br></br>
+                  <Form.Label><strong>Queue Interval</strong></Form.Label>
+                  <Form.Control type="number" size="sm" min="2" max ="60" placeholder="3" defaultValue="3" onChange={handleIntervalChange}/>
+                  <Form.Text>
+                      SmartShuffle will automatically queue a new song every X minutes. For seamless listening, select a value close to the average song length of songs in the station.
+                  </Form.Text>
+                </Form.Group>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button variant="dark" onClick={handleSubmit} disabled = {!this.props.listening}>
+                  Start Shuffling!
                 </Button>
               </Modal.Footer>
             </Modal>
@@ -92,7 +172,10 @@ class Preset extends React.Component {
         return (
           <div id = "preset">
             <strong id = "pname"> {this.props.data.presetName} </strong>
-            <Button id = "button" variant= "dark" size= "sm" onClick={() => this.clickShuffle()} >Start Shuffling!</Button>{' '}
+            <StartShuffleModal 
+              startShuffling = {this.props.startShuffling}
+              changeInModal = {this.props.changeInModal} >
+            </StartShuffleModal>
             <div id = "rlimit"> Repeat Limit: {this.props.data.repeatLimit} </div>
             <div id = "playlists">
               {playlists}

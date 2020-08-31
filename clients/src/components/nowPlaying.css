@@ -49,3 +49,9 @@
     height: 20px;
     width: 20px;
 }
+
+#qs {
+    width: 48px;
+    float: right;
+    margin-right: 90px;
+}

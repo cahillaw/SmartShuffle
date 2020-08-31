@@ -15,9 +15,15 @@ class Home extends React.Component {
         access_token: '',
         curPresetID: 0,
         curPresetName: "",
-        listening: false
+        listening: false,
+        inModal: false
       }
     }
+
+  //  shouldComponentUpdate(prevState) {
+   //   console.log(prevState)
+    //  return true;
+   // }
 
     componentDidMount () {
       if(this.props.location.state == null) {
@@ -65,6 +71,8 @@ class Home extends React.Component {
             skipSong = {this.skipSong}
             startShuffling = {this.startShuffling}
             queueSong = {this.queueSong}
+            changeInModal = {this.changeInModal}
+            listening = {this.state.listening}
           />
         </div>
         );
@@ -91,6 +99,8 @@ class Home extends React.Component {
                     stopListening = {this.stopListening}
                     changeListening = {this.changeListening}
                     listening = {this.state.listening}
+                    queueSong = {this.queueSong}
+                    inModal = {this.state.inModal}
                   ></NowPlaying>
                 </Col>
               </Row>
@@ -122,6 +132,12 @@ class Home extends React.Component {
     //function incase more gets added here since setState callback can only take 1
     onATCallback() {
       this.getUserPageInfo()
+    }
+
+    changeInModal = () => {
+      this.setState({
+        inModal: !this.state.inModal
+      })
     }
 
     addNewPreset = (ps) => {
@@ -260,13 +276,13 @@ class Home extends React.Component {
       }, 0)
     }
 
-    startShuffling = (psid, psname) => {
+    startShuffling = (psid, psname, numSongs, interval) => {
       this.setState({
         listening: true,
         curPresetID: psid,
         curPresetName: psname
       })
-      for(var i = 0; i<2; i++) {
+      for(var i = 0; i<numSongs; i++) {
         this.queueSong(psid)
       }
       var queueEveryThree = setTimeout(() => {
@@ -281,7 +297,7 @@ class Home extends React.Component {
               listening: false
             })
           }
-        }, 180000)
+        }, interval*60000)
 
       },0)
     }
