@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './preset.css'
-import { Button, Modal, Form, Alert } from 'react-bootstrap'
+import { Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap'
 import Playlist from './playlist'
 import NewPlaylist from './newPlaylist'
 import EditPreset from './editPreset'
@@ -73,6 +73,67 @@ class Preset extends React.Component {
         );
       }
 
+      const EditWeightsModal = (props) => {
+        var pls = props.data.playlists
+        const [show, setShow] = useState(false);
+        const [weights, setWeight] = useState(pls);
+
+        const playlists = pls.map((pl, i) => 
+        <div key={pl.playlistID}> 
+          <Row id = "ewrow">
+            <Col>
+            <strong>{pl.playlistName}</strong>
+              <Form.Control key = {i} id = "wbox" type="number" size="sm" defaultValue={pl.weight} 
+              onChange={e => {
+                weights[i].weight = parseInt(e.target.value, 10)
+                setWeight(...[weights])
+                console.log(weights)
+              }}/>
+            </Col>
+          </Row>
+        </div>
+        );
+
+        const handleShow = () => {
+          setShow(!show)
+        } 
+
+        const handleClose = () => {
+          setShow(!show);
+        }
+
+        const handleSubmit = () => {
+          var ps = this.props.data
+          ps.playlists = weights
+          console.log(ps)
+          props.editWeights(ps)
+          setShow(false);
+        }
+
+        return (
+          <>
+            <Button id = "weights" variant= "dark" size= "sm" onClick={handleShow}>Edit Playlist Weights</Button>{' '}
+      
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Modify Playlist Weights</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {playlists}
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button variant="dark" onClick={handleSubmit}>
+                  Update
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </>
+        );
+      }
+
       const StartShuffleModal = (props) => {
 
         const [show, setShow] = useState(false);
@@ -85,7 +146,7 @@ class Preset extends React.Component {
 
         const handleSubmit = () => {
           setShow(false);
-          props.changeInModal();
+     //     props.changeInModal();
           props.startShuffling(this.props.data.presetId, this.props.data.presetName, numQueue, interval);
         }
 
@@ -107,7 +168,7 @@ class Preset extends React.Component {
       
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>Start Station {this.props.data.presetName}</Modal.Title>
+                <Modal.Title>Start {this.props.data.presetName}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <ErrorAlert></ErrorAlert>
@@ -174,7 +235,7 @@ class Preset extends React.Component {
             <strong id = "pname"> {this.props.data.presetName} </strong>
             <StartShuffleModal 
               startShuffling = {this.props.startShuffling}
-              changeInModal = {this.props.changeInModal} >
+          >
             </StartShuffleModal>
             <div id = "rlimit"> Repeat Limit: {this.props.data.repeatLimit} </div>
             <div id = "playlists">
@@ -189,6 +250,10 @@ class Preset extends React.Component {
                />
             </div>
             <div>
+              <EditWeightsModal
+                data = {this.props.data}
+                editWeights = {this.editWeights}
+              />
               <DeletePreset clickDelete={this.clickDelete}></DeletePreset>
               <Button id = "editbutton" variant= "dark" size= "sm" onClick={() => this.clickEdit()}>Edit Station</Button>{' '}
             </div>
@@ -225,6 +290,29 @@ class Preset extends React.Component {
           if (response.status === 200) {
             console.log("deleted")
             this.props.deletePreset(this.props.data.presetId)
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.deletePreset)
+          }
+        })
+      }, 0)
+    }
+
+    editWeights = (pldata) => {
+      setTimeout(() => {
+        var url = "https://shuffle.cahillaw.me/v1/updateplaylists/" + this.props.data.presetId
+        fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': this.props.access_token 
+          }
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            response.json().then((data) => {
+              this.props.editPlaylists(data)
+            })
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.deletePreset)

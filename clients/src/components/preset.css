@@ -44,23 +44,18 @@
     margin-top: 20px;
 }
 
-.modalsubmit .mstext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    
-    /* Position the tooltip */
+#weights {
     position: absolute;
-    z-index: 1;
-    top: 100%;
-    left: 50%;
-    margin-left: -60px;
-  }
+    bottom: 0;
+    margin-bottom: 5px;
+    margin-left: 10px;
+}
 
-  .modalsubmit:hover .mstext {
-    visibility: visible;
-  }
+#wbox {
+    width: 55px;
+    float: right;
+}
+
+#ewrow {
+    margin-top: 10px;
+}

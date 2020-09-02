@@ -15,15 +15,9 @@ class Home extends React.Component {
         access_token: '',
         curPresetID: 0,
         curPresetName: "",
-        listening: false,
-        inModal: false
+        listening: false
       }
     }
-
-  //  shouldComponentUpdate(prevState) {
-   //   console.log(prevState)
-    //  return true;
-   // }
 
     componentDidMount () {
       if(this.props.location.state == null) {
@@ -41,6 +35,22 @@ class Home extends React.Component {
       }
     }
 
+    /*
+    shouldComponentUpdate(nextProps, nextState) {
+      console.log(nextProps, nextState)
+      
+      if (!this.state.presetsdata === "") {
+        if(nextState.listening === this.state.listening) {
+          return false;
+        } else {
+          console.log("not the same?")
+        }
+      }
+      
+      return true
+    }
+    */
+   
     render = () => {
       if (!this.state.loggedIn) {
         return (
@@ -71,8 +81,8 @@ class Home extends React.Component {
             skipSong = {this.skipSong}
             startShuffling = {this.startShuffling}
             queueSong = {this.queueSong}
-            changeInModal = {this.changeInModal}
             listening = {this.state.listening}
+            editPlaylists = {this.editPlaylists}
           />
         </div>
         );
@@ -100,7 +110,6 @@ class Home extends React.Component {
                     changeListening = {this.changeListening}
                     listening = {this.state.listening}
                     queueSong = {this.queueSong}
-                    inModal = {this.state.inModal}
                   ></NowPlaying>
                 </Col>
               </Row>
@@ -132,12 +141,6 @@ class Home extends React.Component {
     //function incase more gets added here since setState callback can only take 1
     onATCallback() {
       this.getUserPageInfo()
-    }
-
-    changeInModal = () => {
-      this.setState({
-        inModal: !this.state.inModal
-      })
     }
 
     addNewPreset = (ps) => {
@@ -238,6 +241,21 @@ class Home extends React.Component {
       console.log(presets)
     }
 
+    editPlaylists = (ps) => {
+      var presets = this.state.presetsdata
+      for(var i = 0; i<presets.length; i++) {
+        if (presets[i].presetId === ps.presetId) {
+          presets[i] = ps
+          break
+        }
+      }
+
+      this.setState({
+        presetsdata: presets
+      })
+      console.log(presets)
+    }
+
     stopListening = () => {
       this.setState({
         listening: false,
@@ -247,9 +265,11 @@ class Home extends React.Component {
     }
 
     changeListening = (l) => {
-      this.setState({
-        listening: l
-      })
+      if (l !== this.state.listening) {
+        this.setState({
+          listening: l
+        })
+      }
     }
 
     queueSong = (psid) => {
@@ -271,6 +291,8 @@ class Home extends React.Component {
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
             this.getAccessToken(this.queueSong)
+          } else if (response.status === 404) {
+            alert("Cannot find Spotify Session")
           }
         })
       }, 0)
@@ -283,19 +305,15 @@ class Home extends React.Component {
         curPresetName: psname
       })
       for(var i = 0; i<numSongs; i++) {
-        this.queueSong(psid)
+        setTimeout(() => {
+          this.queueSong(psid)
+        }, i*1000)
       }
       var queueEveryThree = setTimeout(() => {
     //    this.skipSong()
-
         setInterval(() => {
-          if(this.state.listening) {
+          if(this.state.curPresetName !== "" && this.state.listening) {
             this.queueSong(psid)
-          } else {
-            clearInterval(queueEveryThree)
-            this.setState({
-              listening: false
-            })
           }
         }, interval*60000)
 
@@ -340,6 +358,8 @@ class Home extends React.Component {
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.pause)
+          } else if (response.status === 403) {
+            alert("Playback is already paused")
           }
         })
       }, 0)
@@ -360,6 +380,8 @@ class Home extends React.Component {
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.play)
+          } else if (response.status === 403) {
+            alert("Playback is already playing")
           }
         })
       }, 0)

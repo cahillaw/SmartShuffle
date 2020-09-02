@@ -16,7 +16,8 @@ class NowPlaying extends React.Component {
             length: 0,
             current: 0,
             curMin: "0.00",
-            curLen: "3.00"
+            curLen: "3.00",
+            paused: !this.props.listening
         }
       }
 
@@ -25,7 +26,7 @@ class NowPlaying extends React.Component {
         this.getCurrentPlaybackInfo()
         setInterval(() => {
           num = num + 1
-          if(this.props.listening) {
+          if(this.props.listening && !this.state.paused) {
             var numAdd = 1000
             if (this.state.current + 1000 > this.state.length) {
               var numAdd = 0
@@ -36,9 +37,7 @@ class NowPlaying extends React.Component {
             })
           }
           if (num%30 === 0) {
-            if(!this.props.inModal) {
               this.getCurrentPlaybackInfo()
-            }
           }
         }, 1000)
       }
@@ -58,12 +57,16 @@ class NowPlaying extends React.Component {
 
           const handlePause = () => {
             props.pause();
-            props.changeListening(false)
+            this.setState({
+              paused: true
+            })
           }
 
           const handlePlay = () => {
             props.play();
-            props.changeListening(true)
+            this.setState({
+              paused: false
+            })
           }
 
           const handleStopListening = () => {
@@ -89,7 +92,7 @@ class NowPlaying extends React.Component {
                 <strong>No Current Station</strong>
                   <br></br>
                   <br></br> {
-                    this.props.listening ? 
+                    !this.state.paused ? 
                     <div>
                       <Button id = "pause" variant= "dark" size= "sm" onClick={handlePause}>Pause</Button>{' '}
                       <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
@@ -107,9 +110,17 @@ class NowPlaying extends React.Component {
                 <strong>Listening to {this.props.curPresetName}</strong>
                   <br></br>
                   <br></br>
-                  <Button id = "pause" variant= "dark" size= "sm" onClick={handlePause}>Pause</Button>{' '}
-                  <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
-                  <br></br>
+                  {
+                    !this.state.paused ? 
+                    <div>
+                      <Button id = "pause" variant= "dark" size= "sm" onClick={handlePause}>Pause</Button>{' '}
+                      <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
+                    </div>
+                    : <div>
+                      <Button id = "play" variant= "dark" size= "sm" onClick={handlePlay}>Play</Button>{' '}
+                      <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
+                    </div>
+                  }
                   <br></br>
                       <Button id = "queuesongs" variant= "dark" size= "sm" onClick={handleQueueSongs}>Queue Songs</Button>{' '}
                       <Form.Control id = "qs" type="number" size= "sm" defaultValue={numQueue} min = "1" max = "5" onChange={handleQueueChange}/>
@@ -122,6 +133,23 @@ class NowPlaying extends React.Component {
         }
 
         if(!this.props.listening) {
+          const StationName = () => {
+            if(this.props.curPresetName === "") {
+              return (
+                <strong>No Current Station</strong>
+              )
+            } else {
+              return (
+                <div>
+                  <strong>Listening to {this.props.curPresetName}</strong>
+                  <br></br>
+                  <br></br>
+                  <Button id = "stoplistening" variant= "dark" size= "sm" onClick={this.props.stopListening}>Stop Listening</Button>{' '}
+                </div>  
+              )               
+            }
+          }
+
           return (
             <div id = "nowplaying">
               <Container>
@@ -134,7 +162,7 @@ class NowPlaying extends React.Component {
                   <div>To see what you are listening to here and to play a station, start listening to something on Spotify!</div>
                 </Col>
                 <Col>
-                  <strong>No Current Station</strong>
+                  <StationName></StationName>
                 </Col>
               </Row>
             </Container>
@@ -209,7 +237,8 @@ class NowPlaying extends React.Component {
                     current: data.progress_ms,
                     length: data.item.duration_ms,
                     curMin: this.millisToMinutesAndSeconds(data.progress_ms),
-                    curLen: this.millisToMinutesAndSeconds(data.item.duration_ms)
+                    curLen: this.millisToMinutesAndSeconds(data.item.duration_ms),
+                    paused: !data.is_playing
                   })
                 })
               } else if (response.status === 401) {
