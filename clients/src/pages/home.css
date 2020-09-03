@@ -1,3 +1,7 @@
+body {
+ background: white;   
+}
+
 #container {
     width: 1200px;
     display:grid;

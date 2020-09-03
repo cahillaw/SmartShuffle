@@ -22,7 +22,7 @@ class Create extends React.Component {
             </Alert>
           )
         } else {
-          return <br></br>
+          return null
         }
       }
 
@@ -45,7 +45,6 @@ class Create extends React.Component {
                       Repeat Limit is the number of tracks in between two plays of the same song. For example, if the Repeat Limit was 20 and you just heard a song, you would not hear it for another 20 songs. Choose 0 for no repeat limit.
                       </Form.Text>
                     </Form.Group>
-                    <Button id = "button" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Create Station</Button>{' '}
                   </Form>
                   <ErrorAlert></ErrorAlert>
                   <strong>You will add playlists in the next step!</strong>
@@ -54,8 +53,17 @@ class Create extends React.Component {
                   <strong>Name: {this.state.name}</strong>
                   <br></br>
                   <strong>Repeat Limit: {this.state.repeatLimit}</strong>
+
                 </Col>
-              </Row>
+                </Row>
+                <Row className="align-items-center">
+                  <Col>
+                    <Button id = "cancel" variant= "dark" size= "sm" onClick={() => this.clickHandler()}>Cancel</Button>{' '}
+                  </Col>
+                  <Col>
+                    <Button id = "cbutton" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Create Station</Button>{' '}
+                  </Col>
+                </Row>
             </Container>
           </div>
         )
@@ -77,7 +85,7 @@ class Create extends React.Component {
     
     clickHandler() {
       this.setState({
-        clicked: true
+        clicked: !this.state.clicked
       })
     }
 

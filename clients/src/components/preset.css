@@ -3,43 +3,47 @@
     height: 440px;
     margin-top: 15px;
     margin-bottom: 20px;
-    outline-style: solid;
-    background-color: chocolate;
+    border: 2px solid black;
+    background-color: rgb(140, 177, 192);
     position: relative;
+    border-radius: 5px;
 }
 
 #pname {
-    margin-left: 5px;
+    margin-left: 8px;
+    margin-top: 3px;
+    font-weight: bold;
 }
 
 #rlimit {
-    margin-top: 6px;
+    margin-top: -20px;
     margin-right: 10px;
     float: right;
 }
 
 #button {
     float: right;
-    margin-top: 3px;
     margin-right: 5px;
+    margin-top: -22px;
 }
 
 #deletebutton {
     position: absolute;
     bottom: 0;
     margin-bottom: 5px;
-    margin-left: 442px;
+    margin-left: 438px;
 }
 
 #editbutton {
     position: absolute;
     bottom: 0;
     margin-bottom: 5px;
-    margin-left: 348px;
+    margin-left: 343px;
 }
 
 #playlists {
     overflow-y: scroll;
+    overflow: auto;
     height: 350px;
     margin-top: 20px;
 }

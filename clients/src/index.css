@@ -11,3 +11,36 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#ltitle {
+ text-align: center;
+ color: white;
+}
+
+#catch {
+  text-align: center;
+  color: white;
+}
+
+#row1 {
+  height: 937px;
+  position: absolute;
+  width: 100%;
+  background-color: black;
+}
+
+#centered {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+#base {
+  background-color: black;
+}
+
+#premreq {
+  text-align: center;
+  color: white;
+  margin-top: 5px;
+}

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Jumbotron, Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col, Navbar } from 'react-bootstrap'
+import Next from '../images/nextsong.png'
 import './home.css'
 import Preset from '../components/preset'
 import Create from '../components/create'
@@ -88,12 +89,18 @@ class Home extends React.Component {
         );
         return (
           <div>
-            <Jumbotron id = "jumbo">
-              <h1 id="title">Welcome to SmartShuffle.io</h1>
-              <br></br>
-              <div>Create your own custom Radio Stations and start listening! </div>
-              <div>Changing the playlist is a relic of the past!</div>
-            </Jumbotron>
+             <Navbar bg="dark" variant="dark">
+              <Navbar.Brand>
+                <img
+                  alt=""
+                  src={Next}
+                  width="30"
+                  height="30"
+                  className="d-inline-block align-top"
+                />{' '}
+                SmartShuffle
+              </Navbar.Brand>
+            </Navbar>
             <Container>
               <Row className ="justify-content-md-center">
                 <Col md = "auto">
@@ -309,7 +316,7 @@ class Home extends React.Component {
           this.queueSong(psid)
         }, i*1000)
       }
-      var queueEveryThree = setTimeout(() => {
+      setTimeout(() => {
     //    this.skipSong()
         setInterval(() => {
           if(this.state.curPresetName !== "" && this.state.listening) {

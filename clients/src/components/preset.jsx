@@ -232,10 +232,9 @@ class Preset extends React.Component {
 
         return (
           <div id = "preset">
-            <strong id = "pname"> {this.props.data.presetName} </strong>
+            <div id = "pname"> {this.props.data.presetName} </div>
             <StartShuffleModal 
-              startShuffling = {this.props.startShuffling}
-          >
+              startShuffling = {this.props.startShuffling}>
             </StartShuffleModal>
             <div id = "rlimit"> Repeat Limit: {this.props.data.repeatLimit} </div>
             <div id = "playlists">

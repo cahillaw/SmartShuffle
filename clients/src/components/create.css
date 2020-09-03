@@ -3,9 +3,10 @@
     height: 440px;
     margin-top: 15px;
     margin-bottom: 20px;
-    outline-style: solid;
-    background-color: chocolate;
+    border: 2px solid black;
+    background-color: rgb(140, 177, 192);
     position: relative;
+    border-radius: 5px;
     display: grid;
     justify-items: center;
     align-items: center;
@@ -20,7 +21,17 @@
     height: 440px;
     margin-top: 15px;
     margin-bottom: 20px;
-    outline-style: solid;
-    background-color: chocolate;
+    border: 2px solid black;
+    background-color: rgb(140, 177, 192);
+    border-radius: 5px;
     position: relative;
+}
+
+#cancel {
+    margin-left: 335px;
+    margin-top: -16px;
+}
+
+#cbutton {
+    margin-left: 130px; 
 }
