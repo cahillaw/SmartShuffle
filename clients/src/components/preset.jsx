@@ -119,13 +119,13 @@ class Preset extends React.Component {
                 <Modal.Title>Modify Playlist Weights</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                {playlists}
+                {props.data.playlists.length < 1 ? <div>This station has no playlists</div> : playlists}
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button variant="dark" onClick={handleSubmit}>
+                <Button variant="dark" onClick={handleSubmit} disabled = {props.data.playlists.length < 1}>
                   Update
                 </Button>
               </Modal.Footer>
@@ -139,15 +139,27 @@ class Preset extends React.Component {
         const [show, setShow] = useState(false);
         const [numQueue, setQueue] = useState(5);
         const [interval, setInterval] = useState(3);
+        const [errorMessage, setEM] = useState("")
+        const [showError, showErrorMessage] = useState(false)
 
         const handleClose = () => {
           setShow(!show);
         }
 
         const handleSubmit = () => {
-          setShow(false);
-     //     props.changeInModal();
-          props.startShuffling(this.props.data.presetId, this.props.data.presetName, numQueue, interval);
+          if (numQueue > 10 || numQueue < 0) {
+            setEM("Number of songs to queue must be an integer between 0 and 10")
+            showErrorMessage(true)
+          } else if (parseInt(numQueue) !== parseFloat(numQueue)){
+            setEM("Number of songs to queue must be an integer")
+            showErrorMessage(true)
+          } else if(interval < 2) {
+            setEM("Queue interval must be no less than 2 minutes")
+            showErrorMessage(true)
+          } else {
+            setShow(false);
+            props.startShuffling(this.props.data.presetId, this.props.data.presetName, parseInt(numQueue), interval);
+          }          
         }
 
         const handleShow = () => {
@@ -159,12 +171,16 @@ class Preset extends React.Component {
         }
 
         const handleIntervalChange = (event) => {
-          setInterval(event.target.value)
+          setInterval(parseFloat(event.target.value))
         }        
+
+        const removeAlert = () => {
+          showErrorMessage(false)
+        }
 
         return (
           <>
-            <Button id = "button" variant= "dark" size= "sm" onClick={handleShow} >Start Shuffling!</Button>{' '}
+            <Button id = "button" variant= "dark" size= "sm" onClick={handleShow} disabled = {this.props.curStation}>Start Shuffling!</Button>{' '}
       
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
@@ -185,12 +201,18 @@ class Preset extends React.Component {
                       SmartShuffle will automatically queue a new song every X minutes. For seamless listening, select a value close to the average song length of songs in the station.
                   </Form.Text>
                 </Form.Group>
+                {showError ? 
+                      <Alert variant="danger" onClose={removeAlert} dismissible>
+                        {errorMessage}
+                      </Alert>
+                      : null
+                }
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button variant="dark" onClick={handleSubmit} disabled = {!this.props.listening}>
+                <Button variant="dark" onClick={handleSubmit} disabled = {!this.props.listening || showError}>
                   Start Shuffling!
                 </Button>
               </Modal.Footer>

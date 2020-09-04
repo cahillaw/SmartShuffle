@@ -16,8 +16,10 @@ class Home extends React.Component {
         access_token: '',
         curPresetID: 0,
         curPresetName: "",
-        listening: false
+        listening: false,
+        curStation: false,
       }
+      this.interval = ""
     }
 
     componentDidMount () {
@@ -84,6 +86,7 @@ class Home extends React.Component {
             queueSong = {this.queueSong}
             listening = {this.state.listening}
             editPlaylists = {this.editPlaylists}
+            curStation = {this.state.curStation}
           />
         </div>
         );
@@ -265,10 +268,11 @@ class Home extends React.Component {
 
     stopListening = () => {
       this.setState({
-        listening: false,
         curPresetID: 0,
-        curPresetName: ""
+        curPresetName: "",
+        curStation: false
       })
+      clearInterval(this.interval)
     }
 
     changeListening = (l) => {
@@ -309,7 +313,8 @@ class Home extends React.Component {
       this.setState({
         listening: true,
         curPresetID: psid,
-        curPresetName: psname
+        curPresetName: psname,
+        curStation: true
       })
       for(var i = 0; i<numSongs; i++) {
         setTimeout(() => {
@@ -318,7 +323,7 @@ class Home extends React.Component {
       }
       setTimeout(() => {
     //    this.skipSong()
-        setInterval(() => {
+        this.interval = setInterval(() => {
           if(this.state.curPresetName !== "" && this.state.listening) {
             this.queueSong(psid)
           }
