@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './nowPlaying.css'
 import Next from '../images/nextsong.png'
 import { Spinner, Col, Row, Container, ProgressBar, Button, Form } from 'react-bootstrap'
+import StationListening from '../components/stationListening'
 
 
 class NowPlaying extends React.Component {
@@ -16,8 +17,7 @@ class NowPlaying extends React.Component {
             length: 0,
             current: 0,
             curMin: "0.00",
-            curLen: "3.00",
-            paused: !this.props.listening
+            curLen: "3.00"
         }
       }
 
@@ -43,95 +43,6 @@ class NowPlaying extends React.Component {
       }
       
       render = () => {
-
-        const StationListening = (props) => {
-
-          const [numQueue, setQueue] = useState(1);
-
-          const handleSkip = () => {
-            props.skipSong();
-            setTimeout(() => {
-              this.getCurrentPlaybackInfo()
-            }, 800)
-          }
-
-          const handlePause = () => {
-            props.pause();
-            this.setState({
-              paused: true
-            })
-          }
-
-          const handlePlay = () => {
-            props.play();
-            this.setState({
-              paused: false
-            })
-          }
-
-          const handleStopListening = () => {
-            props.stopListening();
-          }
-
-          const handleQueueSongs = () => {
-            for(var i = 0; i<numQueue; i++) {
-              setTimeout(() => {
-                props.queueSong(props.curPresetID)
-              }, i*1000)
-            }
-          }
-      
-          const handleQueueChange = (event) => {
-            console.log(event.target.value)
-            setQueue(event.target.value)
-          }
-
-          if(this.props.curPresetName === "") {
-            return (
-              <div>
-                <strong>No Current Station</strong>
-                  <br></br>
-                  <br></br> {
-                    !this.state.paused ? 
-                    <div>
-                      <Button id = "pause" variant= "dark" size= "sm" onClick={handlePause}>Pause</Button>{' '}
-                      <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
-                    </div>
-                    : <div>
-                      <Button id = "play" variant= "dark" size= "sm" onClick={handlePlay}>Play</Button>{' '}
-                      <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
-                    </div>
-                  }
-              </div>
-            )
-          } else {
-            return (
-              <div>
-                <strong>Listening to {this.props.curPresetName}</strong>
-                  <br></br>
-                  <br></br>
-                  {
-                    !this.state.paused ? 
-                    <div>
-                      <Button id = "pause" variant= "dark" size= "sm" onClick={handlePause}>Pause</Button>{' '}
-                      <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
-                    </div>
-                    : <div>
-                      <Button id = "play" variant= "dark" size= "sm" onClick={handlePlay}>Play</Button>{' '}
-                      <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
-                    </div>
-                  }
-                  <br></br>
-                      <Button id = "queuesongs" variant= "dark" size= "sm" onClick={handleQueueSongs}>Queue Songs</Button>{' '}
-                      <Form.Control id = "qs" type="number" size= "sm" defaultValue={numQueue} min = "1" max = "5" onChange={handleQueueChange}/>
-                  <br></br>
-                  <br></br>
-                  <Button id = "stoplistening" variant= "dark" size= "sm" onClick={handleStopListening}>Stop Listening</Button>{' '}
-              </div>
-            )
-          }
-        }
-
         if(!this.props.listening) {
           const StationName = () => {
             if(this.props.curPresetName === "") {
@@ -192,10 +103,13 @@ class NowPlaying extends React.Component {
                     skipSong={this.props.skipSong}
                     stopListening={this.props.stopListening}
                     changeListening={this.props.changeListening}
-                    listening={this.props.listening}
                     queueSong = {this.props.queueSong}
                     curPresetID = {this.props.curPresetID}
+                    curPresetName = {this.props.curPresetName}
                     handleTQChange = {this.handleTQChange}
+                    paused = {this.state.paused}
+                    getCurrentPlaybackInfo = {this.getCurrentPlaybackInfo}
+                    listening = {this.props.listening}
                     ></StationListening>
                 </Col>
               </Row>

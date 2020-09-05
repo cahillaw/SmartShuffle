@@ -63,3 +63,35 @@
 #ewrow {
     margin-top: 10px;
 }
+
+#eplbody {
+    max-height: 340px;
+    overflow-y: scroll;
+    overflow: auto;
+}
+
+#wdesc {
+    font-size: small;
+}
+
+#totalnum {
+    font-weight: bold;
+    margin-right: 52px;
+    float: right;
+    margin-top: -6px;
+    margin-bottom: 10px;
+}
+
+#total {
+    font-weight: bold;
+    float: left;
+    margin-left: 15px;
+    margin-top: -6px;
+    margin-bottom: 10px;
+}
+
+#ewalert {
+    margin-top: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
+}

@@ -75,8 +75,16 @@ class Preset extends React.Component {
 
       const EditWeightsModal = (props) => {
         var pls = props.data.playlists
+        var totalWeight = 0
+        
+        for(var i = 0; i< pls.length; i++) {
+          totalWeight = totalWeight + pls[i].weight
+        }
+        
         const [show, setShow] = useState(false);
         const [weights, setWeight] = useState(pls);
+        const [total, setTotal] = useState(totalWeight);
+        const [showError, setError] = useState(false);
 
         const playlists = pls.map((pl, i) => 
         <div key={pl.playlistID}> 
@@ -87,6 +95,12 @@ class Preset extends React.Component {
               onChange={e => {
                 weights[i].weight = parseInt(e.target.value, 10)
                 setWeight(...[weights])
+                var tWC = 0
+                for(var j = 0; j< weights.length; j++) {
+                  tWC = tWC + weights[j].weight
+                }
+                setTotal(tWC)
+                
                 console.log(weights)
               }}/>
             </Col>
@@ -99,15 +113,30 @@ class Preset extends React.Component {
         } 
 
         const handleClose = () => {
+          setWeight(props.data.playlists)
           setShow(!show);
         }
 
+        const removeAlert = () => {
+          setError(false)
+        }
+
         const handleSubmit = () => {
-          var ps = this.props.data
-          ps.playlists = weights
-          console.log(ps)
-          props.editWeights(ps)
-          setShow(false);
+          var valid = false
+          for(var i = 0; i< pls.length; i++) {
+            totalWeight = totalWeight + pls[i].weight
+          }
+
+
+          if(false) {
+            setError(true)
+          } else {
+            var ps = this.props.data
+            ps.playlists = weights
+            console.log(ps)
+            props.editWeights(ps)
+            setShow(false);
+          }
         }
 
         return (
@@ -118,14 +147,29 @@ class Preset extends React.Component {
               <Modal.Header closeButton>
                 <Modal.Title>Modify Playlist Weights</Modal.Title>
               </Modal.Header>
-              <Modal.Body>
+              <Modal.Body id = "eplbody">
+                <div id = "wdesc">
+                  A playlist weight is the chance a song from that playlist will be queued when a song is queued. If the total weights add to 100, each number will be a percent, however each number is weighted against each other, so it don't have to add up to 100. For example, if you wanted more precision, you could use 1000 instead. It is recomended that your weights add to 100.
+                </div>
+                <hr></hr>
                 {props.data.playlists.length < 1 ? <div>This station has no playlists</div> : playlists}
               </Modal.Body>
+              <div>
+                <hr></hr>
+                <div id = "total">Total</div>
+                <div id = "totalnum">{total}</div>
+                {showError ? 
+                  <Alert id = "ewalert" variant="danger" onClose={removeAlert} dismissible>
+                    Each weight must be an integer greater than 0
+                  </Alert>
+                  : null
+                }
+              </div>
               <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button id = "margin" variant="secondary" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button variant="dark" onClick={handleSubmit} disabled = {props.data.playlists.length < 1}>
+                <Button id = "margin" variant="dark" onClick={handleSubmit} disabled = {props.data.playlists.length < 1}>
                   Update
                 </Button>
               </Modal.Footer>
@@ -144,6 +188,7 @@ class Preset extends React.Component {
 
         const handleClose = () => {
           setShow(!show);
+          showErrorMessage(false)
         }
 
         const handleSubmit = () => {
@@ -327,7 +372,10 @@ class Preset extends React.Component {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': this.props.access_token 
-          }
+          },
+          body: JSON.stringify({
+            preset: pldata
+          })
         })
         .then((response) => {
           if (response.status === 200) {
