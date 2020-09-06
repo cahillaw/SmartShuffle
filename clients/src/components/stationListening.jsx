@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './stationListening.css'
-import Next from '../images/nextsong.png'
-import { Button, Form, Alert } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
+import Pause from '../images/pausesmall.png'
+import Play from '../images/playbig.png'
+import Next from '../images/nextbig.png'
 
 class StationListening extends React.Component {
     constructor(props) {
@@ -39,10 +41,10 @@ class StationListening extends React.Component {
         }
 
         const handleQueueSongs = () => {
-          if (this.state.numQueue > 5 || this.state.numQueue < 0) {
-            alert("Number of songs to queue must be an integer between 0 and 10")
+          if (this.state.numQueue > 5 || this.state.numQueue < 1) {
+            alert("Number of songs to queue must be an integer between 1 and 10")
           } else if (parseInt(this.state.numQueue) !== parseFloat(this.state.numQueue)) {
-            alert("Number of songs to queue must be an integer between 0 and 10")
+            alert("Number of songs to queue must be an integer between 1 and 10")
           } else {
             console.log("ok")
             for(var i = 0; i<this.state.numQueue; i++) {
@@ -68,12 +70,12 @@ class StationListening extends React.Component {
                 <br></br> {
                   !this.state.paused ? 
                   <div id = "controls">
-                    <Button id = "pause" variant= "dark" size= "sm" onClick={handlePause}>Pause</Button>{' '}
-                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
+                    <Button id = "pauseid" variant= "dark" size= "sm" onClick={handlePause} src={Pause}><img id ="pause" src={Pause} alt ="Pause"/></Button>{' '}
+                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="next song" /></Button>{' '}
                   </div>
-                  : <div>
-                    <Button id = "play" variant= "dark" size= "sm" onClick={handlePlay}>Play</Button>{' '}
-                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
+                  : <div id = "controls">
+                    <Button id = "playid" variant= "dark" size= "sm" onClick={handlePlay}><img id ="play" src={Play} alt ="play"/></Button>{' '}
+                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="next song" /></Button>{' '}
                   </div>
                 }
             </div>
@@ -87,12 +89,12 @@ class StationListening extends React.Component {
                 {
                   !this.state.paused ? 
                   <div id = "controls">
-                    <Button id = "pause" variant= "dark" size= "sm" onClick={handlePause}>Pause</Button>{' '}
-                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
+                    <Button id = "pauseid" variant= "dark" size= "sm" onClick={handlePause} src={Pause}><img id ="pause" src={Pause} alt ="Pause" /></Button>{' '}
+                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="next song" /></Button>{' '}
                   </div>
-                  : <div>
-                    <Button id = "play" variant= "dark" size= "sm" onClick={handlePlay}>Play</Button>{' '}
-                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="Next Song" /></Button>{' '}
+                  : <div id = "controls">
+                    <Button id = "playid" variant= "dark" size= "sm" onClick={handlePlay}><img id ="play" src={Play} alt ="play"/></Button>{' '}
+                    <Button id = "skip" variant= "dark" size= "sm"><img id ="nextsong" src={Next} onClick={handleSkip} alt ="next song" /></Button>{' '}
                   </div>
                 }
                 <br></br>

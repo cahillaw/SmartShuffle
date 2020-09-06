@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Row, Col, Navbar } from 'react-bootstrap'
-import Next from '../images/nextsong.png'
+import Logo from '../images/smartshuflelogo.png'
 import './home.css'
 import Preset from '../components/preset'
 import Create from '../components/create'
@@ -92,16 +92,16 @@ class Home extends React.Component {
         );
         return (
           <div>
-             <Navbar bg="dark" variant="dark">
+             <Navbar className="color-nav" variant="light">
               <Navbar.Brand>
                 <img
                   alt=""
-                  src={Next}
+                  src={Logo}
                   width="30"
                   height="30"
                   className="d-inline-block align-top"
                 />{' '}
-                SmartShuffle
+                <strong>SmartShuffle</strong>
               </Navbar.Brand>
             </Navbar>
             <Container>

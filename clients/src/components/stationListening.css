@@ -1,3 +1,21 @@
 #controls {
     margin-top: -12px;
 }
+
+#nextsong {
+    height: 20px;
+    width: 20px;
+    margin-bottom: 1px;
+}
+
+#pause {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 1px;
+}
+
+#play {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 1px;
+}

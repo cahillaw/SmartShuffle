@@ -19,7 +19,7 @@ class EditPlaylist extends React.Component {
 
     componentDidMount () {
         this.setState({
-            name: this.props.data.presetName,
+            name: this.props.data.playlistName,
             uri: this.props.data.uri,
             order: this.props.data.order,
             numTracks: this.props.data.NumTracks,
