@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Row, Col, Navbar } from 'react-bootstrap'
+import { Container, Row, Col, Navbar, Alert } from 'react-bootstrap'
 import Logo from '../images/smartshuflelogo.png'
 import './home.css'
 import Preset from '../components/preset'
@@ -17,9 +17,10 @@ class Home extends React.Component {
         curPresetID: 0,
         curPresetName: "",
         listening: false,
-        curStation: false,
+        curStation: false
       }
       this.interval = ""
+      this.numRetries = 0
     }
 
     componentDidMount () {
@@ -87,6 +88,7 @@ class Home extends React.Component {
             listening = {this.state.listening}
             editPlaylists = {this.editPlaylists}
             curStation = {this.state.curStation}
+            isPremium = {this.state.isPremium}
           />
         </div>
         );
@@ -105,6 +107,20 @@ class Home extends React.Component {
               </Navbar.Brand>
             </Navbar>
             <Container>
+              <Row className ="justify-content-md-center">
+                <Col md = "auto">
+                {this.state.premError ? null : 
+                  <Alert id="noprem" variant="danger" onClose={() => this.setState({premError: true})} dismissible>
+                    <Alert.Heading>
+                    You do not have Spotify Premium
+                    </Alert.Heading>
+                      <div>
+                        SmartShuffle needs to be able to queue songs to listen to stations, a feature only availble with Spotify Premium. You can test the site by creating stations, however you will not be able able to listen to them. 
+                      </div>
+                  </Alert>
+                  }
+                </Col>
+              </Row>
               <Row className ="justify-content-md-center">
                 <Col md = "auto">
                   <NowPlaying
@@ -151,6 +167,7 @@ class Home extends React.Component {
     //function incase more gets added here since setState callback can only take 1
     onATCallback() {
       this.getUserPageInfo()
+      this.checkIfPremium()
     }
 
     addNewPreset = (ps) => {
@@ -433,6 +450,17 @@ class Home extends React.Component {
           .join('&');
     }
 
+    onSetStateCB(callback) {
+      setTimeout(() => {
+        this.numRetries++
+        if(this.numRetries < 2) {
+          callback()
+        } else {
+          console.log("failed")
+        }
+      }, 2000)
+    }
+
     getAccessToken = (callback) => {
       var client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID
       var client_secret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
@@ -456,13 +484,44 @@ class Home extends React.Component {
             this.setState ({
               access_token: newAccessToken
             },
-            callback()
+            this.onSetStateCB(callback)
             )
           } else {
             console.log("failed to get new token")
           }
         })
       })
+    }
+
+    checkIfPremium = () => {
+      fetch('https://api.spotify.com/v1/me', {
+        method: 'get',
+        headers: {
+          'Authorization': this.state.access_token 
+        }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+            response.json().then((data) => {
+              console.log(data)
+              if (data.product !== "premium") {
+                console.log("not premium")
+                this.setState({
+                  isPremium: false,
+                  premError: false
+                })
+              } else {
+                this.setState({
+                  isPremium: true,
+                  premError: true
+                })
+              }
+            })
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.getAccessToken(this.checkIfPremium)
+          }
+      }) 
     }
 
 }

@@ -16,7 +16,7 @@ var (
 		RedirectURL:  "https://shuffle.cahillaw.me/callback",
 		ClientID:     os.Getenv("SPOTIFY_CLIENT_ID"),
 		ClientSecret: os.Getenv("SPOTIFY_CLIENT_SECRET"),
-		Scopes:       []string{"user-modify-playback-state", "playlist-modify-private", "user-read-currently-playing"},
+		Scopes:       []string{"user-modify-playback-state", "playlist-read-private", "user-read-currently-playing", "user-read-private"},
 		Endpoint:     spotify.Endpoint,
 	}
 )

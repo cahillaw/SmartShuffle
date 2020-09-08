@@ -56,7 +56,7 @@
 }
 
 #wbox {
-    width: 55px;
+    width: 80px;
     float: right;
 }
 
@@ -94,4 +94,8 @@
     margin-top: 50px;
     margin-left: 20px;
     margin-right: 20px;
+}
+
+#noprem {
+    margin-top: 20px;
 }

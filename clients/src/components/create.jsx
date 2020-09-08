@@ -53,14 +53,11 @@ class Create extends React.Component {
                   <strong>Name: {this.state.name}</strong>
                   <br></br>
                   <strong>Repeat Limit: {this.state.repeatLimit}</strong>
-
                 </Col>
                 </Row>
-                <Row className="align-items-center">
+                <Row>
                   <Col>
                     <Button id = "cancel" variant= "dark" size= "sm" onClick={() => this.clickHandler()}>Cancel</Button>{' '}
-                  </Col>
-                  <Col>
                     <Button id = "cbutton" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Create Station</Button>{' '}
                   </Col>
                 </Row>

@@ -112,7 +112,6 @@ func main() {
 //GetSpotifyID returns the spotifyid for the auth token
 func GetSpotifyID(r *http.Request) (string, error) {
 	authorization := r.Header.Get("Authorization")
-	fmt.Println(authorization)
 	if authorization == "" {
 		query, ok := r.URL.Query()["auth"]
 		if !ok || len(query[0]) < 1 {

@@ -24,7 +24,16 @@ class Preset extends React.Component {
 
     render = () => {
       const ErrorAlert = () => {
-        if(!this.props.listening) {
+        if(!this.props.isPremium) {
+          return (
+            <Alert variant="danger">
+              <Alert.Heading>You do not have Spotify Premium</Alert.Heading>
+                <div>
+                  You cannot start a station without premium.
+                </div>
+            </Alert>
+          )
+        } else if (!this.props.listening) {
           return (
             <Alert variant="danger">
               <Alert.Heading>Cannot find Spotify Session</Alert.Heading>
@@ -91,9 +100,16 @@ class Preset extends React.Component {
           <Row id = "ewrow">
             <Col>
             <strong>{pl.playlistName}</strong>
-              <Form.Control key = {i} id = "wbox" type="number" size="sm" defaultValue={pl.weight} 
+              <Form.Control key = {i} id = "wbox" type="number" min = "0" max = "10000" size="sm" defaultValue={pl.weight} 
               onChange={e => {
-                weights[i].weight = parseInt(e.target.value, 10)
+                console.log(e.target.value)
+                if(e.target.value === "") {
+                  weights[i].weight = 0
+                } else if(e.target.value < 0) {
+                  weights[i].weight = 0
+                } else {
+                  weights[i].weight = parseInt(e.target.value, 10)
+                }
                 setWeight(...[weights])
                 var tWC = 0
                 for(var j = 0; j< weights.length; j++) {
@@ -126,7 +142,6 @@ class Preset extends React.Component {
           for(var i = 0; i< pls.length; i++) {
             totalWeight = totalWeight + pls[i].weight
           }
-
 
           if(false) {
             setError(true)
@@ -257,7 +272,7 @@ class Preset extends React.Component {
                 <Button variant="secondary" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button variant="dark" onClick={handleSubmit} disabled = {!this.props.listening || showError}>
+                <Button variant="dark" onClick={handleSubmit} disabled = {!this.props.isPremium || !this.props.listening || showError}>
                   Start Shuffling!
                 </Button>
               </Modal.Footer>
@@ -373,9 +388,7 @@ class Preset extends React.Component {
             'Content-Type': 'application/json',
             'Authorization': this.props.access_token 
           },
-          body: JSON.stringify({
-            preset: pldata
-          })
+          body: JSON.stringify(pldata)
         })
         .then((response) => {
           if (response.status === 200) {

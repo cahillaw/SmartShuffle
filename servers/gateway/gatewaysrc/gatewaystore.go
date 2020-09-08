@@ -21,7 +21,7 @@ func (sqls *SQLStore) GetUserInfo(spotifyid string) (*User, error) {
 		if errQuery == sql.ErrNoRows {
 			insq = "insert into user(spotify_id) values(?)"
 
-			res, errExec := sqls.DB.Exec(spotifyid)
+			res, errExec := sqls.DB.Exec(insq, spotifyid)
 			if errExec != nil {
 				return nil, errExec
 			}
