@@ -124,18 +124,17 @@ class Create extends React.Component {
           })
         })
         .then((response) => {
-          response.json().then((data) => {
-            if (response.status === 201) {
-              console.log(data)
+          if (response.status === 201) {
+            response.json().then((data) => {
               this.props.addNewPreset(data)
               this.setState({
                 clicked: false
               })
-            } else if (response.status === 401) {
-              console.log("access token is bad, getting new one...")
-              this.props.getAccessToken(this.createNewPreset)
-            }
-          })
+            })
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.createNewPreset)
+          }
         })
       }, 0)
     }

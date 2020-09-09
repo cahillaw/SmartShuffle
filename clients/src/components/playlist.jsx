@@ -73,7 +73,7 @@ class Playlist extends React.Component {
               <br></br>
               Playlist Weight: {this.props.data.weight}
               <div>
-                <DeletePlaylist clickDeletePL={this.clickDeletePL}></DeletePlaylist>
+                <DeletePlaylist clickDeletePL={this.deletePlaylist}></DeletePlaylist>
                 <Button id = "editbuttonpl" variant= "dark" size= "sm" onClick={this.clickEditPL}>Edit Playlist</Button> {
                   edit ? 
                   <div>

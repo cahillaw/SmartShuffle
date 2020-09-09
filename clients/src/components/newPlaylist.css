@@ -17,3 +17,8 @@
     font-size: 30px;
     margin-top: 3px;
 }
+
+.addplbutton {
+    float: right;
+    margin-bottom: 10px;
+}

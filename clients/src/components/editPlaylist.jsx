@@ -147,33 +147,31 @@ class EditPlaylist extends React.Component {
       })
     } 
 
-
     clickSubmitHandler() {
-      var valid = true
-      if(this.state.name === '' ) {
-        valid = false
+      if(!this.state.name) {
         this.setState({
-          errorMessage: "Error: Empty playlist name"
+          errorMessage: "Error: Empty playlist name",
+          showError: true
         })
       } else if (this.state.uri === '') {
-        valid = false
         this.setState({
-          errorMessage: "Error: Empty URI"
+          errorMessage: "Error: Empty URI",
+          showError: true
         })
       } else if (this.state.order === '') {
-        valid = false
         this.setState({
-          errorMessage: "Error: Please select a playlist order"
+          errorMessage: "Error: Please select a playlist order",
+          showError: true
         })
-      } else if(this.state.weight <= 0 || this.state.weight >= 100) {
-        valid = false
+      } else if(this.state.weight < 0 || this.state.weight > 100) {
         this.setState({
-          errorMessage: "Error: Weight must be an integer between 0 and 100"
+          errorMessage: "Error: Weight must be an integer between 0 and 100",
+          showError: true
         })
-      } else if (this.state.weight != Math.floor(this.state.weight)) {
-        valid = false
+      } else if (parseInt(this.state.weight) !== parseFloat(this.state.weight)) {
         this.setState({
-          errorMessage: "Error: Weight must be an integer"
+          errorMessage: "Error: Weight must be an integer",
+          showError: true
         })
       } else {
         var url = "https://api.spotify.com/v1/playlists/" + this.state.uri
@@ -184,7 +182,9 @@ class EditPlaylist extends React.Component {
           }
         })
         .then((res) => {
-          if(res.status >= 400 || !valid) {
+          console.log(res.status)
+          if(res.status >= 400) {
+            console.log("invalid uri")
             this.setState({
               errorMessage: "Error: Invalid Spotify Playlist URI",
               showError: true
@@ -217,8 +217,8 @@ class EditPlaylist extends React.Component {
           })
         })
         .then((response) => {
-          response.json().then((data) => {
-            if (response.status === 200) {
+          if (response.status === 200) {
+            response.json().then((data) => {
               console.log(data)
               this.props.editPlaylist(this.props.data.presetID, data)
               this.props.clickEditPL()
@@ -232,11 +232,11 @@ class EditPlaylist extends React.Component {
                 showError: false,
                 errorMessage: ''
               })
-            } else if (response.status === 401) {
-              console.log("access token is bad, getting new one...")
-              this.props.getAccessToken(this.editPlaylist)
-            }
-          })
+            })
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.editPlaylist)
+          }
         })
       }, 0)
       

@@ -25,11 +25,24 @@ class Home extends React.Component {
 
     componentDidMount () {
       if(this.props.location.state == null) {
-        this.setState ({
-          loggedIn: false
-        })
+        var rt = this.getCookie("refresh_token") 
+        if (!rt) {
+          this.setState ({
+            loggedIn: false
+          })
+        } else {
+          this.setState({
+            access_token: this.getCookie("access_token"),
+            refresh_token: rt
+          },
+          this.onATCallback
+          )
+        }
+
       } else {
         if (this.state.access_token === '') {
+          this.setCookie("refresh_token", this.props.location.state.refresh_token, 365)
+          this.setCookie("access_token", "Bearer " + this.props.location.state.access_token, (1/24))
           this.setState({
             access_token: "Bearer " + this.props.location.state.access_token
           },
@@ -73,7 +86,7 @@ class Home extends React.Component {
           <Preset 
             data = {ps}
             access_token = {this.state.access_token}
-            refresh_token = {this.props.location.state.refresh_token}
+            refresh_token = {this.state.refresh_token}
             getUserPageInfo = {this.getUserPageInfo}
             addNewPlaylist = {this.addNewPlaylist}
             deletePreset = {this.deletePreset}
@@ -125,7 +138,7 @@ class Home extends React.Component {
                 <Col md = "auto">
                   <NowPlaying
                     access_token = {this.state.access_token}
-                    refresh_token = {this.props.location.state.refresh_token}
+                    refresh_token = {this.state.refresh_token}
                     getAccessToken = {this.getAccessToken}
                     curPresetID = {this.state.curPresetID}
                     curPresetName = {this.state.curPresetName}
@@ -136,6 +149,7 @@ class Home extends React.Component {
                     changeListening = {this.changeListening}
                     listening = {this.state.listening}
                     queueSong = {this.queueSong}
+                    loggedIn = {this.state.loggedIn}
                   ></NowPlaying>
                 </Col>
               </Row>
@@ -147,7 +161,7 @@ class Home extends React.Component {
                     {presets}
                     <Create 
                       access_token = {this.state.access_token}
-                      refresh_token = {this.props.location.state.refresh_token}
+                      refresh_token = {this.state.refresh_token}
                       addNewPreset = {this.addNewPreset}
                       getAccessToken = {this.getAccessToken}
                     />
@@ -212,7 +226,7 @@ class Home extends React.Component {
       var presets = this.state.presetsdata
       for(var i = 0; i<presets.length; i++) {
         if (presets[i].presetId === psid) {
-          for(var j = 0; i<presets[i].playlists.length; j++) {
+          for(var j = 0; j<presets[i].playlists.length; j++) {
             if(presets[i].playlists[j].playlistID === plid) {
               presets[i].playlists.splice(j, 1)
               break
@@ -465,7 +479,7 @@ class Home extends React.Component {
       var client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID
       var client_secret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
 
-      let formData = {grant_type: 'refresh_token', refresh_token: this.props.location.state.refresh_token}
+      let formData = {grant_type: 'refresh_token', refresh_token: this.getCookie("refresh_token")}
 
       fetch('https://accounts.spotify.com/api/token', {
         method: 'post',
@@ -477,19 +491,24 @@ class Home extends React.Component {
         body: this.encodeFormData(formData)
       })
       .then((response) => {
-        response.json().then((data) => {
-          if (response.status === 200) {
+        if (response.status === 200) {
+          response.json().then((data) => {
             var newAccessToken = "Bearer " + data.access_token
             console.log(newAccessToken)
+            this.setCookie("access_token", newAccessToken, (1/24))
             this.setState ({
               access_token: newAccessToken
             },
             this.onSetStateCB(callback)
             )
-          } else {
-            console.log("failed to get new token")
-          }
-        })
+          })
+        } else if (response.status === 400) {
+          this.setState({
+            loggedIn: false
+          })
+        } else {
+          console.log("failed to get new token")
+        }
       })
     }
 
@@ -524,6 +543,36 @@ class Home extends React.Component {
       }) 
     }
 
+    //from: https://www.w3schools.com/js/js_cookies.asp
+    setCookie(cname, cvalue, exdays) {
+      var d = new Date();
+      d.setTime(d.getTime() + (exdays*24*60*60*1000));
+      var expires = "expires="+ d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    //from: https://www.w3schools.com/js/js_cookies.asp
+    getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      if(cname === "refresh_token") {
+        return this.state.refresh_token
+      } else if (cname === "access_token") {
+        return this.state.access_token
+      } else {
+        return ""
+      }
+    }
 }
 
 export default Home

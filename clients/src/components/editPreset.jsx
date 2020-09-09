@@ -108,16 +108,15 @@ class EditPreset extends React.Component {
           })
         })
         .then((response) => {
-          response.json().then((data) => {
-            if (response.status === 200) {
-              console.log(data)
+          if (response.status === 200) {
+            response.json().then((data) => {
               this.props.editPreset(data)
               this.props.clickEdit()
-            } else if (response.status === 401) {
-              console.log("access token is bad, getting new one...")
-              this.props.getAccessToken(this.editNewPreset)
-            }
-          })
+            })
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.editNewPreset)
+          }
         })
       }, 0)
     }

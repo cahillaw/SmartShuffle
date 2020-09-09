@@ -1,6 +1,6 @@
 import React from 'react'
 import './newPlaylist.css'
-import { Button, Card, Accordion, Form, Alert } from 'react-bootstrap'
+import { Button, Card, Accordion, Form, Alert, AccordionToggle } from 'react-bootstrap'
 
 class NewPlaylist extends React.Component {
     constructor (props) {
@@ -50,16 +50,16 @@ class NewPlaylist extends React.Component {
                   Add New Playlist
               </Accordion.Toggle>
               </Card.Header>
-              <Accordion.Collapse eventKey={this.state.isToggled ? "0" : "1"}>
+              <Accordion.Collapse eventKey="0">
               <Card.Body>
               <Form>
-                <Form.Group controlId="plname">
+                <Form.Group>
                   <Form.Label>
                     <strong>Playlist Name</strong>
                   </Form.Label>
                   <Form.Control type="name" size="sm" placeholder="All-Time Favorites" onChange={this.handleNameChange}/>
                 </Form.Group>
-                <Form.Group controlId="plname">
+                <Form.Group>
                   <Form.Label>
                     <strong>Spotify Playlist URI</strong>
                   </Form.Label>
@@ -72,14 +72,14 @@ class NewPlaylist extends React.Component {
                     !isChecked
                     ? <div>
                       <br></br>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Form.Group>
                     <Form.Label><strong>Playlist Order</strong></Form.Label>
                       <Form.Control as="select" onChange={this.handleOrderChange}>
                         <option>First Added</option>
                         <option>Recently Added</option>
                       </Form.Control>
                     </Form.Group>
-                    <Form.Group controlId="pluri">
+                    <Form.Group>
                     <Form.Label><strong>Number of Tracks</strong></Form.Label>
                       <Form.Control type="number" size="sm" min="0" placeholder="20" onChange={this.handleNumTracksChange}/>
                       <Form.Text>
@@ -91,15 +91,17 @@ class NewPlaylist extends React.Component {
                   }
                 </Form.Group>
 
-                <Form.Group controlId="pluri">
+                <Form.Group>
                   <Form.Label><strong>Playlist Weight</strong></Form.Label>
-                  <Form.Control type="number" size="sm" min="0" max ="100" placeholder="20" onChange={this.handleWeightChange}/>
+                  <Form.Control type="number" size="sm" min="0" max ="100" defaultValue= "20" onChange={this.handleWeightChange}/>
                   <Form.Text>
-                    Weight is the percentage amount that a track from this playlist will be selected. The total weight of all playlists in a given station must be less than or equal to 100. If the weight you want to add exceeds 100, set a temporary value now and go back and edit those first.
+                    A playlist weight is the chance a song from that playlist will be queued when a song is queued. You can easily adjust all playlist weights at the same time using the edit playlist weights button.
                   </Form.Text>
                 </Form.Group>
                 <ErrorAlert></ErrorAlert>
-                <Button id = "button" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Add Playlist!</Button>{' '}
+                <AccordionToggle as={Button} onClick={() => this.clickSubmitHandler()} eventKey="0" className="addplbutton" variant= "dark" size= "sm">
+                  Add Playlist!
+                </AccordionToggle>
               </Form>
               </Card.Body>
               </Accordion.Collapse>
@@ -166,31 +168,30 @@ class NewPlaylist extends React.Component {
     }
 
     clickSubmitHandler() {
-     var valid = true
-      if(this.state.name === '' ) {
-        valid = false
+      if(!this.state.name) {
         this.setState({
-          errorMessage: "Error: Empty playlist name"
+          errorMessage: "Error: Empty playlist name",
+          showError: true
         })
       } else if (this.state.uri === '') {
-        valid = false
         this.setState({
-          errorMessage: "Error: Empty URI"
+          errorMessage: "Error: Empty URI",
+          showError: true
         })
       } else if (this.state.order === '') {
-        valid = false
         this.setState({
-          errorMessage: "Error: Please select a playlist order"
+          errorMessage: "Error: Please select a playlist order",
+          showError: true
         })
-      } else if(this.state.weight <= 0 || this.state.weight >= 100) {
-        valid = false
+      } else if(this.state.weight < 0 || this.state.weight > 100) {
         this.setState({
-          errorMessage: "Error: Weight must be an integer between 0 and 100"
+          errorMessage: "Error: Weight must be an integer between 0 and 100",
+          showError: true
         })
-      } else if (this.state.weight != Math.floor(this.state.weight)) {
-        valid = false
+      } else if (parseInt(this.state.weight) !== parseFloat(this.state.weight)) {
         this.setState({
-          errorMessage: "Error: Weight must be an integer"
+          errorMessage: "Error: Weight must be an integer",
+          showError: true
         })
       } else {
         var url = "https://api.spotify.com/v1/playlists/" + this.state.uri
@@ -201,12 +202,15 @@ class NewPlaylist extends React.Component {
           }
         })
         .then((res) => {
-          if(res.status >= 400 || !valid) {
+          console.log(res.status)
+          if(res.status >= 400) {
+            console.log("invalid uri")
             this.setState({
               errorMessage: "Error: Invalid Spotify Playlist URI",
               showError: true
             })
           } else {
+            this.toggleAccord();
             this.createNewPlaylist();
           }
         })
@@ -234,8 +238,8 @@ class NewPlaylist extends React.Component {
           })
         })
         .then((response) => {
-          response.json().then((data) => {
-            if (response.status === 201) {
+          if (response.status === 201) {
+            response.json().then((data) => {
               this.props.addNewPlaylist(data, this.props.data.presetId)
               this.setState({
                 isChecked: true,
@@ -248,11 +252,12 @@ class NewPlaylist extends React.Component {
                 errorMessage: '',
                 isToggled: false
               })
-            } else if (response.status === 401) {
-              console.log("access token is bad, getting new one...")
-              this.props.getAccessToken(this.createNewPlaylist)
-            }
-          })
+            })
+          } else if (response.status === 401) {
+            console.log("access token is bad, getting new one...")
+            this.props.getAccessToken(this.createNewPlaylist)
+          }
+          
         })
       }, 0)
     }

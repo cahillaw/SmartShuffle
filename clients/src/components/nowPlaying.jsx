@@ -1,9 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './nowPlaying.css'
-import Next from '../images/nextsong.png'
-import { Spinner, Col, Row, Container, ProgressBar, Button, Form } from 'react-bootstrap'
+import { Spinner, Col, Row, Container, ProgressBar, Button } from 'react-bootstrap'
 import StationListening from '../components/stationListening'
-
 
 class NowPlaying extends React.Component {
     constructor (props) {
@@ -19,17 +17,21 @@ class NowPlaying extends React.Component {
             curMin: "0.00",
             curLen: "3.00"
         }
+        this.npinterval = ""
       }
 
       componentDidMount () {
         var num = 0
         this.getCurrentPlaybackInfo()
-        setInterval(() => {
+        this.npinterval = setInterval(() => {
+          if(!this.props.loggedIn) {
+            clearInterval(this.npinterval)
+          }
           num = num + 1
           if(this.props.listening && !this.state.paused) {
             var numAdd = 1000
             if (this.state.current + 1000 > this.state.length) {
-              var numAdd = 0
+               numAdd = 0
             }
             this.setState({
               current: this.state.current + numAdd,
@@ -166,7 +168,7 @@ class NowPlaying extends React.Component {
       millisToMinutesAndSeconds(millis) {
         var minutes = Math.floor(millis / 60000);
         var seconds = ((millis % 60000) / 1000).toFixed(0);
-        if (seconds == 60) {
+        if (seconds === 60) {
           minutes = minutes + 1
           seconds = 0
         }

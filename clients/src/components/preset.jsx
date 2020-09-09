@@ -106,9 +106,16 @@ class Preset extends React.Component {
                 if(e.target.value === "") {
                   weights[i].weight = 0
                 } else if(e.target.value < 0) {
+                  setError(true)
                   weights[i].weight = 0
+                } else if (e.target.value > 10000){
+                  setError(true)
+                  weights[i].weight = 10000
+                } else if(parseInt(e.target.value) !== parseFloat(e.target.value)) {
+                  setError(true)
+                  weights[i].weight = Math.round(parseFloat(e.target.value))
                 } else {
-                  weights[i].weight = parseInt(e.target.value, 10)
+                  weights[i].weight = parseInt(e.target.value)
                 }
                 setWeight(...[weights])
                 var tWC = 0
@@ -116,8 +123,6 @@ class Preset extends React.Component {
                   tWC = tWC + weights[j].weight
                 }
                 setTotal(tWC)
-                
-                console.log(weights)
               }}/>
             </Col>
           </Row>
@@ -138,17 +143,16 @@ class Preset extends React.Component {
         }
 
         const handleSubmit = () => {
-          var valid = false
+          var valid = true
           for(var i = 0; i< pls.length; i++) {
             totalWeight = totalWeight + pls[i].weight
           }
 
-          if(false) {
+          if(valid) {
             setError(true)
           } else {
             var ps = this.props.data
             ps.playlists = weights
-            console.log(ps)
             props.editWeights(ps)
             setShow(false);
           }
@@ -175,7 +179,7 @@ class Preset extends React.Component {
                 <div id = "totalnum">{total}</div>
                 {showError ? 
                   <Alert id = "ewalert" variant="danger" onClose={removeAlert} dismissible>
-                    Each weight must be an integer greater than 0
+                    Each weight must be an integer greater than 0 and less than 10000
                   </Alert>
                   : null
                 }
