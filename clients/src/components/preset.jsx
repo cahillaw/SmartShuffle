@@ -248,7 +248,7 @@ class Preset extends React.Component {
       
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>Start {this.props.data.presetName}</Modal.Title>
+                <Modal.Title id = "sstitle">Start {this.props.data.presetName}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <ErrorAlert></ErrorAlert>

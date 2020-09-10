@@ -168,9 +168,9 @@ class NewPlaylist extends React.Component {
     }
 
     clickSubmitHandler() {
-      if(!this.state.name) {
+      if(!this.state.name || this.state.name.length > 50) {
         this.setState({
-          errorMessage: "Error: Empty playlist name",
+          errorMessage: "Error: Empty playlist name or name over 50 characters",
           showError: true
         })
       } else if (this.state.uri === '') {

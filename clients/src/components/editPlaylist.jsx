@@ -90,7 +90,7 @@ class EditPlaylist extends React.Component {
           </Form.Group>
           <ErrorAlert></ErrorAlert>
           <Button id = "update" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Update Playlist!</Button>{' '}
-          <Button id = "cancel" variant= "dark" size= "sm" onClick={() => this.props.clickEditPL()}>Cancel</Button>{' '}
+          <Button id = "eplaycancel" variant= "dark" size= "sm" onClick={() => this.props.clickEditPL()}>Cancel</Button>{' '}
         </Form>
       )
     }
@@ -148,9 +148,9 @@ class EditPlaylist extends React.Component {
     } 
 
     clickSubmitHandler() {
-      if(!this.state.name) {
+      if(!this.state.name || this.state.name.length > 50) {
         this.setState({
-          errorMessage: "Error: Empty playlist name",
+          errorMessage: "Error: Empty playlist name or name over 50 characters",
           showError: true
         })
       } else if (this.state.uri === '') {
@@ -222,13 +222,19 @@ class EditPlaylist extends React.Component {
               console.log(data)
               this.props.editPlaylist(this.props.data.presetID, data)
               this.props.clickEditPL()
+              var toCheck = ""
+              if (nT > 0) {
+                toCheck = true
+              } else {
+                toCheck = false
+              }
               this.setState({
                 isChecked: true,
-                name: '',
-                uri: '',
-                order: true,
-                numTracks: -1,
-                weight: 0,
+                name: this.state.name,
+                uri: this.state.uri,
+                order: this.state.order,
+                numTracks: nT,
+                weight: w,
                 showError: false,
                 errorMessage: ''
               })

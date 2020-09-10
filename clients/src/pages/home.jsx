@@ -24,30 +24,43 @@ class Home extends React.Component {
     }
 
     componentDidMount () {
+      var rt = this.getCookie("refresh_token") 
+      var at = this.getCookie("access_token")
       if(this.props.location.state == null) {
-        var rt = this.getCookie("refresh_token") 
+        console.log()
         if (!rt) {
           this.setState ({
             loggedIn: false
           })
         } else {
+          console.log(at)
           this.setState({
-            access_token: this.getCookie("access_token"),
+            access_token: at,
             refresh_token: rt
           },
           this.onATCallback
           )
         }
-
       } else {
         if (this.state.access_token === '') {
-          this.setCookie("refresh_token", this.props.location.state.refresh_token, 365)
-          this.setCookie("access_token", "Bearer " + this.props.location.state.access_token, (1/24))
-          this.setState({
-            access_token: "Bearer " + this.props.location.state.access_token
-          },
-          this.onATCallback
-          )
+          if(!at && rt) {
+            //if page is refreshed once access token has expired
+            this.getAccessToken(() => {
+              this.onATCallback()
+            })
+          } else {
+            //normal
+            this.setCookie("refresh_token", this.props.location.state.refresh_token, 365)
+            if(!at) {
+              this.setCookie("access_token", "Bearer " + this.props.location.state.access_token, .0381944)
+            }
+            console.log(this.props.location.state.access_token)
+            this.setState({
+              access_token: "Bearer " + this.props.location.state.access_token
+            },
+            this.onATCallback
+            ) 
+          }
         }
       }
     }
@@ -181,7 +194,9 @@ class Home extends React.Component {
     //function incase more gets added here since setState callback can only take 1
     onATCallback() {
       this.getUserPageInfo()
-      this.checkIfPremium()
+      setTimeout(() =>{
+        this.checkIfPremium()
+      }, 0)
     }
 
     addNewPreset = (ps) => {
@@ -380,7 +395,7 @@ class Home extends React.Component {
             }
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
-            this.props.getAccessToken(this.skipSong)
+            this.getAccessToken(this.skipSong)
           }
         })
       }, 0)
@@ -400,7 +415,7 @@ class Home extends React.Component {
             console.log("paused playback")
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
-            this.props.getAccessToken(this.pause)
+            this.getAccessToken(this.pause)
           } else if (response.status === 403) {
             alert("Playback is already paused")
           }
@@ -422,7 +437,7 @@ class Home extends React.Component {
             console.log("started playback")
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
-            this.props.getAccessToken(this.play)
+            this.getAccessToken(this.play)
           } else if (response.status === 403) {
             alert("Playback is already playing")
           }
@@ -465,14 +480,20 @@ class Home extends React.Component {
     }
 
     onSetStateCB(callback) {
-      setTimeout(() => {
+      if(this.numRetries < 1) {
         this.numRetries++
-        if(this.numRetries < 2) {
-          callback()
-        } else {
-          console.log("failed")
-        }
-      }, 2000)
+        callback()
+      } else {
+        setTimeout(() => {
+          this.numRetries++
+          if(this.numRetries < 3) {
+            callback()
+          } else {
+            console.log("failed")
+            this.numRetries = 0
+          }
+        }, 2000)
+      }
     }
 
     getAccessToken = (callback) => {
@@ -495,7 +516,6 @@ class Home extends React.Component {
           response.json().then((data) => {
             var newAccessToken = "Bearer " + data.access_token
             console.log(newAccessToken)
-            this.setCookie("access_token", newAccessToken, (1/24))
             this.setState ({
               access_token: newAccessToken
             },
@@ -565,13 +585,7 @@ class Home extends React.Component {
           return c.substring(name.length, c.length);
         }
       }
-      if(cname === "refresh_token") {
-        return this.state.refresh_token
-      } else if (cname === "access_token") {
-        return this.state.access_token
-      } else {
-        return ""
-      }
+      return ""
     }
 }
 

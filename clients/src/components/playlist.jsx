@@ -61,7 +61,7 @@ class Playlist extends React.Component {
           <Card>
             <Card.Header id="header">
               {this.state.loading ? <Spinner id="spinner" animation = "border"/> : <img id ="mosaic" src={this.state.mosaic} alt="mosaic"/>}
-            <Accordion.Toggle as={Button} variant="link" eventKey="0" >
+            <Accordion.Toggle id = "playlistname" as={Button} variant="link" eventKey="0" >
                 {this.props.data.playlistName}
             </Accordion.Toggle>
             </Card.Header>

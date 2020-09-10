@@ -28,10 +28,15 @@
 }
 
 #cancel {
-    margin-left: 337px;
+    margin-left: 339px;
     margin-top: 0px;
 }
 
 #cbutton {
     float: right;
+}
+
+#ft {
+    margin-left: 3px;
+    margin-right: 3px;
 }

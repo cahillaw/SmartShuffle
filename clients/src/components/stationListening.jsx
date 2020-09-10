@@ -42,9 +42,9 @@ class StationListening extends React.Component {
 
         const handleQueueSongs = () => {
           if (this.state.numQueue > 5 || this.state.numQueue < 1) {
-            alert("Number of songs to queue must be an integer between 1 and 10")
+            alert("Number of songs to queue must be an integer between 1 and 5")
           } else if (parseInt(this.state.numQueue) !== parseFloat(this.state.numQueue)) {
-            alert("Number of songs to queue must be an integer between 1 and 10")
+            alert("Number of songs to queue must be an integer between 1 and 5")
           } else {
             console.log("ok")
             for(var i = 0; i<this.state.numQueue; i++) {
@@ -83,7 +83,7 @@ class StationListening extends React.Component {
         } else {
           return (
             <div>
-              <strong>Listening to {this.props.curPresetName}</strong>
+              <div id = "sltitle">Listening to {this.props.curPresetName}</div>
                 <br></br>
                 <br></br>
                 {

@@ -36,3 +36,10 @@
     margin-top: -15px;
     margin-left: 280px;
 }
+
+#playlistname {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 395px;
+}

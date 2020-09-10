@@ -40,17 +40,14 @@ class EditPreset extends React.Component {
                   <Form.Group controlId="exampleForm.ControlInput1">
                     <Form.Label><strong>Repeat Limit</strong></Form.Label>
                     <Form.Control type="number" min="0" max ="50" placeholder="20" defaultValue={this.props.repeatLimit} onChange={this.handleRepeatLimitChange}/>
-                    <Form.Text>
+                    <Form.Text id = "ft">
                     Repeat Limit is the number of tracks in between two plays of the same song. For example, if the Repeat Limit was 20 and you just heard a song, you would not hear it for another 20 songs. Choose 0 for no repeat limit.
                     </Form.Text>
                   </Form.Group>
-                  <Button id = "button" variant= "dark" size= "sm" onClick={() => this.props.clickEdit()}>Cancel</Button>{' '}
-                  <Button id = "button" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Edit Station</Button>{' '}
+                  <Button id = "epcancel" variant= "dark" size= "sm" onClick={() => this.props.clickEdit()}>Cancel</Button>{' '}
+                  <Button id = "epcbutton" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Edit Station</Button>{' '}
                 </Form>
                 <ErrorAlert></ErrorAlert>
-                <strong>Name: {this.state.name}</strong>
-                <br></br>
-                <strong>Repeat Limit: {this.state.repeatLimit}</strong>
               </Col>
             </Row>
           </Container>
