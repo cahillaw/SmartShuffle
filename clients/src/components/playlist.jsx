@@ -121,6 +121,7 @@ class Playlist extends React.Component {
         .then((response) => {
           if (response.status === 200) {
             this.props.deletePlaylist(this.props.data.presetID, this.props.data.playlistID)
+            this.props.updatePresetTotalTracks(this.props.data.playlistID, 0)
             console.log("deleted")
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
@@ -148,6 +149,11 @@ class Playlist extends React.Component {
                 totalTracks: pladata.tracks.total,
                 loading: false
               })
+              if(this.props.data.NumTracks < 0 ) {
+                this.props.updatePresetTotalTracks(this.props.data.playlistID, pladata.tracks.total)
+              } else {
+                this.props.updatePresetTotalTracks(this.props.data.playlistID, this.props.data.NumTracks)
+              }
             })
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")
@@ -158,7 +164,7 @@ class Playlist extends React.Component {
     }
 
     checkOrder() {
-      if(this.props.data.order && this.props.data.NumTracks < 0) {
+      if(this.props.data.NumTracks <= 0) {
           return "N/A"
       } else if (this.props.data.order) {
         return "First Added"

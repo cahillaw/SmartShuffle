@@ -19,6 +19,7 @@ class EditPlaylist extends React.Component {
 
     componentDidMount () {
         this.setState({
+            isChecked: this.props.data.NumTracks <= 0,
             name: this.props.data.playlistName,
             uri: this.props.data.uri,
             order: this.props.data.order,
@@ -31,7 +32,7 @@ class EditPlaylist extends React.Component {
       const ErrorAlert = () => {
         if(this.state.showError === true) {
           return (
-            <Alert variant="danger" onClose={() => this.removeAlert()} dismissible>
+            <Alert id = "epalerterror" variant="danger" onClose={() => this.removeAlert()} dismissible>
               {this.state.errorMessage}
             </Alert>
           )
@@ -71,7 +72,7 @@ class EditPlaylist extends React.Component {
               </Form.Group>
             <Form.Group controlId="pluri">
               <Form.Label><strong>Number of Tracks</strong></Form.Label>
-              <Form.Control type="number" size="sm" min="0" placeholder="20" defaultValue={this.props.data.NumTracks} onChange={this.handleNumTracksChange}/>
+              <Form.Control type="number" size="sm" min="0" max = "10000" placeholder="20" defaultValue={this.props.data.NumTracks >=0 ? this.props.data.NumTracks : ""} onChange={this.handleNumTracksChange}/>
               <Form.Text>
               Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First Added is selected, only the first X songs will be selected, where if Recently Added is selected, the most recently added X songs will be selected.
               </Form.Text>
@@ -163,6 +164,11 @@ class EditPlaylist extends React.Component {
           errorMessage: "Error: Please select a playlist order",
           showError: true
         })
+      } else if ((this.state.numTracks < 1 && !this.state.isChecked) || this.state.numTracks > 1000) {
+        this.setState({
+          errorMessage: "Number of tracks must be between 1 and 10,000",
+          showError: true
+        })
       } else if(this.state.weight < 0 || this.state.weight > 100) {
         this.setState({
           errorMessage: "Error: Weight must be an integer between 0 and 100",
@@ -201,6 +207,9 @@ class EditPlaylist extends React.Component {
         var url = "https://shuffle.cahillaw.me/v1/playlists/" + this.props.data.playlistID
         var nT = parseInt(this.state.numTracks, 10)
         var w = parseInt(this.state.weight, 10)
+        if(this.state.isChecked) {
+          nT = -1
+        }
         fetch(url, {
           method: 'PATCH',
           headers: {
@@ -221,15 +230,9 @@ class EditPlaylist extends React.Component {
             response.json().then((data) => {
               console.log(data)
               this.props.editPlaylist(this.props.data.presetID, data)
-              this.props.clickEditPL()
-              var toCheck = ""
-              if (nT > 0) {
-                toCheck = true
-              } else {
-                toCheck = false
-              }
+              console.log(nT)
               this.setState({
-                isChecked: true,
+                isChecked: nT > 0,
                 name: this.state.name,
                 uri: this.state.uri,
                 order: this.state.order,
@@ -238,6 +241,7 @@ class EditPlaylist extends React.Component {
                 showError: false,
                 errorMessage: ''
               })
+              this.props.clickEditPL()
             })
           } else if (response.status === 401) {
             console.log("access token is bad, getting new one...")

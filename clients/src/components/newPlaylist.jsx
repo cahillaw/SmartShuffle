@@ -81,7 +81,7 @@ class NewPlaylist extends React.Component {
                     </Form.Group>
                     <Form.Group>
                     <Form.Label><strong>Number of Tracks</strong></Form.Label>
-                      <Form.Control type="number" size="sm" min="0" placeholder="20" onChange={this.handleNumTracksChange}/>
+                      <Form.Control type="number" size="sm" min="0" max = "10000" placeholder="20" onChange={this.handleNumTracksChange}/>
                       <Form.Text>
                         Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First Added is selected, only the first X songs will be selected, where if Recently Added is selected, the most recently added X songs will be selected.
                       </Form.Text>
@@ -181,6 +181,11 @@ class NewPlaylist extends React.Component {
       } else if (this.state.order === '') {
         this.setState({
           errorMessage: "Error: Please select a playlist order",
+          showError: true
+        })
+      } else if ((this.state.numTracks < 1 && !this.state.isChecked) || this.state.numTracks > 1000) {
+        this.setState({
+          errorMessage: "Number of tracks must be between 1 and 10,000",
           showError: true
         })
       } else if(this.state.weight < 0 || this.state.weight > 100) {

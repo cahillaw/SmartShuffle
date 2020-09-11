@@ -85,7 +85,6 @@ class StationListening extends React.Component {
             <div>
               <div id = "sltitle">Listening to {this.props.curPresetName}</div>
                 <br></br>
-                <br></br>
                 {
                   !this.state.paused ? 
                   <div id = "controls">

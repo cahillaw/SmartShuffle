@@ -12,7 +12,9 @@ class Preset extends React.Component {
         access_token: '',
         refresh_token: '',
         edit: false,
-        listening: false
+        listening: false,
+        presetTotalTracks: 0,
+        totalTracksMap: new Map()
       }
     }
 
@@ -39,6 +41,19 @@ class Preset extends React.Component {
               <Alert.Heading>Cannot find Spotify Session</Alert.Heading>
                 <div>
                   Start listening to something on Spotify to resolve this issue.
+                </div>
+            </Alert>
+          )
+        } else if (this.state.presetTotalTracks < this.props.data.repeatLimit*3) {
+          return (
+            <Alert variant="danger">
+              <Alert.Heading>Bad Station Composition</Alert.Heading>
+                <div>
+                  You must have at least 3 times as many tracks in the station as the repeat limit. 
+                  <br></br>
+                  Current total: {this.state.presetTotalTracks} 
+                  <br></br>
+                  Current repeat limit: {this.props.data.repeatLimit}
                 </div>
             </Alert>
           )
@@ -276,7 +291,7 @@ class Preset extends React.Component {
                 <Button variant="secondary" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button variant="dark" onClick={handleSubmit} disabled = {!this.props.isPremium || !this.props.listening || showError}>
+                <Button variant="dark" onClick={handleSubmit} disabled = {!this.props.isPremium || !this.props.listening || this.state.presetTotalTracks < this.props.data.repeatLimit*3 || showError}>
                   Start Shuffling!
                 </Button>
               </Modal.Footer>
@@ -296,6 +311,7 @@ class Preset extends React.Component {
           deletePlaylist = {this.props.deletePlaylist}
           editPlaylist = {this.props.editPlaylist}
           getAccessToken = {this.props.getAccessToken}
+          updatePresetTotalTracks = {this.updatePresetTotalTracks}
         />
       </div>
       );
@@ -358,6 +374,21 @@ class Preset extends React.Component {
     clickEdit = () => {
       this.setState({
         edit: !this.state.edit
+      })
+    }
+
+    updatePresetTotalTracks = (plid, num) => {
+      var map = this.state.totalTracksMap
+      map.set(plid, num)
+      var sum = 0
+      function logMapElements(value) {
+        sum = sum + value;
+      }
+      map.forEach(logMapElements)
+
+      this.setState({
+        totalTracksMap: map,
+        presetTotalTracks: sum
       })
     }
 
