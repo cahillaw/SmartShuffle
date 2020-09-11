@@ -13,7 +13,6 @@ class LoginPage extends React.Component {
     }
 
     componentDidMount() {
-      console.log("rest")
       this.setState({
         rt: this.getCookie("refresh_token")
       })

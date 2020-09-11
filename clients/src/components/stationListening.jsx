@@ -46,7 +46,6 @@ class StationListening extends React.Component {
           } else if (parseInt(this.state.numQueue) !== parseFloat(this.state.numQueue)) {
             alert("Number of songs to queue must be an integer between 1 and 5")
           } else {
-            console.log("ok")
             for(var i = 0; i<this.state.numQueue; i++) {
                 setTimeout(() => {
                   this.props.queueSong(this.props.curPresetID)
@@ -56,7 +55,6 @@ class StationListening extends React.Component {
         }
     
         const handleQueueChange = (event) => {
-          console.log(event.target.value)
           this.setState({
               numQueue: event.target.value
           })

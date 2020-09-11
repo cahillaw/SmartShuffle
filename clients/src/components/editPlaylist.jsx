@@ -188,9 +188,7 @@ class EditPlaylist extends React.Component {
           }
         })
         .then((res) => {
-          console.log(res.status)
           if(res.status >= 400) {
-            console.log("invalid uri")
             this.setState({
               errorMessage: "Error: Invalid Spotify Playlist URI",
               showError: true
@@ -228,9 +226,7 @@ class EditPlaylist extends React.Component {
         .then((response) => {
           if (response.status === 200) {
             response.json().then((data) => {
-              console.log(data)
               this.props.editPlaylist(this.props.data.presetID, data)
-              console.log(nT)
               this.setState({
                 isChecked: nT > 0,
                 name: this.state.name,
@@ -244,7 +240,6 @@ class EditPlaylist extends React.Component {
               this.props.clickEditPL()
             })
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.editPlaylist)
           }
         })

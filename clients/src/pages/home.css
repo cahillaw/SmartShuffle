@@ -3,12 +3,14 @@ body {
 }
 
 #container {
-    width: 1200px;
+    margin-top: 8px;
+    width: 1140px;
     display:grid;
-    grid-template-columns: 600px 1px;
-    grid-row: auto auto;
-    grid-column-gap: 20px;
-    grid-row-gap: 20px;
+    grid-column-gap: 40px;
+    grid-row-gap: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 #jumbo {
@@ -21,4 +23,9 @@ body {
 
 .color-nav {
     background-color: rgb(140, 177, 192);
+}
+
+#logout {
+    float: right;
+    margin-right: 5px;
 }

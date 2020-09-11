@@ -122,9 +122,7 @@ class Playlist extends React.Component {
           if (response.status === 200) {
             this.props.deletePlaylist(this.props.data.presetID, this.props.data.playlistID)
             this.props.updatePresetTotalTracks(this.props.data.playlistID, 0)
-            console.log("deleted")
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.deletePlaylist)
           }
         })
@@ -133,7 +131,6 @@ class Playlist extends React.Component {
 
     getPlaylistImageAndNumTracks() {
       setTimeout(() => {
-        console.log("redid call")
         var url = "https://api.spotify.com/v1/playlists/" + this.props.data.uri
         fetch(url, {
           method: 'get',
@@ -156,7 +153,6 @@ class Playlist extends React.Component {
               }
             })
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.getPlaylistImageAndNumTracks)
           }
         })

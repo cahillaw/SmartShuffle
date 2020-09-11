@@ -22,7 +22,7 @@ class App extends React.Component {
         <Route path = "/redirect" component={RedirectPage} />
         <Route exact path = "/home" component={Home} />
         <Route exact path = "/404" component={NotFoundPage}/>
-        <Redirect to ="/404/"/>
+        <Redirect to ="/"/>
       </Switch>
     </Router>
   }

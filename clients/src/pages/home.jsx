@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Row, Col, Navbar, Alert } from 'react-bootstrap'
+import { Container, Row, Col, Navbar, Alert, Button } from 'react-bootstrap'
 import Logo from '../images/smartshuflelogo.png'
 import './home.css'
 import Preset from '../components/preset'
@@ -27,13 +27,11 @@ class Home extends React.Component {
       var rt = this.getCookie("refresh_token") 
       var at = this.getCookie("access_token")
       if(this.props.location.state == null) {
-        console.log()
         if (!rt) {
           this.setState ({
             loggedIn: false
           })
         } else {
-          console.log(at)
           this.setState({
             access_token: at,
             refresh_token: rt
@@ -54,7 +52,6 @@ class Home extends React.Component {
             if(!at) {
               this.setCookie("access_token", "Bearer " + this.props.location.state.access_token, .0381944)
             }
-            console.log(this.props.location.state.access_token)
             this.setState({
               access_token: "Bearer " + this.props.location.state.access_token
             },
@@ -64,22 +61,6 @@ class Home extends React.Component {
         }
       }
     }
-
-    /*
-    shouldComponentUpdate(nextProps, nextState) {
-      console.log(nextProps, nextState)
-      
-      if (!this.state.presetsdata === "") {
-        if(nextState.listening === this.state.listening) {
-          return false;
-        } else {
-          console.log("not the same?")
-        }
-      }
-      
-      return true
-    }
-    */
    
     render = () => {
       if (!this.state.loggedIn) {
@@ -121,7 +102,7 @@ class Home extends React.Component {
         return (
           <div>
              <Navbar className="color-nav" variant="light">
-              <Navbar.Brand>
+              <Navbar.Brand className="mr-auto">
                 <img
                   alt=""
                   src={Logo}
@@ -131,6 +112,7 @@ class Home extends React.Component {
                 />{' '}
                 <strong>SmartShuffle</strong>
               </Navbar.Brand>
+              <Button id = "logout" variant= "dark" size= "sm" onClick={() => this.logOut()}>Logout</Button>{' '}
             </Navbar>
             <Container>
               <Row className ="justify-content-md-center">
@@ -204,7 +186,6 @@ class Home extends React.Component {
       this.setState({
         presetsdata: presets
       })
-      console.log(presets)
     }
 
     addNewPlaylist = (pl, psid) => {
@@ -219,7 +200,6 @@ class Home extends React.Component {
       this.setState({
         presetsdata: presets
       })
-      console.log(presets)
     }
 
     deletePreset = (psid) => {
@@ -234,7 +214,6 @@ class Home extends React.Component {
       this.setState({
         presetsdata: presets
       })
-      console.log(presets)
     } 
 
     deletePlaylist = (psid, plid) => {
@@ -253,7 +232,6 @@ class Home extends React.Component {
       this.setState({
         presetsdata: presets
       })
-      console.log(presets)
     }
 
     editPreset = (ps) => {
@@ -269,17 +247,14 @@ class Home extends React.Component {
       this.setState({
         presetsdata: presets
       })
-      console.log(presets)
     }
 
     editPlaylist = (psid, pl) => {
       var presets = this.state.presetsdata
-      console.log(pl)
       for(var i = 0; i<presets.length; i++) {
         if (presets[i].presetId === psid) {
           for(var j = 0; i<presets[i].playlists.length; j++) {
             if(presets[i].playlists[j].playlistID === pl.playlistID) {
-              console.log(pl.playlistName)
               presets[i].playlists[j].NumTracks = pl.NumTracks
               presets[i].playlists[j].order = pl.order
               presets[i].playlists[j].playlistName = pl.playlistName
@@ -294,7 +269,6 @@ class Home extends React.Component {
       this.setState({
         presetsdata: presets
       })
-      console.log(presets)
     }
 
     editPlaylists = (ps) => {
@@ -309,7 +283,6 @@ class Home extends React.Component {
       this.setState({
         presetsdata: presets
       })
-      console.log(presets)
     }
 
     stopListening = () => {
@@ -342,11 +315,8 @@ class Home extends React.Component {
         .then((response) => {
           if (response.status === 200) {
             response.text().then((data) => {
-              console.log(data)
             })
-            console.log("Song Queued!")
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.getAccessToken(this.queueSong)
           } else if (response.status === 404) {
             alert("Cannot find Spotify Session")
@@ -389,12 +359,10 @@ class Home extends React.Component {
         })
         .then((response) => {
           if (response.status === 204) {
-            console.log("song skipped")
             if(this.state.curPresetID > 0) {
               this.queueSong(this.state.curPresetID)
             }
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.getAccessToken(this.skipSong)
           }
         })
@@ -412,9 +380,7 @@ class Home extends React.Component {
         })
         .then((response) => {
           if (response.status === 204) {
-            console.log("paused playback")
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.getAccessToken(this.pause)
           } else if (response.status === 403) {
             alert("Playback is already paused")
@@ -434,9 +400,7 @@ class Home extends React.Component {
         })
         .then((response) => {
           if (response.status === 204) {
-            console.log("started playback")
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.getAccessToken(this.play)
           } else if (response.status === 403) {
             alert("Playback is already playing")
@@ -458,13 +422,11 @@ class Home extends React.Component {
         .then((response) => {
           if (response.status === 200) {
             response.json().then((data) => {
-              console.log(data)
               this.setState({
                 presetsdata: data
               })
             })
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.getAccessToken(this.getUserPageInfo)
           }
         })
@@ -489,11 +451,15 @@ class Home extends React.Component {
           if(this.numRetries < 3) {
             callback()
           } else {
-            console.log("failed")
             this.numRetries = 0
           }
         }, 2000)
       }
+    }
+
+    logOut = () => {
+      document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      window.location.href = '/'
     }
 
     getAccessToken = (callback) => {
@@ -515,7 +481,6 @@ class Home extends React.Component {
         if (response.status === 200) {
           response.json().then((data) => {
             var newAccessToken = "Bearer " + data.access_token
-            console.log(newAccessToken)
             this.setState ({
               access_token: newAccessToken
             },
@@ -526,9 +491,7 @@ class Home extends React.Component {
           this.setState({
             loggedIn: false
           })
-        } else {
-          console.log("failed to get new token")
-        }
+        } 
       })
     }
 
@@ -542,9 +505,7 @@ class Home extends React.Component {
       .then((response) => {
         if (response.status === 200) {
             response.json().then((data) => {
-              console.log(data)
               if (data.product !== "premium") {
-                console.log("not premium")
                 this.setState({
                   isPremium: false,
                   premError: false
@@ -557,7 +518,6 @@ class Home extends React.Component {
               }
             })
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.getAccessToken(this.checkIfPremium)
           }
       }) 

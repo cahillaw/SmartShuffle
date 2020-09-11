@@ -111,7 +111,6 @@ class EditPreset extends React.Component {
               this.props.clickEdit()
             })
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.editNewPreset)
           }
         })

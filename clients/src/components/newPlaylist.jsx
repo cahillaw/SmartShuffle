@@ -118,7 +118,6 @@ class NewPlaylist extends React.Component {
     
     toggleAccord = () => {
       this.setState({ isToggled: !this.state.isToggled})
-      console.log(this.state.isToggled)
     }
 
     toggleChange = () => {
@@ -207,9 +206,7 @@ class NewPlaylist extends React.Component {
           }
         })
         .then((res) => {
-          console.log(res.status)
           if(res.status >= 400) {
-            console.log("invalid uri")
             this.setState({
               errorMessage: "Error: Invalid Spotify Playlist URI",
               showError: true
@@ -259,7 +256,6 @@ class NewPlaylist extends React.Component {
               })
             })
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.createNewPlaylist)
           }
           

@@ -18,12 +18,6 @@ class Preset extends React.Component {
       }
     }
 
-    componentDidMount () {
-      console.log("loaded")
-     // console.log(process.env.REACT_APP_SPOTIFY_CLIENT_ID)
-     // console.log(process.env.REACT_APP_SPOTIFY_CLIENT_SECRET)
-    }
-
     render = () => {
       const ErrorAlert = () => {
         if(!this.props.isPremium) {
@@ -117,7 +111,6 @@ class Preset extends React.Component {
             <strong>{pl.playlistName}</strong>
               <Form.Control key = {i} id = "wbox" type="number" min = "0" max = "10000" size="sm" defaultValue={pl.weight} 
               onChange={e => {
-                console.log(e.target.value)
                 if(e.target.value === "") {
                   weights[i].weight = 0
                 } else if(e.target.value < 0) {
@@ -363,7 +356,6 @@ class Preset extends React.Component {
     }
 
     clickShuffle = () => {
-      console.log("clicked")
       this.props.startShuffling(this.props.data.presetId, this.props.data.presetName);
     }
 
@@ -404,10 +396,8 @@ class Preset extends React.Component {
         })
         .then((response) => {
           if (response.status === 200) {
-            console.log("deleted")
             this.props.deletePreset(this.props.data.presetId)
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.deletePreset)
           }
         })
@@ -431,7 +421,6 @@ class Preset extends React.Component {
               this.props.editPlaylists(data)
             })
           } else if (response.status === 401) {
-            console.log("access token is bad, getting new one...")
             this.props.getAccessToken(this.deletePreset)
           }
         })
