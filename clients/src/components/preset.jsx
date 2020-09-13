@@ -151,19 +151,10 @@ class Preset extends React.Component {
         }
 
         const handleSubmit = () => {
-          var valid = true
-          for(var i = 0; i< pls.length; i++) {
-            totalWeight = totalWeight + pls[i].weight
-          }
-
-          if(valid) {
-            setError(true)
-          } else {
-            var ps = this.props.data
-            ps.playlists = weights
-            props.editWeights(ps)
-            setShow(false);
-          }
+          var ps = this.props.data
+          ps.playlists = weights
+          props.editWeights(ps)
+          setShow(false);
         }
 
         return (
@@ -187,7 +178,7 @@ class Preset extends React.Component {
                 <div id = "totalnum">{total}</div>
                 {showError ? 
                   <Alert id = "ewalert" variant="danger" onClose={removeAlert} dismissible>
-                    Each weight must be an integer greater than 0 and less than 10000
+                    Each weight must be an integer greater than or equal 0 and less than 10000
                   </Alert>
                   : null
                 }

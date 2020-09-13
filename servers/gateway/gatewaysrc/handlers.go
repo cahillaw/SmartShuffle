@@ -75,6 +75,6 @@ func (ctx *GatewayContext) HandleCallback(w http.ResponseWriter, r *http.Request
 	fmt.Println(token.AccessToken)
 	fmt.Println(token.RefreshToken)
 
-	url := "http://localhost:3000/redirect?access_token=" + token.AccessToken + "&refresh_token=" + token.RefreshToken
+	url := "https://smartshuffle.io/redirect?access_token=" + token.AccessToken + "&refresh_token=" + token.RefreshToken
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }

@@ -2,6 +2,8 @@ import React from 'react'
 import './nowPlaying.css'
 import { Spinner, Col, Row, Container, ProgressBar, Button } from 'react-bootstrap'
 import StationListening from '../components/stationListening'
+import Logo from '../images/smartshuflelogo.png'
+
 
 class NowPlaying extends React.Component {
     constructor (props) {
@@ -15,9 +17,11 @@ class NowPlaying extends React.Component {
             length: 0,
             current: 0,
             curMin: "0.00",
-            curLen: "3.00"
+            curLen: "3.00",
+            isIdle: false
         }
         this.npinterval = ""
+        this.time = ""
       }
 
       componentDidMount () {
@@ -27,22 +31,28 @@ class NowPlaying extends React.Component {
           if(!this.props.loggedIn) {
             clearInterval(this.npinterval)
           }
-          num = num + 1
-          if(this.props.listening && !this.state.paused) {
-            var numAdd = 1000
-            if (this.state.current + 1000 > this.state.length) {
-               numAdd = 0
+          if(!this.state.isIdle) {
+            num = num + 1
+            if(this.props.listening && !this.state.paused) {
+              var numAdd = 1000
+              if (this.state.current + 1000 > this.state.length) {
+                numAdd = 0
+              }
+              this.setState({
+                current: this.state.current + numAdd,
+                curMin:  this.millisToMinutesAndSeconds(this.state.current + numAdd)
+              })
             }
-            this.setState({
-              current: this.state.current + numAdd,
-              curMin:  this.millisToMinutesAndSeconds(this.state.current + numAdd)
-            })
-          }
-          if (num%30 === 0) {
-              this.getCurrentPlaybackInfo()
+            if (num%30 === 0) {
+                this.getCurrentPlaybackInfo()
+            }
           }
         }, 1000)
+
+        this.inactivityTime();
+        
       }
+      
       
       render = () => {
         if(!this.props.listening) {
@@ -90,7 +100,7 @@ class NowPlaying extends React.Component {
                 <Col >
                   <strong id = "title">Now Playing</strong>
                   <br></br>
-                  {this.state.loading ? <Spinner id="spinner" animation = "border"/> : <img id ="aa" src={this.state.aa} alt="album artwork"/>}
+                  {this.state.loading ? <Spinner id="spinner" animation = "border"/> : <img id ="aa" src={this.state.aa ? this.state.aa : Logo} alt="album artwork"/>}
                   <br></br>
                   <div id = "textoverflow">
                     <strong>{this.state.track}</strong> 
@@ -145,10 +155,10 @@ class NowPlaying extends React.Component {
                 response.json().then((data) => {
                   this.props.changeListening(data.is_playing)
                   this.setState({
-                    aa: data.item.album.images[0].url,
-                    track: data.item.name,
-                    artist: data.item.artists[0].name,
-                    album: data.item.album.name,
+                    aa: data.item.is_local ? "" : data.item.album.images[0].url,
+                    track: data.item.name ? data.item.name : "Unknown",
+                    artist: data.item.artists[0].name ? data.item.artists[0].name : "Unknown",
+                    album: data.item.album.name ? data.item.album.name : "Unknown",
                     loading: false,
                     current: data.progress_ms,
                     length: data.item.duration_ms,
@@ -173,6 +183,31 @@ class NowPlaying extends React.Component {
         }
         return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
       }
+
+      inactivityTime = () => {
+        window.onload = this.resetTimer;
+        document.onmousemove = this.resetTimer;
+        document.onkeypress = this.resetTimer;
+        document.onmousedown = this.resetTimer; 
+        document.ontouchstart = this.resetTimer;
+        document.onclick = this.resetTimer;    
+      }
+
+      resetTimer = () => {
+        if(this.state.isIdle) {
+          this.getCurrentPlaybackInfo()
+          this.setState({
+            isIdle: false
+          })
+        }
+        clearTimeout(this.time);
+        this.time = setTimeout(() => {
+          this.setState({
+            isIdle: true
+          })
+        }, 300000)
+        // 1000 milliseconds = 1 second
+    }
 }
 
 export default NowPlaying
