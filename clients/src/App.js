@@ -7,6 +7,8 @@ import Home from './pages/home'
 import NotFoundPage from './pages/404'
 import LoginPage from './pages';
 import RedirectPage from './pages/redirect';
+import Login from './pages/login';
+import About from './pages/about';
 class App extends React.Component {
   constructor (props) {
     super(props)
@@ -22,6 +24,8 @@ class App extends React.Component {
         <Route path = "/redirect" component={RedirectPage} />
         <Route exact path = "/home" component={Home} />
         <Route exact path = "/404" component={NotFoundPage}/>
+        <Route exact path = "/login" component={Login}/>
+        <Route exact path = "/about" component={About}/>
         <Redirect to ="/"/>
       </Switch>
     </Router>

@@ -6,6 +6,7 @@ import './home.css'
 import Preset from '../components/preset'
 import Create from '../components/create'
 import NowPlaying from '../components/nowPlaying'
+import SSNav from '../components/ssNav'
 
 class Home extends React.Component {
     constructor (props) {
@@ -101,19 +102,7 @@ class Home extends React.Component {
         );
         return (
           <div>
-             <Navbar className="color-nav" variant="light">
-              <Navbar.Brand className="mr-auto">
-                <img
-                  alt=""
-                  src={Logo}
-                  width="30"
-                  height="30"
-                  className="d-inline-block align-top"
-                />{' '}
-                <strong>SmartShuffle</strong>
-              </Navbar.Brand>
-              <Button id = "logout" variant= "dark" size= "sm" onClick={() => this.logOut()}>Logout</Button>{' '}
-            </Navbar>
+            <SSNav></SSNav>
             <Container>
               <Row className ="justify-content-md-center">
                 <Col md = "auto">

@@ -20,12 +20,3 @@ body {
 #title {
     margin-top: -30px;
 }
-
-.color-nav {
-    background-color: rgb(140, 177, 192);
-}
-
-#logout {
-    float: right;
-    margin-right: 5px;
-}

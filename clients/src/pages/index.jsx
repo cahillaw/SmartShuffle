@@ -36,7 +36,7 @@ class LoginPage extends React.Component {
               <h5 id = "catch">Shuffling like you have never seen it before</h5>
               <div id = "premreq">Spotify Premium Required</div>
               <div id = "centered">
-                <Button id = "loginbutton" variant= "dark" size= "sm" href="https://shuffle.cahillaw.me/login">Login With Spotify</Button>{' '}
+                <Button id = "loginbutton" variant= "dark" size= "sm" href="http://localhost:3000/login">Login With Spotify</Button>{' '}
               </div>
             </Col>
           </Row>
