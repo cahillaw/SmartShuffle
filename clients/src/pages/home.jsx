@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Row, Col, Navbar, Alert, Button } from 'react-bootstrap'
-import Logo from '../images/smartshuflelogo.png'
+import { Container, Row, Col, Alert } from 'react-bootstrap'
 import './home.css'
 import Preset from '../components/preset'
 import Create from '../components/create'

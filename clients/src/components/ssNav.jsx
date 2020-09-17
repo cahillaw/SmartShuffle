@@ -1,6 +1,6 @@
 import React from 'react'
 import Logo from '../images/smartshuflelogo.png'
-import { Container, Row, Col, Navbar, Alert, Button, Nav, Form, FormControl } from 'react-bootstrap'
+import { Container, Navbar, Button, Nav } from 'react-bootstrap'
 import './ssNav.css'
 
 
@@ -11,10 +11,7 @@ class SSNav extends React.Component {
       this.state = {
       }
     }
-
-    componentDidMount() {
-    }
-
+    
     render = () => {
       return (
         <Navbar expand="xl" className="color-nav" variant="light">
