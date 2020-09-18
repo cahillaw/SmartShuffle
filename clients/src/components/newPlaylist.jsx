@@ -11,7 +11,7 @@ class NewPlaylist extends React.Component {
         uri: '',
         order: true,
         numTracks: -1,
-        weight: 0,
+        weight: 20,
         showError: false,
         errorMessage: '',
         isToggled: false

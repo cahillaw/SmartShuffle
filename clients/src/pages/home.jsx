@@ -26,11 +26,19 @@ class Home extends React.Component {
     componentDidMount () {
       var rt = this.getCookie("refresh_token") 
       var at = this.getCookie("access_token")
+      //if didn't come from login page:
       if(this.props.location.state == null) {
         if (!rt) {
           this.setState ({
             loggedIn: false
           })
+        } else if (!at) {
+          this.setState({
+            refresh_token: rt
+          },
+          this.getAccessToken(() => {
+            this.onATCallback()
+          }))
         } else {
           this.setState({
             access_token: at,
@@ -40,6 +48,7 @@ class Home extends React.Component {
           )
         }
       } else {
+        //came from login page
         if (this.state.access_token === '') {
           if(!at && rt) {
             //if page is refreshed once access token has expired
@@ -241,13 +250,9 @@ class Home extends React.Component {
       var presets = this.state.presetsdata
       for(var i = 0; i<presets.length; i++) {
         if (presets[i].presetId === psid) {
-          for(var j = 0; i<presets[i].playlists.length; j++) {
+          for(var j = 0; j<presets[i].playlists.length; j++) {
             if(presets[i].playlists[j].playlistID === pl.playlistID) {
-              presets[i].playlists[j].NumTracks = pl.NumTracks
-              presets[i].playlists[j].order = pl.order
-              presets[i].playlists[j].playlistName = pl.playlistName
-              presets[i].playlists[j].uri = pl.uri
-              presets[i].playlists[j].weight = pl.weight
+              presets[i].playlists[j] = pl
               break
             }
           }
@@ -290,7 +295,7 @@ class Home extends React.Component {
       }
     }
 
-    queueSong = (psid) => {
+    queueSong = (psid, callback) => {
       setTimeout(() => {
         var url = "https://shuffle.cahillaw.me/v1/queue/" + psid
         fetch(url, {
@@ -302,8 +307,9 @@ class Home extends React.Component {
         })
         .then((response) => {
           if (response.status === 200) {
-            response.text().then((data) => {
-            })
+            if(typeof callback === "function") {
+              callback();
+            }
           } else if (response.status === 401) {
             this.getAccessToken(this.queueSong)
           } else if (response.status === 404) {
@@ -337,6 +343,14 @@ class Home extends React.Component {
     }
 
     skipSong = () => {
+      if(this.state.curPresetID > 0) {
+        this.queueSong(this.state.curPresetID, this.ssFunc)
+      } else {
+        this.ssFunc();
+      }
+    }
+
+    ssFunc = () => {
       setTimeout(() => {
         var url = "https://api.spotify.com/v1/me/player/next"
         fetch(url, {
@@ -346,11 +360,7 @@ class Home extends React.Component {
           }
         })
         .then((response) => {
-          if (response.status === 204) {
-            if(this.state.curPresetID > 0) {
-              this.queueSong(this.state.curPresetID)
-            }
-          } else if (response.status === 401) {
+          if (response.status === 401) {
             this.getAccessToken(this.skipSong)
           }
         })
@@ -469,6 +479,7 @@ class Home extends React.Component {
         if (response.status === 200) {
           response.json().then((data) => {
             var newAccessToken = "Bearer " + data.access_token
+            this.setCookie("access_token", newAccessToken, .0381944)
             this.setState ({
               access_token: newAccessToken
             },

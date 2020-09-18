@@ -48,6 +48,15 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
+                <h3 id="-0-0-0-9-17-20"> [0.1.1] - 9/17/20</h3>
+                <ul>
+                <li>Fixed a bug that defaulted new playlist's weight to 0 and new station's repeat limit to 0.</li>
+                <li>Fixed a bug that caused recently added to not work properly on playlists with greater than 200 songs.</li>
+                <li>Fixed a bug that caused playlist edits to not be displayed. These edits were recorded properly, however you had to refresh the page to see them.</li>
+                <li>Fixed a bug that prevented the progress bar from pausing after hiting the pause button. </li>
+                <li>If you are listening to a station, the skip button will now queue a song first before skipping. This was previously in the opposite order, which caused problems when there was no other songs in queue.</li>
+                <li>Added a warning notifying users that SmartShuffle will not queue new tracks when your playback is paused.</li>
+                </ul>
                 <h3 id="-0-0-0-9-16-20">[0.1.0] - 9/16/20</h3>
                 <ul>
                 <li>Added about page.</li>

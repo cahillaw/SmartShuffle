@@ -24,6 +24,7 @@ class StationListening extends React.Component {
 
         const handlePause = () => {
           this.props.pause();
+          this.props.pausedProgress();
           this.setState({
             paused: true
           })
@@ -31,6 +32,7 @@ class StationListening extends React.Component {
 
         const handlePlay = () => {
           this.props.play();
+          this.props.pausedProgress();
           this.setState({
             paused: false
           })

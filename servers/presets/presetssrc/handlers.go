@@ -398,11 +398,11 @@ func (ctx *PresetContext) QueueSong(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(uri))
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(uri))
 }
 
-//TestGPT is a test habndlker
+//TestGPT is a test handler
 func (ctx *PresetContext) TestGPT(w http.ResponseWriter, r *http.Request) {
 	userHeader := r.Header.Get("X-User")
 	if len(userHeader) == 0 {
@@ -533,7 +533,7 @@ func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, error) {
 	startIndex := pl.NumTracks //temp
 	if tracks.Total > 100 {
 		if pl.NumTracks > 0 {
-			startIndex = tracks.Total % 100
+			startIndex = tracks.Total - 100
 		} else {
 			rand.Seed(time.Now().UnixNano())
 			startIndex = rand.Intn(tracks.Total-100) + 1

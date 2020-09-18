@@ -1,6 +1,6 @@
 import React from 'react'
 import './nowPlaying.css'
-import { Spinner, Col, Row, Container, ProgressBar, Button } from 'react-bootstrap'
+import { Spinner, Col, Row, Container, ProgressBar, Button, Alert } from 'react-bootstrap'
 import StationListening from '../components/stationListening'
 import Logo from '../images/smartshuflelogo.png'
 
@@ -22,6 +22,7 @@ class NowPlaying extends React.Component {
         }
         this.npinterval = ""
         this.time = ""
+        this.time2 = ""
       }
 
       componentDidMount () {
@@ -33,7 +34,7 @@ class NowPlaying extends React.Component {
           }
           if(!this.state.isIdle) {
             num = num + 1
-            if(this.props.listening && !this.state.paused) {
+            if(this.props.listening && !this.state.pausedProgress) {
               var numAdd = 1000
               if (this.state.current + 1000 > this.state.length) {
                 numAdd = 0
@@ -67,6 +68,7 @@ class NowPlaying extends React.Component {
                   <strong>Listening to {this.props.curPresetName}</strong>
                   <br></br>
                   <br></br>
+                  <Alert id = "noqueue" variant = "warning">SmartShuffle will not queue while playback is paused</Alert>
                   <Button id = "stoplistening" variant= "dark" size= "sm" onClick={this.props.stopListening}>Stop Listening</Button>{' '}
                 </div>  
               )               
@@ -119,9 +121,9 @@ class NowPlaying extends React.Component {
                     curPresetID = {this.props.curPresetID}
                     curPresetName = {this.props.curPresetName}
                     handleTQChange = {this.handleTQChange}
-                    paused = {this.state.paused}
                     getCurrentPlaybackInfo = {this.getCurrentPlaybackInfo}
                     listening = {this.props.listening}
+                    pausedProgress = {this.pausedProgress}
                     ></StationListening>
                 </Col>
               </Row>
@@ -164,7 +166,7 @@ class NowPlaying extends React.Component {
                     length: data.item.duration_ms,
                     curMin: this.millisToMinutesAndSeconds(data.progress_ms),
                     curLen: this.millisToMinutesAndSeconds(data.item.duration_ms),
-                    paused: !data.is_playing
+                    pausedProgress: !data.is_playing
                   })
                 })
               } else if (response.status === 401) {
@@ -174,10 +176,17 @@ class NowPlaying extends React.Component {
           }, 0)
       }
 
+      pausedProgress = () => {
+        this.setState({
+          pausedProgress: !this.state.pausedProgress
+        })
+      }
+
       millisToMinutesAndSeconds(millis) {
         var minutes = Math.floor(millis / 60000);
         var seconds = ((millis % 60000) / 1000).toFixed(0);
-        if (seconds === 60) {
+      //  console.log(seconds)
+        if (parseInt(seconds) === 60) {
           minutes = minutes + 1
           seconds = 0
         }
@@ -201,12 +210,21 @@ class NowPlaying extends React.Component {
           })
         }
         clearTimeout(this.time);
+        clearTimeout(this.time2)
         this.time = setTimeout(() => {
           this.setState({
             isIdle: true
           })
+          var currentPausedState = this.props.listening
+          this.time2 = setTimeout(()=> {
+            this.getCurrentPlaybackInfo()
+            setTimeout(() => {
+              if(this.props.listening !== currentPausedState) {
+                this.resetTimer();
+              }
+            }, 5000)
+          }, 300000)
         }, 300000)
-        // 1000 milliseconds = 1 second
     }
 }
 

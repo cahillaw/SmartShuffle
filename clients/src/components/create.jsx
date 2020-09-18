@@ -7,7 +7,7 @@ class Create extends React.Component {
       super(props)
       this.state = {
         clicked: false,
-        repeatLimit: 0,
+        repeatLimit: 20,
         name: '',
         showError: false
       }
@@ -40,7 +40,7 @@ class Create extends React.Component {
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                       <Form.Label><strong>Repeat Limit</strong></Form.Label>
-                      <Form.Control type="number" min="0" max ="50" placeholder="20" onChange={this.handleRepeatLimitChange}/>
+                      <Form.Control type="number" min="0" max ="50" placeholder="20" defaultValue ="20" onChange={this.handleRepeatLimitChange}/>
                       <Form.Text id = "ft">
                       Repeat Limit is the number of tracks in between two plays of the same song. For example, if the Repeat Limit was 20 and you just heard a song, you would not hear it for another 20 songs. Choose 0 for no repeat limit.
                       </Form.Text>

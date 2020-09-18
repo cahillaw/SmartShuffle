@@ -34,4 +34,7 @@
 
 .contentcol {
     margin-bottom: 10px;
+    max-height: 750px;
+    overflow-y: scroll;
+    overflow: auto;
 }
