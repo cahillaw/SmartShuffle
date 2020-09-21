@@ -8,6 +8,7 @@
 - Fixed a bug that prevented the progress bar from pausing after hiting the pause button. 
 - If you are listening to a station, the skip button will now queue a song first before skipping. This was previously in the opposite order, which caused problems when there was no other songs in queue.
 - Added a warning notifying users that SmartShuffle will not queue new tracks when your playback is paused.
+- Idle timer improvements to hopefully stop music from either queuing not or queueing due to poorly timed pausing of playback.
 
 ### [0.1.0] - 9/16/20
 - Added about page.

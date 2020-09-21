@@ -14,7 +14,15 @@ class About extends React.Component {
     }
 
     componentDidMount() {
-
+      if(this.props.location.hash.replace("#", "") === "") {
+        this.setState({
+          route: "info"
+        })
+      } else {
+        this.setState({
+          route: this.props.location.hash.replace("#", "")
+        })
+      }
     }
 
     render = () => {
@@ -48,14 +56,25 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
+                <h3 id="-0-0-0-9-20-20"> [0.1.2] - 9/17/20</h3>
+                <ul>
+                <li>Reworked styling on login page, should now fit the screen regardless of screen size</li>
+                <li>Added links to About, Privacy and Contact us to the login page.</li>
+                <li>Updated navbar to support being linked from the login page. If not logged in, it will show login with Spotify and the SmartShuffle logo will link to the login page instead of home.</li>
+                <li>Fixed a bug that prevented the progress bar from pausing after hiting the pause button. </li>
+                <li>If you are listening to a station, the skip button will now queue a song first before skipping. This was previously in the opposite order, which caused problems when there was no other songs in queue.</li>
+                <li>Added a warning notifying users that SmartShuffle will not queue new tracks when your playback is paused.</li>
+                </ul>
                 <h3 id="-0-0-0-9-17-20"> [0.1.1] - 9/17/20</h3>
                 <ul>
                 <li>Fixed a bug that defaulted new playlist's weight to 0 and new station's repeat limit to 0.</li>
+                <li>Fixed a bug that would case SmartShuffle to think you didn't have premium after navigating from the about page.</li>
                 <li>Fixed a bug that caused recently added to not work properly on playlists with greater than 200 songs.</li>
                 <li>Fixed a bug that caused playlist edits to not be displayed. These edits were recorded properly, however you had to refresh the page to see them.</li>
                 <li>Fixed a bug that prevented the progress bar from pausing after hiting the pause button. </li>
                 <li>If you are listening to a station, the skip button will now queue a song first before skipping. This was previously in the opposite order, which caused problems when there was no other songs in queue.</li>
                 <li>Added a warning notifying users that SmartShuffle will not queue new tracks when your playback is paused.</li>
+                <li>Idle timer improvements to hopefully stop music from either queuing not or queueing due to poorly timed pausing of playback.</li>
                 </ul>
                 <h3 id="-0-0-0-9-16-20">[0.1.0] - 9/16/20</h3>
                 <ul>

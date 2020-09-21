@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Button } from 'react-bootstrap'
+import { Row, Col, Button, Nav } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom'
 
 
@@ -29,17 +29,28 @@ class LoginPage extends React.Component {
         }} />
       }
       return (
-        <div id = "base">
-          <Row id = "row1" className="align-items-center">
-            <Col>
-              <h1 id = "ltitle">SmartShuffle.io</h1>
-              <h5 id = "catch">Shuffling like you have never seen it before</h5>
-              <div id = "premreq">Spotify Premium Required</div>
-              <div id = "centered">
-                <Button id = "loginbutton" variant= "dark" size= "sm" href="https://smartshuffle.io/login">Login With Spotify</Button>{' '}
-              </div>
-            </Col>
+        <div id ="loginpagebody">
+          <div id = "base">
+            <Row className="align-items-center">
+              <Col>
+                <h1 id = "ltitle">SmartShuffle.io</h1>
+                <h5 id = "catch">Shuffling like you have never seen it before</h5>
+                <div id = "premreq">Spotify Premium Required</div>
+                <div id = "centered">
+                  <Button id = "loginbutton" variant= "dark" size= "sm" href="https://smartshuffle.io/login">Login with Spotify</Button>{' '}
+                </div>
+              </Col>
+            </Row>
+          </div>
+          <div className="footer">
+          <Row className="align-items-center">
+            <Nav className="mr-auto">
+              <Nav.Link id = "footertext" href="/about">About</Nav.Link>
+              <Nav.Link id = "footertext" href="/about#privacy">Privacy</Nav.Link>
+              <Nav.Link id = "footertext" href="/about#contact">Contact Us</Nav.Link>
+            </Nav>
           </Row>
+          </div>
         </div>
       )
     }
