@@ -56,7 +56,12 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
-                <h3 id="-0-0-0-9-20-20"> [0.1.2] - 9/17/20</h3>
+                <h3 id="-0-0-0-9-21-20"> [0.1.3] - 9/21/20</h3>
+                <ul>
+                <li>Fixed a bug that caused queuing to stop sometime after going idle.</li>
+                <li>Fixed a bug that caused now playing to not update after skipping a song.</li>
+                </ul>
+                <h3 id="-0-0-0-9-20-20"> [0.1.2] - 9/20/20</h3>
                 <ul>
                 <li>Reworked styling on login page, should now fit the screen regardless of screen size</li>
                 <li>Added links to About, Privacy and Contact us to the login page.</li>

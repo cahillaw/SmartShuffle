@@ -16,10 +16,9 @@ class StationListening extends React.Component {
 
     render = () => {
         const handleSkip = () => {
-          this.props.skipSong();
-          setTimeout(() => {
+          this.props.skipSong("",setTimeout(() => {
             this.props.getCurrentPlaybackInfo()
-          }, 1000)
+          }, 1000));
         }
 
         const handlePause = () => {

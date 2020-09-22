@@ -310,7 +310,7 @@ class Home extends React.Component {
             if(typeof callback === "function") {
               callback();
             }
-          } else if (response.status === 401) {
+          } else if (response.status === 401 || response.status === 403 ) {
             this.getAccessToken(this.queueSong)
           } else if (response.status === 404) {
             alert("Cannot find Spotify Session")
@@ -342,15 +342,15 @@ class Home extends React.Component {
       },0)
     }
 
-    skipSong = () => {
+    skipSong = (callback) => {
       if(this.state.curPresetID > 0) {
-        this.queueSong(this.state.curPresetID, this.ssFunc)
+        this.queueSong(this.state.curPresetID, this.ssFunc(callback))
       } else {
-        this.ssFunc();
+        this.ssFunc(callback);
       }
     }
 
-    ssFunc = () => {
+    ssFunc = (callback) => {
       setTimeout(() => {
         var url = "https://api.spotify.com/v1/me/player/next"
         fetch(url, {
@@ -360,6 +360,9 @@ class Home extends React.Component {
           }
         })
         .then((response) => {
+          if(typeof callback === "function") {
+            callback();
+          }
           if (response.status === 401) {
             this.getAccessToken(this.skipSong)
           }
