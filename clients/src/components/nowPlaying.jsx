@@ -22,7 +22,6 @@ class NowPlaying extends React.Component {
         }
         this.npinterval = ""
         this.time = ""
-        this.time2 = ""
       }
 
       componentDidMount () {
@@ -44,9 +43,9 @@ class NowPlaying extends React.Component {
                 curMin:  this.millisToMinutesAndSeconds(this.state.current + numAdd)
               })
             }
-            if (num%30 === 0) {
-                this.getCurrentPlaybackInfo()
-            }
+          }
+          if (this.state.isIdle ? num%300 === 0 : num%30 ===0) {
+            this.getCurrentPlaybackInfo()
           }
         }, 1000)
 
@@ -210,20 +209,10 @@ class NowPlaying extends React.Component {
           })
         }
         clearTimeout(this.time);
-        clearTimeout(this.time2)
         this.time = setTimeout(() => {
           this.setState({
             isIdle: true
           })
-          var currentPausedState = this.props.listening
-          this.time2 = setTimeout(()=> {
-            this.getCurrentPlaybackInfo()
-            setTimeout(() => {
-              if(this.props.listening !== currentPausedState) {
-                this.resetTimer();
-              }
-            }, 5000)
-          }, 300000)
         }, 300000)
     }
 }

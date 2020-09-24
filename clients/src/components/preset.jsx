@@ -14,8 +14,16 @@ class Preset extends React.Component {
         edit: false,
         listening: false,
         presetTotalTracks: 0,
-        totalTracksMap: new Map()
+        totalTracksMap: new Map(),
+        presetAvgLength: 0,
+        lengthsMap: new Map()
       }
+    }
+
+    componentDidMount() {
+      setTimeout(()=> {
+        //this.calculateAvgLength()
+      }, 1000)
     }
 
     render = () => {
@@ -92,7 +100,7 @@ class Preset extends React.Component {
       }
 
       const EditWeightsModal = (props) => {
-        var pls = props.data.playlists
+        var pls = JSON.parse(JSON.stringify(props.data.playlists))
         var totalWeight = 0
         
         for(var i = 0; i< pls.length; i++) {
@@ -139,6 +147,13 @@ class Preset extends React.Component {
 
         const handleShow = () => {
           setShow(!show)
+          pls = JSON.parse(JSON.stringify(props.data.playlists))
+          totalWeight = 0
+          for(var i = 0; i< pls.length; i++) {
+            totalWeight = totalWeight + pls[i].weight
+          }
+          setWeight(pls)
+          setTotal(totalWeight)
         } 
 
         const handleClose = () => {
@@ -151,7 +166,7 @@ class Preset extends React.Component {
         }
 
         const handleSubmit = () => {
-          var ps = this.props.data
+          var ps = JSON.parse(JSON.stringify(this.props.data))
           ps.playlists = weights
           props.editWeights(ps)
           setShow(false);
@@ -200,7 +215,7 @@ class Preset extends React.Component {
 
         const [show, setShow] = useState(false);
         const [numQueue, setQueue] = useState(5);
-        const [interval, setInterval] = useState(3);
+        const [interval, setInterval] = useState(props.presetAvgLength);
         const [errorMessage, setEM] = useState("")
         const [showError, showErrorMessage] = useState(false)
 
@@ -259,9 +274,12 @@ class Preset extends React.Component {
                   </Form.Text>
                   <br></br>
                   <Form.Label><strong>Queue Interval</strong></Form.Label>
-                  <Form.Control type="number" size="sm" min="2" max ="60" placeholder="3" defaultValue="3" onChange={handleIntervalChange}/>
+                  <Form.Control type="number" size="sm" min="2" max ="60" placeholder="3" defaultValue={isNaN(props.presetAvgLength) ? "3" : props.presetAvgLength} step ="1" onChange={handleIntervalChange}/>
+
                   <Form.Text>
-                      SmartShuffle will automatically queue a new song every X minutes. For seamless listening, select a value close to the average song length of songs in the station.
+                      {isNaN(props.presetAvgLength) ? <strong>Queue interval auto-detection failed, total station weight is 0.</strong> : <strong>Queue interval auto-detected at {props.presetAvgLength} minutes </strong>}
+                      <br></br>
+                      SmartShuffle will automatically queue a new song every X minutes. For seamless listening, select a value close to the average track length of tracks in the station. The auto-detected value attempts to do this for you!
                   </Form.Text>
                 </Form.Group>
                 {showError ? 
@@ -296,6 +314,7 @@ class Preset extends React.Component {
           editPlaylist = {this.props.editPlaylist}
           getAccessToken = {this.props.getAccessToken}
           updatePresetTotalTracks = {this.updatePresetTotalTracks}
+          updatePlaylistAvgLength = {this.updatePlaylistAvgLength}
         />
       </div>
       );
@@ -320,7 +339,8 @@ class Preset extends React.Component {
           <div id = "preset">
             <div id = "pname"> {this.props.data.presetName} </div>
             <StartShuffleModal 
-              startShuffling = {this.props.startShuffling}>
+              startShuffling = {this.props.startShuffling}
+              presetAvgLength = {this.state.presetAvgLength}>
             </StartShuffleModal>
             <div id = "rlimit"> Repeat Limit: {this.props.data.repeatLimit} </div>
             <div id = "playlists">
@@ -375,6 +395,32 @@ class Preset extends React.Component {
       })
     }
 
+    updatePlaylistAvgLength = (plid, num) => {
+      var map = this.state.lengthsMap
+      map.set(plid, num/60000)
+
+      this.calculateAvgLength()
+    }
+
+    calculateAvgLength = () => {
+      var totalWeight = 0
+      var totalLength = 0
+
+      for(var i = 0; i<this.props.data.playlists.length; i++) {
+        totalWeight = totalWeight + this.props.data.playlists[i].weight
+      }
+
+      var map = this.state.lengthsMap
+      for(var j = 0; j<this.props.data.playlists.length; j++) {
+        totalLength = totalLength + map.get(this.props.data.playlists[j].playlistID)*this.props.data.playlists[j].weight/totalWeight
+      }
+      var avg = (totalLength).toFixed(2)
+
+      this.setState({
+        presetAvgLength: avg
+      })
+    }
+
     deletePreset = () => { 
       setTimeout(() => {
         var url = "https://shuffle.cahillaw.me/v1/presets/" + this.props.data.presetId
@@ -410,6 +456,9 @@ class Preset extends React.Component {
           if (response.status === 200) {
             response.json().then((data) => {
               this.props.editPlaylists(data)
+              setTimeout(() =>{
+                this.calculateAvgLength()
+              },0)
             })
           } else if (response.status === 401) {
             this.props.getAccessToken(this.deletePreset)

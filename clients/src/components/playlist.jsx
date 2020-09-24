@@ -87,6 +87,7 @@ class Playlist extends React.Component {
                       getUserPageInfo = {this.props.getUserPageInfo}
                       editPlaylist = {this.props.editPlaylist}
                       getAccessToken = {this.props.getAccessToken}
+                      getPlaylistImageAndNumTracks = {this.getPlaylistImageAndNumTracks}
                     />
                   </div>
                   : null } 
@@ -122,6 +123,7 @@ class Playlist extends React.Component {
           if (response.status === 200) {
             this.props.deletePlaylist(this.props.data.presetID, this.props.data.playlistID)
             this.props.updatePresetTotalTracks(this.props.data.playlistID, 0)
+            this.props.updatePlaylistAvgLength(this.props.data.playlistID, 0)
           } else if (response.status === 401) {
             this.props.getAccessToken(this.deletePlaylist)
           }
@@ -129,7 +131,7 @@ class Playlist extends React.Component {
       }, 0)
     }
 
-    getPlaylistImageAndNumTracks() {
+    getPlaylistImageAndNumTracks = () => {
       setTimeout(() => {
         var url = "https://api.spotify.com/v1/playlists/" + this.props.data.uri
         fetch(url, {
@@ -146,11 +148,46 @@ class Playlist extends React.Component {
                 totalTracks: pladata.tracks.total,
                 loading: false
               })
+
+              //for auto-detecting queue interval
+              var avgLength = 0
+              var totalAvgLength = 0
+              if(pladata.tracks.total <= 100) {
+                if(this.props.data.NumTracks < 0) {
+                  for (var i = 0; i<pladata.tracks.total; i++) {
+                    avgLength = avgLength + pladata.tracks.items[i].track.duration_ms
+                  }
+                  totalAvgLength = avgLength/pladata.tracks.total
+                } else {
+                  if(this.props.data.order) {
+                    for (var j = 0; j<this.props.data.NumTracks; j++) {
+                      avgLength = avgLength + pladata.tracks.items[j].track.duration_ms
+                    }
+                    totalAvgLength = avgLength/this.props.data.NumTracks
+                  } else {
+                    for (var k = this.props.data.NumTracks - 1; k>=0; k--) {
+                      avgLength = avgLength + pladata.tracks.items[k].track.duration_ms
+                    }
+                    totalAvgLength = avgLength/this.props.data.NumTracks
+                  }
+                }
+              } else {
+                for (var l = 0; l<100; l++) {
+                  avgLength = avgLength + pladata.tracks.items[l].track.duration_ms
+                }
+                totalAvgLength = avgLength/100
+              }
+
+              this.props.updatePlaylistAvgLength(this.props.data.playlistID, totalAvgLength)
+              //end section
+
+              //for bad preset composition
               if(this.props.data.NumTracks < 0 ) {
                 this.props.updatePresetTotalTracks(this.props.data.playlistID, pladata.tracks.total)
               } else {
                 this.props.updatePresetTotalTracks(this.props.data.playlistID, this.props.data.NumTracks)
               }
+
             })
           } else if (response.status === 401) {
             this.props.getAccessToken(this.getPlaylistImageAndNumTracks)

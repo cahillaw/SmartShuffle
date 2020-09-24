@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col, Button, Nav } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 
 class LoginPage extends React.Component {
@@ -31,6 +32,11 @@ class LoginPage extends React.Component {
       return (
         <div id ="loginpagebody">
           <div id = "base">
+            <Helmet>
+                <title>Login | SmartShuffle.io</title>
+                <meta property="og:title" content = "Login | SmartShuffle.io"/>
+                <meta property="og:url" content = "http://smartshuffle.io"/>
+            </Helmet>
             <Row className="align-items-center">
               <Col>
                 <h1 id = "ltitle">SmartShuffle.io</h1>

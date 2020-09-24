@@ -1,5 +1,6 @@
 import React from 'react'
 import { Container, Row, Col, Nav, Navbar } from 'react-bootstrap'
+import { Helmet } from 'react-helmet'
 import './about.css'
 import SSNav from '../components/ssNav'
 
@@ -56,6 +57,16 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
+                <h3 id="-0-2-0-9-23-20">[0.2.0] - 9/23/20</h3>
+                <ul>
+                <li>Added site metadata, the site should now embed properly into external sites such as Facebook/Twitter/Discord/etc.</li>
+                <li>Added page titles.</li>
+                <li>If idle, SmartShuffle will now check your playback every 5 minutes instead of every 30 seconds. </li>
+                <li>Closing Edit Playlist Weights without making a change now resets changes.</li>
+                <li>Added Auto-Detection for Queue Interval. This is not perfect, otherwise it would require making additional api calls, however the estimate should be pretty close in the vast majority of cases.</li>
+                <li>Fixed a bug that caused Edit Playlist Weights to not work after editing a playlist.</li>
+                <li>Fixed a bug that caused bad access tokens to used in certain cases. This resulted in the site thinking you did not have premium, forcing you to log out and log back in again.</li>
+                </ul>
                 <h3 id="-0-0-0-9-21-20"> [0.1.3] - 9/21/20</h3>
                 <ul>
                 <li>Fixed a bug that caused queuing to stop sometime after going idle.</li>
@@ -129,6 +140,11 @@ class About extends React.Component {
 
       return (
           <div>
+            <Helmet>
+              <title>About | SmartShuffle.io</title>
+              <meta property="og:title" content="About | SmartShuffle.io"/>
+              <meta property="og:url" content="http://smartshuffle.io/about"/>
+            </Helmet>
               <SSNav></SSNav>
               <Container className = "subnavcont">
                 <Navbar className = "subnav" bg="dark" variant="dark">

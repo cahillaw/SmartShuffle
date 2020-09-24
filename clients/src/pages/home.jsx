@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
+import { Helmet } from 'react-helmet'
 import './home.css'
 import Preset from '../components/preset'
 import Create from '../components/create'
@@ -27,12 +28,12 @@ class Home extends React.Component {
       var rt = this.getCookie("refresh_token") 
       var at = this.getCookie("access_token")
       //if didn't come from login page:
-      if(this.props.location.state == null) {
-        if (!rt) {
-          this.setState ({
-            loggedIn: false
-          })
-        } else if (!at) {
+      if(!rt) {
+        this.setState ({
+          loggedIn: false
+        })
+      } else if (this.props.location.state == null) {
+         if (!at) {
           this.setState({
             refresh_token: rt
           },
@@ -50,23 +51,10 @@ class Home extends React.Component {
       } else {
         //came from login page
         if (this.state.access_token === '') {
-          if(!at && rt) {
             //if page is refreshed once access token has expired
             this.getAccessToken(() => {
               this.onATCallback()
             })
-          } else {
-            //normal
-            this.setCookie("refresh_token", this.props.location.state.refresh_token, 365)
-            if(!at) {
-              this.setCookie("access_token", "Bearer " + this.props.location.state.access_token, .0381944)
-            }
-            this.setState({
-              access_token: "Bearer " + this.props.location.state.access_token
-            },
-            this.onATCallback
-            ) 
-          }
         }
       }
     }
@@ -110,6 +98,11 @@ class Home extends React.Component {
         );
         return (
           <div>
+            <Helmet>
+              <title>Home | SmartShuffle.io</title>
+              <meta property="og:title" content = "Home| SmartShuffle.io"/>
+              <meta property="og:url" content = "http://smartshuffle.io/home"/>
+            </Helmet>
             <SSNav></SSNav>
             <Container>
               <Row className ="justify-content-md-center">

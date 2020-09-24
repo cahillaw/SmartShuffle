@@ -215,7 +215,7 @@ class EditPlaylist extends React.Component {
             'Authorization': this.props.access_token 
           },
           body: JSON.stringify({
-            presetID: this.props.data.presetId,
+            presetID: this.props.data.presetID,
             playlistName: this.state.name,
             uri: this.state.uri,
             NumTracks: nT,
@@ -238,6 +238,7 @@ class EditPlaylist extends React.Component {
                 errorMessage: ''
               })
               this.props.clickEditPL()
+              this.props.getPlaylistImageAndNumTracks()
             })
           } else if (response.status === 401) {
             this.props.getAccessToken(this.editPlaylist)
