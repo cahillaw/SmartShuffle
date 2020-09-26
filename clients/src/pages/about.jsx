@@ -57,6 +57,13 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
+                <h3 id="-0-2-1-9-25-20">[0.2.1] - 9/25/20</h3>
+                <ul>
+                <li>Now playing now seamlessly moves to the next song when the current song ends.</li>
+                <li>Fixed a bug that occasionally caused a song to fail to queue.</li>
+                <li>Fixed a bug that broke logging in for new users.</li>
+                <li>Fixed a bug that caused the new playlist accordion to collapse when submitting if invalid inputs were detected.</li>
+                </ul>
                 <h3 id="-0-2-0-9-23-20">[0.2.0] - 9/23/20</h3>
                 <ul>
                 <li>Added site metadata, the site should now embed properly into external sites such as Facebook/Twitter/Discord/etc.</li>

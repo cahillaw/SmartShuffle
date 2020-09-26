@@ -22,6 +22,7 @@ class NowPlaying extends React.Component {
         }
         this.npinterval = ""
         this.time = ""
+        this.updateWhenNext = ""
       }
 
       componentDidMount () {
@@ -167,6 +168,10 @@ class NowPlaying extends React.Component {
                     curLen: this.millisToMinutesAndSeconds(data.item.duration_ms),
                     pausedProgress: !data.is_playing
                   })
+                  clearTimeout(this.updateWhenNext)
+                  this.updateWhenNext = setTimeout(()=>{
+                    this.getCurrentPlaybackInfo()
+                  },(data.item.duration_ms - data.progress_ms - 1000))
                 })
               } else if (response.status === 401) {
                 this.props.getAccessToken(this.getCurrentPlaybackInfo)

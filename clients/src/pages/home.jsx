@@ -28,12 +28,13 @@ class Home extends React.Component {
       var rt = this.getCookie("refresh_token") 
       var at = this.getCookie("access_token")
       //if didn't come from login page:
-      if(!rt) {
-        this.setState ({
-          loggedIn: false
-        })
-      } else if (this.props.location.state == null) {
-         if (!at) {
+  
+      if (this.props.location.state == null) {
+        if(!rt) {
+          this.setState ({
+            loggedIn: false
+          })
+        } else if (!at) {
           this.setState({
             refresh_token: rt
           },
@@ -51,10 +52,17 @@ class Home extends React.Component {
       } else {
         //came from login page
         if (this.state.access_token === '') {
-            //if page is refreshed once access token has expired
-            this.getAccessToken(() => {
-              this.onATCallback()
+          if(!rt) {
+            this.setState ({
+              loggedIn: false
             })
+          } else {
+            this.setCookie("refresh_token", this.props.location.state.refresh_token, 365)
+          }
+          //if page is refreshed once access token has expired
+          this.getAccessToken(() => {
+            this.onATCallback()
+          })
         }
       }
     }
@@ -304,7 +312,7 @@ class Home extends React.Component {
               callback();
             }
           } else if (response.status === 401 || response.status === 403 ) {
-            this.getAccessToken(this.queueSong)
+            this.getAccessToken(this.queueSong(psid))
           } else if (response.status === 404) {
             alert("Cannot find Spotify Session")
           }

@@ -1,6 +1,6 @@
 import React from 'react'
 import './newPlaylist.css'
-import { Button, Card, Accordion, Form, Alert, AccordionToggle } from 'react-bootstrap'
+import { Button, Card, Accordion, Form, Alert } from 'react-bootstrap'
 
 class NewPlaylist extends React.Component {
     constructor (props) {
@@ -14,19 +14,10 @@ class NewPlaylist extends React.Component {
         weight: 20,
         showError: false,
         errorMessage: '',
-        isToggled: false
+        isToggled: false,
+        bodyOpen: false
       }
     }
-
-    /*
-     componentDidMount () {
-      if(this.state.isToggled) {
-        this.setState({
-          isToggled: false
-        })
-      }
-    }
-    */
 
     render = () => {
       const ErrorAlert = () => {
@@ -46,68 +37,73 @@ class NewPlaylist extends React.Component {
           <Accordion id ="newPlaylist">
             <Card>
               <Card.Header id="header">
-              <Accordion.Toggle id="toggle" as={Button} onClick={this.toggleAccord} variant= "dark" size= "sm" eventKey="0">
-                  Add New Playlist
-              </Accordion.Toggle>
+              <Button id = "openbody" variant= "dark" size= "sm" onClick={this.openBody}>Add New Playlist</Button> 
               </Card.Header>
-              <Accordion.Collapse eventKey="0">
-              <Card.Body>
-              <Form>
-                <Form.Group>
-                  <Form.Label>
-                    <strong>Playlist Name</strong>
-                  </Form.Label>
-                  <Form.Control type="name" size="sm" placeholder="All-Time Favorites" onChange={this.handleNameChange}/>
-                </Form.Group>
-                <Form.Group>
-                  <Form.Label>
-                    <strong>Spotify Playlist URI</strong>
-                  </Form.Label>
-                  <Form.Control type="name" size="sm" placeholder="spotify:playlist:37i9dQZF1DX1helbHcrYM1" onChange={this.handleURIChange}/>
-                </Form.Group>
-                
-                <Form.Group id="formGridCheckbox">
-                  <Form.Check type="checkbox" label="Use all tracks in playlist?" checked={this.state.isChecked}
-                  onChange={this.toggleChange}/> {
-                    !isChecked
-                    ? <div>
-                      <br></br>
-                    <Form.Group>
-                    <Form.Label><strong>Playlist Order</strong></Form.Label>
-                      <Form.Control as="select" onChange={this.handleOrderChange}>
-                        <option>First Added</option>
-                        <option>Recently Added</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <Form.Group>
-                    <Form.Label><strong>Number of Tracks</strong></Form.Label>
-                      <Form.Control type="number" size="sm" min="0" max = "10000" placeholder="20" onChange={this.handleNumTracksChange}/>
-                      <Form.Text>
-                        Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First Added is selected, only the first X songs will be selected, where if Recently Added is selected, the most recently added X songs will be selected.
-                      </Form.Text>
-                    </Form.Group>
-                    </div>
-                    : null
-                  }
-                </Form.Group>
-
-                <Form.Group>
-                  <Form.Label><strong>Playlist Weight</strong></Form.Label>
-                  <Form.Control type="number" size="sm" min="0" max ="100" defaultValue= "20" onChange={this.handleWeightChange}/>
-                  <Form.Text>
-                    A playlist weight is the chance a song from that playlist will be queued when a song is queued. You can easily adjust all playlist weights at the same time using the edit playlist weights button.
-                  </Form.Text>
-                </Form.Group>
-                <ErrorAlert></ErrorAlert>
-                <AccordionToggle as={Button} onClick={() => this.clickSubmitHandler()} eventKey="0" className="addplbutton" variant= "dark" size= "sm">
-                  Add Playlist!
-                </AccordionToggle>
-              </Form>
-              </Card.Body>
-              </Accordion.Collapse>
+              {
+               this.state.bodyOpen ?
+               <Card.Body>
+               <Form>
+                 <Form.Group>
+                   <Form.Label>
+                     <strong>Playlist Name</strong>
+                   </Form.Label>
+                   <Form.Control type="name" size="sm" placeholder="All-Time Favorites" onChange={this.handleNameChange}/>
+                 </Form.Group>
+                 <Form.Group>
+                   <Form.Label>
+                     <strong>Spotify Playlist URI</strong>
+                   </Form.Label>
+                   <Form.Control type="name" size="sm" placeholder="spotify:playlist:37i9dQZF1DX1helbHcrYM1" onChange={this.handleURIChange}/>
+                 </Form.Group>
+                 
+                 <Form.Group id="formGridCheckbox">
+                   <Form.Check type="checkbox" label="Use all tracks in playlist?" checked={this.state.isChecked}
+                   onChange={this.toggleChange}/> {
+                     !isChecked
+                     ? <div>
+                       <br></br>
+                     <Form.Group>
+                     <Form.Label><strong>Playlist Order</strong></Form.Label>
+                       <Form.Control as="select" onChange={this.handleOrderChange}>
+                         <option>First Added</option>
+                         <option>Recently Added</option>
+                       </Form.Control>
+                     </Form.Group>
+                     <Form.Group>
+                     <Form.Label><strong>Number of Tracks</strong></Form.Label>
+                       <Form.Control type="number" size="sm" min="0" max = "10000" placeholder="20" onChange={this.handleNumTracksChange}/>
+                       <Form.Text>
+                         Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First Added is selected, only the first X songs will be selected, where if Recently Added is selected, the most recently added X songs will be selected.
+                       </Form.Text>
+                     </Form.Group>
+                     </div>
+                     : null
+                   }
+                 </Form.Group>
+ 
+                 <Form.Group>
+                   <Form.Label><strong>Playlist Weight</strong></Form.Label>
+                   <Form.Control type="number" size="sm" min="0" max ="100" defaultValue= "20" onChange={this.handleWeightChange}/>
+                   <Form.Text>
+                     A playlist weight is the chance a song from that playlist will be queued when a song is queued. You can easily adjust all playlist weights at the same time using the edit playlist weights button.
+                   </Form.Text>
+                 </Form.Group>
+                 <ErrorAlert></ErrorAlert>
+                 <Button id = "cancel" variant="dark" size="sm" onClick={this.openBody}>Cancel</Button> 
+                 <Button id = "submitbody" variant="dark" size="sm" onClick={() => this.clickSubmitHandler()}>Add Playlist</Button> 
+               </Form>
+               </Card.Body>
+               : null
+              }
             </Card>
           </Accordion>
         )
+    }
+
+    openBody = () => {
+      this.setState({
+        bodyOpen: !this.state.bodyOpen
+      });
     }
 
     removeAlert() {
@@ -252,7 +248,8 @@ class NewPlaylist extends React.Component {
                 weight: 0,
                 showError: false,
                 errorMessage: '',
-                isToggled: false
+                isToggled: false,
+                bodyOpen: false
               })
             })
           } else if (response.status === 401) {

@@ -22,3 +22,13 @@
     float: right;
     margin-bottom: 10px;
 }
+
+#submitbody {
+    float: right;
+    margin-top: -31px;
+}
+
+#cancel {
+    float: right;
+    margin-right: 100px;
+}
