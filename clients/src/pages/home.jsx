@@ -52,13 +52,7 @@ class Home extends React.Component {
       } else {
         //came from login page
         if (this.state.access_token === '') {
-          if(!rt) {
-            this.setState ({
-              loggedIn: false
-            })
-          } else {
-            this.setCookie("refresh_token", this.props.location.state.refresh_token, 365)
-          }
+          this.setCookie("refresh_token", this.props.location.state.refresh_token, 365)
           //if page is refreshed once access token has expired
           this.getAccessToken(() => {
             this.onATCallback()
