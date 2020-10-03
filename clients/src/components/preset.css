@@ -33,17 +33,17 @@
 }
 
 #deletebutton {
-    position: absolute;
     bottom: 0;
-    margin-bottom: 5px;
-    margin-left: 438px;
+    margin-right: 5px;
+    float: right;
+    margin-top: 5px;
 }
 
 #editbutton {
-    position: absolute;
     bottom: 0;
-    margin-bottom: 5px;
-    margin-left: 343px;
+    float: right;
+    margin-right: 5px;
+    margin-top: 5px;
 }
 
 #playlists {
@@ -109,4 +109,19 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+@media (max-width: 800px) {
+    #preset {
+        width: 95vw;
+        max-width: 550px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 450px) {
+    #rlimit {
+        display: none;
+    }
 }

@@ -28,15 +28,37 @@
 }
 
 #cancel {
-    margin-left: 339px;
-    margin-top: 0px;
+    margin-top: 8px;
+    float: right;
+    margin-right: 10px;
 }
 
 #cbutton {
+    margin-top: 8px;
     float: right;
 }
 
 #ft {
     margin-left: 3px;
     margin-right: 3px;
+}
+
+@media (max-width: 800px) {
+    #create {
+        width: 95vw;
+        text-align: center;
+        height: 330px;
+        max-width: 550px;
+    }
+
+    #createForm {
+        width: 95vw;
+        height: 330px;
+        max-width: 550px;
+    }
+
+    #crbutton {
+        margin-top: -160px;
+    }
+
 }

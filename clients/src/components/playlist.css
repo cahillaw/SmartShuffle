@@ -26,15 +26,15 @@
 }
 
 #deletebuttonpl {
-    position: absolute;
     margin-top: -15px;
-    margin-left: 375px;
+    float: right;
+    margin-right: -15px;
 }
 
 #editbuttonpl {
-    position: absolute;
     margin-top: -15px;
-    margin-left: 280px;
+    float: right;
+    margin-right: 5px;
 }
 
 #playlistname {
@@ -42,4 +42,9 @@
     white-space: nowrap;
     overflow: hidden;
     max-width: 380px;
+}
+
+
+@media (max-width: 800px) {
+
 }

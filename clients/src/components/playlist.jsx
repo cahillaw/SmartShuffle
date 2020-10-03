@@ -35,7 +35,7 @@ class Playlist extends React.Component {
 
         return (
           <>
-            <Button id = "deletebuttonpl" variant= "dark" size= "sm" onClick={handleShow}>Delete playlist</Button>{' '}
+            <Button id = "deletebuttonpl" variant= "dark" size= "sm" onClick={handleShow}>Delete</Button>{' '}
       
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
@@ -47,7 +47,7 @@ class Playlist extends React.Component {
                   Cancel
                 </Button>
                 <Button variant="dark" onClick={handleDelete}>
-                  Delete Playlist
+                  Delete
                 </Button>
               </Modal.Footer>
             </Modal>
@@ -72,9 +72,9 @@ class Playlist extends React.Component {
               Order: {this.checkOrder()}
               <br></br>
               Playlist Weight: {this.props.data.weight}
-              <div>
+              <div id = "editdropdown">
                 <DeletePlaylist clickDeletePL={this.deletePlaylist}></DeletePlaylist>
-                <Button id = "editbuttonpl" variant= "dark" size= "sm" onClick={this.clickEditPL}>Edit Playlist</Button> {
+                <Button id = "editbuttonpl" variant= "dark" size= "sm" onClick={this.clickEditPL}>Edit</Button> {
                   edit ? 
                   <div>
                     <br></br>

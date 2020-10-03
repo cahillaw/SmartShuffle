@@ -102,48 +102,53 @@ class Home extends React.Component {
           <div>
             <Helmet>
               <title>Home | SmartShuffle.io</title>
-              <meta property="og:title" content = "Home| SmartShuffle.io"/>
+              <meta property="og:title" content = "Home | SmartShuffle.io"/>
               <meta property="og:url" content = "http://smartshuffle.io/home"/>
             </Helmet>
             <SSNav></SSNav>
-            <Container>
-              <Row className ="justify-content-md-center">
-                <Col md = "auto">
-                {this.state.premError ? null : 
-                  <Alert id="noprem" variant="danger" onClose={() => this.setState({premError: true})} dismissible>
-                    <Alert.Heading>
-                    You do not have Spotify Premium
-                    </Alert.Heading>
-                      <div>
-                        SmartShuffle needs to be able to queue songs to listen to stations, a feature only availble with Spotify Premium. You can test the site by creating stations, however you will not be able able to listen to them. 
-                      </div>
-                  </Alert>
-                  }
-                </Col>
-              </Row>
-              <Row className ="justify-content-md-center">
-                <Col md = "auto">
-                  <NowPlaying
-                    access_token = {this.state.access_token}
-                    refresh_token = {this.state.refresh_token}
-                    getAccessToken = {this.getAccessToken}
-                    curPresetID = {this.state.curPresetID}
-                    curPresetName = {this.state.curPresetName}
-                    skipSong = {this.skipSong}
-                    pause = {this.pause}
-                    play = {this.play}
-                    stopListening = {this.stopListening}
-                    changeListening = {this.changeListening}
-                    listening = {this.state.listening}
-                    queueSong = {this.queueSong}
-                    loggedIn = {this.state.loggedIn}
-                  ></NowPlaying>
-                </Col>
-              </Row>
-            </Container>
-            <Container>
-              <Row>
+            <div id = "pagecontent">
+            <div id = "npcont">
+              <Row id = "alertrow">
                 <Col>
+                  <div id ="alertcenter">
+                    {this.state.premError ? null : 
+                    <Alert id="noprem" variant="danger" onClose={() => this.setState({premError: true})} dismissible>
+                      <Alert.Heading>
+                      You do not have Spotify Premium
+                      </Alert.Heading>
+                        <div>
+                          SmartShuffle needs to be able to queue songs to listen to stations, a feature only availble with Spotify Premium. You can test the site by creating stations, however you will not be able able to listen to them. 
+                        </div>
+                    </Alert>
+                    }
+                  </div>
+                </Col>
+              </Row>
+              <Row id = "nprow">
+                <Col id = "npcol">
+                  <div id = "npcenter">
+                    <NowPlaying
+                      access_token = {this.state.access_token}
+                      refresh_token = {this.state.refresh_token}
+                      getAccessToken = {this.getAccessToken}
+                      curPresetID = {this.state.curPresetID}
+                      curPresetName = {this.state.curPresetName}
+                      skipSong = {this.skipSong}
+                      pause = {this.pause}
+                      play = {this.play}
+                      stopListening = {this.stopListening}
+                      changeListening = {this.changeListening}
+                      listening = {this.state.listening}
+                      queueSong = {this.queueSong}
+                      loggedIn = {this.state.loggedIn}
+                    ></NowPlaying>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+            <Container id = "outside">
+              <Row>
+                <Col id = "pscol">
                   <div id = "container">
                     {presets}
                     <Create 
@@ -156,6 +161,7 @@ class Home extends React.Component {
                 </Col>
               </Row>
             </Container>
+          </div>
         </div>
         )
       }

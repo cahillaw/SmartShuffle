@@ -52,8 +52,8 @@ class Create extends React.Component {
                 </Row>
                 <Row>
                   <Col>
-                    <Button id = "cancel" variant= "dark" size= "sm" onClick={() => this.clickHandler()}>Cancel</Button>{' '}
                     <Button id = "cbutton" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Create Station</Button>{' '}
+                    <Button id = "cancel" variant= "dark" size= "sm" onClick={() => this.clickHandler()}>Cancel</Button>{' '}
                   </Col>
                 </Row>
             </Container>
@@ -63,7 +63,7 @@ class Create extends React.Component {
 
         return (
             <div id="create">
-                <h1>Create a new station?</h1>
+                <h1>Create a New Station</h1>
                 <Button id = "crbutton" variant= "dark" size= "sm" onClick={() => this.clickHandler()}>Get started!</Button>{' '}
             </div>
         )

@@ -96,9 +96,10 @@ class StationListening extends React.Component {
                   </div>
                 }
                 <br></br>
+                  <div id = "qsongsdiv">
                     <Button id = "queuesongs" variant= "dark" size= "sm" onClick={handleQueueSongs}>Queue Songs</Button>{' '}
                     <Form.Control id = "qs" type="number" size= "sm" defaultValue={this.state.numQueue} min = "1" max = "5" onChange={handleQueueChange}/>
-                <br></br>
+                  </div>
                 <br></br>
                 <Button id = "stoplistening" variant= "dark" size= "sm" onClick={handleStopListening}>Stop Listening</Button>{' '}
             </div>

@@ -79,7 +79,7 @@ class Preset extends React.Component {
 
         return (
           <>
-            <Button id = "deletebutton" variant= "dark" size= "sm" onClick={handleShow}>Delete Station</Button>{' '}
+            <Button id = "deletebutton" variant= "dark" size= "sm" onClick={handleShow}>Delete</Button>{' '}
       
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
@@ -174,7 +174,7 @@ class Preset extends React.Component {
 
         return (
           <>
-            <Button id = "weights" variant= "dark" size= "sm" onClick={handleShow}>Edit Playlist Weights</Button>{' '}
+            <Button id = "weights" variant= "dark" size= "sm" onClick={handleShow}>Edit Weights</Button>{' '}
       
             <Modal show={show} onHide={handleClose}>
               <Modal.Header closeButton>
@@ -360,7 +360,7 @@ class Preset extends React.Component {
                 editWeights = {this.editWeights}
               />
               <DeletePreset clickDelete={this.clickDelete}></DeletePreset>
-              <Button id = "editbutton" variant= "dark" size= "sm" onClick={() => this.clickEdit()}>Edit Station</Button>{' '}
+              <Button id = "editbutton" variant= "dark" size= "sm" onClick={() => this.clickEdit()}>Edit</Button>{' '}
             </div>
           </div>
         )

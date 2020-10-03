@@ -32,8 +32,8 @@ class NowPlaying extends React.Component {
           if(!this.props.loggedIn) {
             clearInterval(this.npinterval)
           }
+          num = num + 1
           if(!this.state.isIdle) {
-            num = num + 1
             if(this.props.listening && !this.state.pausedProgress) {
               var numAdd = 1000
               if (this.state.current + 1000 > this.state.length) {
@@ -77,13 +77,13 @@ class NowPlaying extends React.Component {
 
           return (
             <div id = "nowplaying">
-              <Container>
+              <Container id = "npcontent">
               <Row>
                 <Col >
                   <strong id = "title">Now Playing</strong>
                   <br></br>
                   <br></br>
-                  <strong>Cannot find Spotify Session</strong>
+                  <strong>Cannot find Session</strong>
                   <div>To see what you are listening to here and to play a station, start listening to something on Spotify!</div>
                 </Col>
                 <Col>
@@ -97,7 +97,7 @@ class NowPlaying extends React.Component {
 
         return (
             <div id = "nowplaying">
-              <Container>
+              <Container id = "npcontent">
               <Row>
                 <Col >
                   <strong id = "title">Now Playing</strong>

@@ -26,3 +26,24 @@
     white-space: nowrap;
     overflow: hidden;
 }
+
+#qs {
+    width: 48px;
+    float: left;
+    margin-left: 10px;
+}
+
+#queuesongs {
+    float: left;
+}
+
+#qsongsdiv {
+    margin-left: 0px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 800px) {
+    #qs {
+        width: 38px;
+    }
+}

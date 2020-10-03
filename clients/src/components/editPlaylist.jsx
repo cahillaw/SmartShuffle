@@ -90,8 +90,10 @@ class EditPlaylist extends React.Component {
             </Form.Text>
           </Form.Group>
           <ErrorAlert></ErrorAlert>
-          <Button id = "update" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Update Playlist!</Button>{' '}
-          <Button id = "eplaycancel" variant= "dark" size= "sm" onClick={() => this.props.clickEditPL()}>Cancel</Button>{' '}
+          <div id="editplbuttons">
+            <Button id = "update" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Update!</Button>{' '}
+            <Button id = "eplaycancel" variant= "dark" size= "sm" onClick={() => this.props.clickEditPL()}>Cancel</Button>{' '}
+          </div>
         </Form>
       )
     }

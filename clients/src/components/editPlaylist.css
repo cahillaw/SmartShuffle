@@ -1,13 +1,13 @@
 #update {
-    position: absolute;
     margin-top: -15px;
-    margin-left: 365px;
+    float: right;
+    margin-right: -15px;
 }
 
 #eplaycancel {
-    position: absolute;
     margin-top: -15px;
-    margin-left: 300px;
+    float: right;
+    margin-right: 5px;
 }
 
 #epalerterror {
