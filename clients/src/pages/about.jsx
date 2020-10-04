@@ -37,7 +37,7 @@ class About extends React.Component {
                 <p>SmartShuffle is a web application that allows Spotify users to create custom radio stations that let users better control how they shuffle music. Each station is built from individual playlists, each with a specific weight that allows users to control precisely how often they hear each song. SmartShuffle uses the Spotify play queue to listen to stations, adding songs to the end of the playback queue in the background for a seamless listening experience. </p>
                 <h3>The Story of SmartShuffle</h3>
                 <i>Changing the playlist is a relic of the past…</i>
-                <div id ="story">I created SmartShuffle as a way of dealing with the frustration of changing the playlist. I listen to a lot of music, so I end up getting sick of listening to my main playlist pretty quickly every day. The solution of course is to change the playlist - however I found myself changing it as often as every 5 songs. This solution added up to hours of lost productivity every day and quite frankly, didn’t even work very well. If only, I thought, there was some way to combine playlists so that I could hear songs from my main playlist most of the time, while also sprinkling in fresh songs from my past that I had not heard in months. I tried this in Spotify - I copy pasted my 2000 song “Starred” playlist into a new playlist, and then copy pasted in every song from my main playlist 50 times. I thought this would weigh new and old songs relatively equally, and give me a fresh playlist that I wouldn’t have to change off of every 20 minutes. I was wrong - Spotify’s shuffler ignores duplicates, so I was just listening to Starred. Another shuffling issue occured in my main playlist. I typically listen to it in order of recently added, as to hear the fresh songs I had recently discovered first. After a certain point, I would then start shuffling, however if I did I found myself skipping song after song. I wanted to hear all the songs on shuffle, however Spotify excluded the new tracks because I had just listened to them, making me switch off the playlist faster. I created SmartShuffle to solve both of these issues. Before SmartShuffle, I would start changing the playlist after an hour or two, but I can now listen to the same customized station for 6 - 8 hours daily before feeling the need to switch it up. Mission accomplished! </div>
+                <div id ="story">I created SmartShuffle as a way of dealing with the frustration of changing the playlist. I listen to a lot of music, so I end up getting sick of listening to my main playlist pretty quickly every day. The solution of course is to change the playlist - however I found myself changing it as often as every 5 songs. This solution added up to hours of lost productivity every day and quite frankly, didn’t even work very well. I thought if only there was some way to combine playlists so that I could hear songs from my main playlist most of the time, while also sprinkling in fresh songs from my past that I had not heard in a while. I tried this in Spotify - I copy pasted my 2000 song “Starred” playlist into a new playlist, and then copy pasted in every song from my main playlist 50 times. I thought this would weigh new and old songs relatively equally, and give me a fresh playlist. I was wrong - Spotify’s shuffler ignores duplicates, so I was just listening to Starred. Another shuffling issue occured in my main playlist. I typically listen to it in order of recently added, as to hear the fresh songs I had recently discovered first. After a certain point, I would then start shuffling, however if I did I found myself skipping song after song. I wanted to hear all the songs on shuffle, however Spotify excluded the new tracks because I had just listened to them, making me switch off the playlist faster. I created SmartShuffle to solve both of these issues. Before SmartShuffle, I would start changing the playlist after an hour or two, but I can now listen to the same customized station for 6 - 8 hours daily before feeling the need to switch it up. Mission accomplished!</div>
               </Col>
             </Row>
           )
@@ -49,6 +49,7 @@ class About extends React.Component {
                 <p>SmartShuffle.io is a free service. By using SmartShuffle.io, you agree to the policies regarding information collection and use outlined in this privacy policy.</p>
                 <p>In order to relate your data to your Spotify account, we collect the Spotify user ID of those who use the site. This is only for use in our internal database, and is not displayed or used anywhere on the site. For the Repeat Limit functionality to work, we also collect the tracks you queue as you listen to a station. This data is not used outside its intended purpose, and old data is periodically deleted. If you want to manually remove your listening history, deleting a station also deletes all track history for that station.</p>
                 <p>Both Spotify and SmartShuffle.io uses cookies to maintain your log-in state. You have the option to refuse these cookies, however some site functionality may not work as expected. Re-logging in through the login portal should fix any issues regarding cookies.</p>
+                <strong>Last Updated: 9/16/20</strong>
               </Col>
             </Row>
           )
@@ -57,6 +58,13 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
+                <h3 id="-0-3-0-10-3-20">[0.3.0] - 10/3/20</h3>
+                <ul>
+                <li>Mobile site is now live!</li>
+                <li>Button names are now less verbose.</li>
+                <li>Background color is now a light blue-grey, and the about page textbox background color is now white.</li>
+                <li>Fixed a bug that caused playback state to not change when idle even when the user changed playback state. </li>
+                </ul>
                 <h3 id="-0-2-1-9-25-20">[0.2.1] - 9/25/20</h3>
                 <ul>
                 <li>Now playing now seamlessly moves to the next song when the current song ends.</li>
@@ -155,11 +163,11 @@ class About extends React.Component {
               <SSNav></SSNav>
               <Container className = "subnavcont">
                 <Navbar className = "subnav" bg="dark" variant="dark">
-                    <Navbar.Brand href="#info" onClick={() => this.changeRoute()}>About</Navbar.Brand>
+                    <Navbar.Brand id ="brandd" href="#info" onClick={() => this.changeRoute()}>About</Navbar.Brand>
                     <Nav className="mr-auto">
-                      <Nav.Link href="#privacy" onClick={() => this.changeRoute()}>Privacy</Nav.Link>
+                      <Nav.Link href="#privacy" id="privacy" onClick={() => this.changeRoute()}>Privacy</Nav.Link>
                       <Nav.Link href="#changelog" onClick={() => this.changeRoute()}>Changelog</Nav.Link>
-                      <Nav.Link href="#contact" onClick={() => this.changeRoute()}>Contact Us</Nav.Link>
+                      <Nav.Link href="#contact" id="contact" onClick={() => this.changeRoute()}>Contact Us</Nav.Link>
                     </Nav>
                 </Navbar>
               </Container>

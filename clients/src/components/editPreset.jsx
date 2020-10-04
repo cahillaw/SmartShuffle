@@ -44,8 +44,8 @@ class EditPreset extends React.Component {
                     Repeat Limit is the number of tracks in between two plays of the same song. For example, if the Repeat Limit was 20 and you just heard a song, you would not hear it for another 20 songs. Choose 0 for no repeat limit.
                     </Form.Text>
                   </Form.Group>
+                  <Button id = "epcbutton" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Update</Button>{' '}
                   <Button id = "epcancel" variant= "dark" size= "sm" onClick={() => this.props.clickEdit()}>Cancel</Button>{' '}
-                  <Button id = "epcbutton" variant= "dark" size= "sm" onClick={() => this.clickSubmitHandler()}>Edit Station</Button>{' '}
                 </Form>
                 <ErrorAlert></ErrorAlert>
               </Col>

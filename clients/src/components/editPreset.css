@@ -1,10 +1,12 @@
 #epcancel {
-    margin-left: 355px;
+    float: right;
     margin-top: 0px;
+    margin-left: 5px;
 }
 
 #epcbutton {
     float: right;
+    margin-left: 10px;
 }
 
 #ft {

@@ -1,4 +1,33 @@
 # Changelog
+### [0.3.0] - 10/3/20
+- Mobile site is now live!
+- Button names are now less verbose.
+- Background color is now a light blue-grey, and the about page textbox background color is now white. (colors were swapped)
+- Fixed a bug that caused playback state to not change when idle even when the user changed playback state. 
+
+### [0.2.1] - 9/25/20
+- Now playing now seamlessly moves to the next song when the current song ends.
+- Fixed a bug that occasionally caused a song to fail to queue.
+- Fixed a bug that broke logging in for new users.
+- Fixed a bug that caused the new playlist accordion to collapse when submitting if invalid inputs were detected.
+
+### [0.2.0] - 9/23/20
+- Added site metadata, the site should now embed properly into external sites such as Facebook/Twitter/Discord/etc.
+- Added page titles.
+- If idle, SmartShuffle will now check your playback every 5 minutes instead of every 30 seconds. 
+- Closing Edit Playlist Weights without making a change now resets changes.
+- Added Auto-Detection for Queue Interval. This is not perfect, otherwise it would require making additional api calls, however the estimate should be pretty close in the vast majority of cases.
+- Fixed a bug that caused Edit Playlist Weights to not work after editing a playlist.
+- Fixed a bug that caused bad access tokens to used in certain cases. This resulted in the site thinking you did not have premium, forcing you to log out and log back in again.
+
+### [0.1.3] - 9/21/20
+- Fixed a bug that caused queuing to stop sometime after going idle.
+- Fixed a bug that caused now playing to not update after skipping a song.
+
+### [0.1.2] - 9/20/20 
+- Reworked styling on login page, should now fit the screen regardless of screen size
+- Added links to About, Privacy and Contact us to the login page.
+- Updated navbar to support being linked from the login page. If not logged in, it will show login with Spotify and the SmartShuffle logo will link to the login page instead of home.
 
 ### [0.1.1] - 9/17/20
 - Fixed a bug that defaulted new playlist's weight to 0 and new station's repeat limit to 0.
