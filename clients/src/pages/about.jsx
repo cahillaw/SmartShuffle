@@ -48,8 +48,8 @@ class About extends React.Component {
                 <h2 id = "abouttitle">Privacy Policy</h2>
                 <p>SmartShuffle.io is a free service. By using SmartShuffle.io, you agree to the policies regarding information collection and use outlined in this privacy policy.</p>
                 <p>In order to relate your data to your Spotify account, we collect the Spotify user ID of those who use the site. This is only for use in our internal database, and is not displayed or used anywhere on the site. For the Repeat Limit functionality to work, we also collect the tracks you queue as you listen to a station. This data is not used outside its intended purpose, and old data is periodically deleted. If you want to manually remove your listening history, deleting a station also deletes all track history for that station.</p>
-                <p>Both Spotify and SmartShuffle.io uses cookies to maintain your log-in state. You have the option to refuse these cookies, however some site functionality may not work as expected. Re-logging in through the login portal should fix any issues regarding cookies.</p>
-                <strong>Last Updated: 9/16/20</strong>
+                <p>Both Spotify and SmartShuffle.io uses cookies to maintain your log-in state. If you refuse these cookies through your browser, some site functionality may not work as expected. Re-logging in through the login portal should fix any issues from missing cookies.</p>
+                <strong>Last Updated: 10/9/20</strong>
               </Col>
             </Row>
           )
@@ -58,6 +58,11 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
+                <h3 id="-0-3-0-10-9-20">[0.3.1] - 10/9/20</h3>
+                <ul>
+                <li>Added cookie banner</li>
+                <li>Fixed a few misaligned buttons</li>
+                </ul>
                 <h3 id="-0-3-0-10-3-20">[0.3.0] - 10/3/20</h3>
                 <ul>
                 <li>Mobile site is now live!</li>

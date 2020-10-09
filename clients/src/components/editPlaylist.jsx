@@ -86,7 +86,7 @@ class EditPlaylist extends React.Component {
             <Form.Label><strong>Playlist Weight</strong></Form.Label>
             <Form.Control type="number" size="sm" min="0" max ="100" placeholder="20" defaultValue={this.props.data.weight} onChange={this.handleWeightChange}/>
             <Form.Text>
-                Weight is the percentage amount that a track from this playlist will be selected. The total weight of all playlists in a given station must be less than or equal to 100. If the weight you want to add exceeds 100, set a temporary value now and go back and edit those first.
+              A playlist weight is the chance a song from that playlist will be queued when a song is queued. You can easily adjust all playlist weights at the same time using the edit weights button.
             </Form.Text>
           </Form.Group>
           <ErrorAlert></ErrorAlert>

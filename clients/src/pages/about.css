@@ -39,7 +39,6 @@
     overflow: auto;
 }
 
-
 @media (max-width: 500px) {
     #aboutinfo {
         margin-left: 0px;

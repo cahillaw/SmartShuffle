@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Row, Col, Alert } from 'react-bootstrap'
+import { Container, Row, Col, Alert, Toast } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import './home.css'
 import Preset from '../components/preset'
@@ -22,6 +22,7 @@ class Home extends React.Component {
       }
       this.interval = ""
       this.numRetries = 0
+      this.rt = this.getCookie("refresh_token") 
     }
 
     componentDidMount () {
@@ -62,6 +63,24 @@ class Home extends React.Component {
     }
    
     render = () => {
+      const CookieBanner = () => {
+        const [show, setShow] = useState(true);
+        const toggleShow = () => setShow(!show);
+        if(!this.rt) {
+          return (
+            <Toast show={show} onClose={toggleShow}>
+              <Toast.Header>
+                <strong className="mr-auto">Cookie Policy</strong>
+              </Toast.Header>
+              <Toast.Body>SmartShuffle.io uses cookies to keep track of your log-in state. Click <a href="https://smartshuffle.io/about#privacy">here</a> to view our privacy policy.
+              </Toast.Body>
+            </Toast>
+            )
+        } else {
+           return null
+         }
+      }
+
       if (!this.state.loggedIn) {
         return (
           <div>
@@ -107,6 +126,7 @@ class Home extends React.Component {
             </Helmet>
             <SSNav></SSNav>
             <div id = "pagecontent">
+            <CookieBanner></CookieBanner>
             <div id = "npcont">
               <Row id = "alertrow">
                 <Col>

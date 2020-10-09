@@ -85,12 +85,12 @@ class NewPlaylist extends React.Component {
                    <Form.Label><strong>Playlist Weight</strong></Form.Label>
                    <Form.Control type="number" size="sm" min="0" max ="100" defaultValue= "20" onChange={this.handleWeightChange}/>
                    <Form.Text>
-                     A playlist weight is the chance a song from that playlist will be queued when a song is queued. You can easily adjust all playlist weights at the same time using the edit playlist weights button.
+                     A playlist weight is the chance a song from that playlist will be queued when a song is queued. You can easily adjust all playlist weights at the same time using the edit weights button.
                    </Form.Text>
                  </Form.Group>
                  <ErrorAlert></ErrorAlert>
-                 <Button id = "cancel" variant="dark" size="sm" onClick={this.openBody}>Cancel</Button> 
-                 <Button id = "submitbody" variant="dark" size="sm" onClick={() => this.clickSubmitHandler()}>Add Playlist</Button> 
+                 <Button id = "submitbody" variant="dark" size="sm" onClick={() => this.clickSubmitHandler()}>Add Playlist</Button>
+                 <Button id = "cancelnp" variant="dark" size="sm" onClick={this.openBody}>Cancel</Button> 
                </Form>
                </Card.Body>
                : null

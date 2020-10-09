@@ -25,10 +25,10 @@
 
 #submitbody {
     float: right;
-    margin-top: -31px;
 }
 
-#cancel {
+#cancelnp {
     float: right;
-    margin-right: 100px;
+    margin-top: 0px;
+    margin-right: 10px;
 }
