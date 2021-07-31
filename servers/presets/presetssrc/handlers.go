@@ -386,13 +386,13 @@ func (ctx *PresetContext) QueueSong(w http.ResponseWriter, r *http.Request) {
 	//TestPL.SpotifyURI = "7ryQO7Am1wFuGmkympfCjb"
 
 	playlist := result.Item.(*Playlist)
-	tracks, err := GetPlaylistTracks(user, playlist)
+	tracks, index, err := GetPlaylistTracks(user, playlist)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	code, uri, errQueueSong := ctx.QueueSongFromPlaylist(user, preset, tracks)
+	code, uri, errQueueSong := ctx.QueueSongFromPlaylist(user, preset, tracks, index)
 	if errQueueSong != nil {
 		http.Error(w, errQueueSong.Error(), code)
 		return
@@ -418,15 +418,18 @@ func (ctx *PresetContext) TestGPT(w http.ResponseWriter, r *http.Request) {
 	}
 
 	TestPL := &Playlist{}
-	TestPL.SpotifyURI = "38p8VZWNplCs5CP0eNvdvp"
-	TestPL.NumTracks = -1
-	TestPL.Order = true
+	TestPL.SpotifyURI = "2TA9XD4kmbppLVEBWUHu5Y"
+	TestPL.NumTracks = 16
+	TestPL.Order = false
 
-	tracks, err := GetPlaylistTracks(user, TestPL)
+	tracks, index, err := GetPlaylistTracks(user, TestPL)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	fmt.Println(index)
+	fmt.Println(tracks.Tracks[index])
 
 	encoded, errEncode := json.Marshal(tracks)
 	if errEncode != nil {
@@ -439,15 +442,15 @@ func (ctx *PresetContext) TestGPT(w http.ResponseWriter, r *http.Request) {
 }
 
 //QueueSongFromPlaylist queues a song from a specified playlist
-func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *PlaylistTracks) (int, string, error) {
-	total := plt.Total
-	if plt.Total > 100 {
-		total = 100
-	}
+func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *PlaylistTracks, index int) (int, string, error) {
+	/*
+		total := plt.Total
+		if plt.Total > 100 {
+			total = 100
+		}
+	*/
 
 	if ps.RepeatLimit <= 0 { //for no repeat limit
-		rand.Seed(time.Now().UnixNano())
-		index := rand.Intn(total)
 		uri := plt.Tracks[index].Track.TrackURI
 		code, errQueue := Queue(user, uri)
 		if errQueue != nil {
@@ -458,15 +461,12 @@ func (ctx *PresetContext) QueueSongFromPlaylist(user *User, ps *Preset, plt *Pla
 	}
 
 	for i := 0; i < ps.RepeatLimit; i++ {
-		rand.Seed(time.Now().UnixNano())
-		index := rand.Intn(total)
+		//rand.Seed(time.Now().UnixNano())
+		//index := rand.Intn(total)
 		uri := plt.Tracks[index].Track.TrackURI
 		contains, err := ctx.PStore.InRecentTracks(uri, ps.PresetID, ps.RepeatLimit-i)
 		if err != nil {
 			return 0, uri, err
-		}
-		if contains {
-			fmt.Println("true")
 		}
 		if !contains {
 			code, errQueue := Queue(user, uri)
@@ -507,55 +507,69 @@ func Queue(user *User, uri string) (int, error) {
 }
 
 //GetPlaylistTracks gets the tracks for a given playlist
-func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, error) {
+func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, int, error) {
 	url := "https://api.spotify.com/v1/playlists/" + pl.SpotifyURI + "/tracks"
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 
 	req.Header.Set("Authorization", user.AccessToken)
 	response, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
+	fmt.Println(response.StatusCode)
 
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 
 	defer response.Body.Close()
 	tracks := &PlaylistTracks{}
 	json.Unmarshal(responseData, &tracks)
 
-	startIndex := pl.NumTracks //temp
+	rand.Seed(time.Now().UnixNano())
+	songIndex := rand.Intn(tracks.Total)
+	offset := (songIndex / 100) * 100
+	offsetIndex := songIndex % 100
 	if tracks.Total > 100 {
+		fmt.Println(pl.NumTracks)
 		if pl.NumTracks > 0 {
-			startIndex = tracks.Total - 100
-		} else {
 			rand.Seed(time.Now().UnixNano())
-			startIndex = rand.Intn(tracks.Total-100) + 1
+			songIndex = rand.Intn(pl.NumTracks)
+			if pl.Order == true {
+				offset = 0
+			} else {
+				offset = tracks.Total - 100
+			}
+			offsetIndex = songIndex % 100
+			// (songIndex / 100) * 100
 		}
+		fmt.Println(offset)
+		fmt.Println("548")
+		fmt.Println(songIndex)
+		fmt.Println("558")
 
-		url = "https://api.spotify.com/v1/playlists/" + pl.SpotifyURI + "/tracks?offset=" + strconv.Itoa(startIndex) + "&limit=100"
+		url = "https://api.spotify.com/v1/playlists/" + pl.SpotifyURI + "/tracks?offset=" + strconv.Itoa(offset) + "&limit=100"
 		client := &http.Client{}
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return nil, err
+			return nil, -1, err
 		}
 
 		req.Header.Set("Authorization", user.AccessToken)
 		response, err := client.Do(req)
 		if err != nil {
-			return nil, err
+			return nil, -1, err
 		}
 
 		fmt.Println(response.StatusCode)
 		responseData, err := ioutil.ReadAll(response.Body)
 		if err != nil {
-			return nil, err
+			return nil, -1, err
 		}
 
 		defer response.Body.Close()
@@ -581,10 +595,10 @@ func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, error) {
 			}
 		}
 		newTracks.Total = len(newTracks.Tracks)
-		return newTracks, nil
+		return newTracks, offsetIndex, nil
 	}
 
-	return tracks, nil
+	return tracks, offsetIndex, nil
 
 }
 
