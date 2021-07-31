@@ -1,21 +1,28 @@
 package gatewaysrc
 
 import (
+	"encoding/base64"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/spotify"
 )
 
+var clientId = os.Getenv("SPOTIFY_CLIENT_ID")
+var clientSecret = os.Getenv("SPOTIFY_CLIENT_SECRET")
+
 var (
 	spotifyOauthConfig = &oauth2.Config{
-		RedirectURL:  "https://shuffle.cahillaw.me/callback",
-		ClientID:     os.Getenv("SPOTIFY_CLIENT_ID"),
-		ClientSecret: os.Getenv("SPOTIFY_CLIENT_SECRET"),
+		RedirectURL:  (os.Getenv("SS_SERVER_URL") + "/callback"),
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
 		Scopes:       []string{"user-modify-playback-state", "playlist-read-private", "user-read-currently-playing", "user-read-private"},
 		Endpoint:     spotify.Endpoint,
 	}
@@ -68,13 +75,72 @@ func (ctx *GatewayContext) HandleCallback(w http.ResponseWriter, r *http.Request
 	token, err := spotifyOauthConfig.Exchange(oauth2.NoContext, r.FormValue("code"))
 	if err != nil {
 		fmt.Println("state is nots valid")
-		http.Redirect(w, r, "https://shuffle.cahillaw.me/presets", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, "/presets", http.StatusTemporaryRedirect)
 		return
 	}
 
 	fmt.Println(token.AccessToken)
 	fmt.Println(token.RefreshToken)
 
-	url := "https://smartshuffle.io/redirect?access_token=" + token.AccessToken + "&refresh_token=" + token.RefreshToken
+	url := os.Getenv("SS_CLIENT_URL") + "/redirect?access_token=" + token.AccessToken + "&refresh_token=" + token.RefreshToken
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+}
+
+func (ctx *GatewayContext) GetNewAccessToken(w http.ResponseWriter, r *http.Request) {
+	refreshToken := r.URL.Query().Get("refresh_token")
+	if refreshToken == "" {
+		http.Error(w, "No refresh token provided", http.StatusBadRequest)
+		return
+	}
+
+	data := url.Values{
+		"grant_type":    {"refresh_token"},
+		"refresh_token": {refreshToken},
+	}
+
+	req, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", strings.NewReader(data.Encode()))
+	if err != nil {
+		http.Error(w, "Could not make request", http.StatusInternalServerError)
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(clientId+":"+clientSecret)))
+
+	client := &http.Client{}
+	response, err := client.Do(req)
+	if err != nil {
+		http.Error(w, "Could not make request", http.StatusInternalServerError)
+		return
+	}
+
+	responseData, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		http.Error(w, "Could not read response body from Spotify", http.StatusInternalServerError)
+		return
+	}
+
+	defer response.Body.Close()
+
+	/*
+		tokenResponse := &gatewaysrc.Token{}
+		json.Unmarshal(responseData, &tokenResponse)
+
+		var res map[string]interface{}
+
+		json.NewDecoder(response.Body).Decode(&res)
+
+		fmt.Println(res)
+
+		encoded, errEncode := json.Marshal(res)
+		if errEncode != nil {
+			http.Error(w, "Error encoding user to JSON", http.StatusBadRequest)
+			return
+		}
+	*/
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseData)
 }

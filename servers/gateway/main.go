@@ -4,7 +4,6 @@ import (
 	"SmartShuffleApplication/servers/gateway/gatewaysrc"
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -30,7 +29,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	presetsaddr, ok := os.LookupEnv("PRESETSADDR")
+	_, ok := os.LookupEnv("PRESETSADDR")
 	if ok == false {
 		os.Stdout.WriteString("presetsaddr not set")
 		os.Exit(1)
@@ -42,8 +41,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	if dsnok == false {
-		os.Stdout.WriteString("dsn not set")
+	_, serverok := os.LookupEnv("SS_SERVER_URL")
+	_, clientok := os.LookupEnv("SS_CLIENT_URL")
+
+	if clientok == false || serverok == false {
+		os.Stdout.WriteString("SERVER_URL or CLIENT_URL not set")
 		os.Exit(1)
 	}
 
@@ -67,11 +69,11 @@ func main() {
 	ctx.GStore = stdb
 
 	presetsDirector := func(r *http.Request) {
-		serverName := presetsaddr
+		serverName := "localhost:3001"
 
 		r.Header.Del("X-User")
-		spotifyid, err := GetSpotifyID(r)
-		if err == nil {
+		spotifyid, code := GetSpotifyID(r)
+		if code == 200 {
 			user, errGetUserInfo := ctx.GStore.GetUserInfo(spotifyid)
 			if errGetUserInfo == nil && user != nil {
 				user.AccessToken = r.Header.Get("Authorization")
@@ -102,6 +104,7 @@ func main() {
 	mux.HandleFunc("/", ctx.HandleHome)
 	mux.HandleFunc("/login", ctx.HandleLogin)
 	mux.HandleFunc("/callback", ctx.HandleCallback)
+	mux.HandleFunc("/token", ctx.GetNewAccessToken)
 
 	wrappedMux := gatewaysrc.AddFiveResponseHeaders(mux, "Access-Control-Allow-Origin", "*", "Access-Control-Allow-Methods", "GET, PUT, POST, PATCH, DELETE", "Access-Control-Allow-Headers", "Content-Type, Authorization", "Access-Control-Expose-Headers", "Authorization", "Access-Control-Max-Age", "600")
 
@@ -110,43 +113,42 @@ func main() {
 }
 
 //GetSpotifyID returns the spotifyid for the auth token
-func GetSpotifyID(r *http.Request) (string, error) {
+func GetSpotifyID(r *http.Request) (string, int) {
 	authorization := r.Header.Get("Authorization")
 	if authorization == "" {
 		query, ok := r.URL.Query()["auth"]
 		if !ok || len(query[0]) < 1 {
-			return "", errors.New("No auth token")
+			return "", 401
 		}
 		authorization = query[0]
 	}
 
 	arr := strings.SplitAfter(authorization, " ")
 	if arr[0] != "Bearer " {
-		return "", errors.New("Wrong scheme")
+		return "", 401
 	}
 
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "https://api.spotify.com/v1/me", nil)
 	if err != nil {
-		return "", errors.New("Internal Server Error")
+		return "", 500
 	}
 
 	req.Header.Set("Authorization", r.Header.Get("Authorization"))
 	response, err := client.Do(req)
 	if err != nil {
-		return "", errors.New("Internal Server Error")
+		return "", 500
 	}
-
-	fmt.Println(response.StatusCode)
 
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return "", errors.New("Error reading response from SpotifyAPUI")
+		return "", 500
 	}
 
-	//defer resp.Body.Close()
+	defer response.Body.Close()
+
 	SpotifyInfo := &gatewaysrc.SpotifyInfo{}
 	json.Unmarshal(responseData, &SpotifyInfo)
 
-	return SpotifyInfo.ID, nil
+	return SpotifyInfo.ID, 200
 }

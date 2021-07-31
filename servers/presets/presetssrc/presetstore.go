@@ -50,6 +50,7 @@ func (sqls *SQLStore) GetPreset(psid int) (*Preset, error) {
 	if errQuery != nil {
 		return nil, errQuery
 	}
+	defer res.Close()
 
 	for res.Next() {
 		pl := &Playlist{}
@@ -162,6 +163,7 @@ func (sqls *SQLStore) GetPresets(userid int) ([]*Preset, error) {
 		}
 		return nil, errQuery
 	}
+	defer res.Close()
 
 	for res.Next() {
 		ps := &Preset{}
@@ -178,6 +180,7 @@ func (sqls *SQLStore) GetPresets(userid int) ([]*Preset, error) {
 		if errQuery != nil {
 			return nil, errQuery
 		}
+		defer res2.Close()
 
 		for res2.Next() {
 			pl := &Playlist{}
@@ -201,6 +204,7 @@ func (sqls *SQLStore) InRecentTracks(trackURI string, psid int, numTracks int) (
 	if errQuery != nil {
 		return false, errQuery
 	}
+	defer res.Close()
 
 	for res.Next() {
 		uri := &TrackURI{}
