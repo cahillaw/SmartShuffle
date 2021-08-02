@@ -58,6 +58,15 @@ class About extends React.Component {
             <Row>
               <Col className = "contentcol">
               <h2 id = "abouttitle">Changelog</h2>
+                <h3 id="-0-4-0-8-2-21">[0.4.0] - 8/2/21</h3>
+                <ul>
+                <li>Fixed a bug that caused first added to not select from the correct pool of tracks.</li>
+                <li>Fixed a bug that caused songs near the center of playlists over 100 songs to be more likely to be queued than songs at the start or end.</li>
+                <li>Fixed an issue that caused the site to load incorrectly when the Spotify API rate limit was hit.</li>
+                <li>Fixed editing playlist order, previously the order would not be changed after hitting update.</li>
+                <li>Renamed First Addded to First and Recently Added to Last to more accuratly portray what playlist order means.</li>
+                <li>Internal improvements</li>
+                </ul>
                 <h3 id="-0-3-0-10-9-20">[0.3.1] - 10/9/20</h3>
                 <ul>
                 <li>Added cookie banner</li>

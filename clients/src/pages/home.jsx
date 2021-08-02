@@ -7,6 +7,7 @@ import Preset from '../components/preset'
 import Create from '../components/create'
 import NowPlaying from '../components/nowPlaying'
 import SSNav from '../components/ssNav'
+import { serverBase } from '../misc/constants'
 
 class Home extends React.Component {
     constructor (props) {
@@ -72,7 +73,7 @@ class Home extends React.Component {
               <Toast.Header>
                 <strong className="mr-auto">Cookie Policy</strong>
               </Toast.Header>
-              <Toast.Body>SmartShuffle.io uses cookies to keep track of your log-in state. Click <a href="https://smartshuffle.io/about#privacy">here</a> to view our privacy policy.
+              <Toast.Body>SmartShuffle.io uses cookies to keep track of your log-in state. Click <a href="/about#privacy">here</a> to view our privacy policy.
               </Toast.Body>
             </Toast>
             )
@@ -86,8 +87,7 @@ class Home extends React.Component {
           <div>
             Does not appear that you are logged in, please try logging in&nbsp;    
             <Link to = "/">here</Link>
-          </div>
-          
+          </div> 
         )
       }
 
@@ -122,7 +122,7 @@ class Home extends React.Component {
             <Helmet>
               <title>Home | SmartShuffle.io</title>
               <meta property="og:title" content = "Home | SmartShuffle.io"/>
-              <meta property="og:url" content = "http://smartshuffle.io/home"/>
+              <meta property="og:url" content = "https://smartshuffle.io/home"/>
             </Helmet>
             <SSNav></SSNav>
             <div id = "pagecontent">
@@ -318,7 +318,7 @@ class Home extends React.Component {
 
     queueSong = (psid, callback) => {
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/queue/" + psid
+        var url = serverBase + "/v1/queue/" + psid
         fetch(url, {
           method: 'post',
           headers: {
@@ -433,7 +433,8 @@ class Home extends React.Component {
 
     getUserPageInfo = () => {
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/userpage"
+        var url = serverBase + "/v1/userpage"
+        console.log(url)
         fetch(url, {
           method: 'get',
           headers: {
@@ -485,6 +486,26 @@ class Home extends React.Component {
     }
 
     getAccessToken = (callback) => {
+      let url = serverBase + "/token?refresh_token=" + this.getCookie("refresh_token") 
+      fetch(url).then((response) => {
+        if(response.status === 200) {
+          response.json().then((data) => {
+            var newAccessToken = "Bearer " + data.access_token
+            this.setCookie("access_token", newAccessToken, .0381944)
+            this.setState ({
+              access_token: newAccessToken
+            }, this.onSetStateCB(callback))
+          })
+        } else {
+          this.setState({
+            loggedIn: false
+          })
+        }
+      })
+    }
+
+
+    getAccessToken2 = (callback) => {
       var client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID
       var client_secret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
 

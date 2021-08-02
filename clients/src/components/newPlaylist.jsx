@@ -1,6 +1,7 @@
 import React from 'react'
 import './newPlaylist.css'
 import { Button, Card, Accordion, Form, Alert } from 'react-bootstrap'
+import { serverBase } from '../misc/constants'
 
 class NewPlaylist extends React.Component {
     constructor (props) {
@@ -65,15 +66,15 @@ class NewPlaylist extends React.Component {
                      <Form.Group>
                      <Form.Label><strong>Playlist Order</strong></Form.Label>
                        <Form.Control as="select" onChange={this.handleOrderChange}>
-                         <option>First Added</option>
-                         <option>Recently Added</option>
+                         <option>First</option>
+                         <option>Last</option>
                        </Form.Control>
                      </Form.Group>
                      <Form.Group>
                      <Form.Label><strong>Number of Tracks</strong></Form.Label>
                        <Form.Control type="number" size="sm" min="0" max = "10000" placeholder="20" onChange={this.handleNumTracksChange}/>
                        <Form.Text>
-                         Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First Added is selected, only the first X songs will be selected, where if Recently Added is selected, the most recently added X songs will be selected.
+                         Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First is selected, only the first X songs will be selected, where if Last is selected, the bottom X songs will be selected.
                        </Form.Text>
                      </Form.Group>
                      </div>
@@ -139,7 +140,7 @@ class NewPlaylist extends React.Component {
     }
   
     handleOrderChange = (event) => {
-      if(event.target.value === "First Added") {
+      if(event.target.value === "First") {
         this.setState({
           order: true
          })
@@ -217,7 +218,7 @@ class NewPlaylist extends React.Component {
 
     createNewPlaylist = () => {
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/playlists"
+        var url = serverBase + "/v1/playlists"
         var nT = parseInt(this.state.numTracks, 10)
         var w = parseInt(this.state.weight, 10)
         fetch(url, {

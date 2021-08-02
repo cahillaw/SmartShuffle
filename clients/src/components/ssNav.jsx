@@ -3,7 +3,6 @@ import Logo from '../images/smartshuflelogo.png'
 import { Container, Navbar, Button, Nav } from 'react-bootstrap'
 import './ssNav.css'
 
-
 class SSNav extends React.Component {
     constructor (props) {
       super(props)
@@ -38,7 +37,7 @@ class SSNav extends React.Component {
           </Nav>{
             this.state.loggedIn ?
           <Button id = "logout" variant= "dark" size= "sm" onClick={() => this.logOut()}>Logout</Button> : 
-          <Button id = "logout" variant= "dark" size= "sm" href="https://smartshuffle.io/login">Login with Spotify</Button>}
+          <Button id = "logout" variant= "dark" size= "sm" href="/login">Login with Spotify</Button>}
           </Container>
       </Navbar>
       )

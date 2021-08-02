@@ -29,7 +29,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, ok := os.LookupEnv("PRESETSADDR")
+	presetsaddr, ok := os.LookupEnv("PRESETSADDR")
 	if ok == false {
 		os.Stdout.WriteString("presetsaddr not set")
 		os.Exit(1)
@@ -69,7 +69,7 @@ func main() {
 	ctx.GStore = stdb
 
 	presetsDirector := func(r *http.Request) {
-		serverName := "localhost:3001"
+		serverName := presetsaddr
 
 		r.Header.Del("X-User")
 		spotifyid, code := GetSpotifyID(r)
@@ -108,7 +108,7 @@ func main() {
 
 	wrappedMux := gatewaysrc.AddFiveResponseHeaders(mux, "Access-Control-Allow-Origin", "*", "Access-Control-Allow-Methods", "GET, PUT, POST, PATCH, DELETE", "Access-Control-Allow-Headers", "Content-Type, Authorization", "Access-Control-Expose-Headers", "Authorization", "Access-Control-Max-Age", "600")
 
-	log.Printf("server is lsitening at %s", addr)
+	log.Printf("built server is lsitening at %s", addr)
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
 }
 

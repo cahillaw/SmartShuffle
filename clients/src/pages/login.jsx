@@ -1,4 +1,5 @@
 import React from 'react'
+import { serverBase } from '../misc/constants'
 
 class Login extends React.Component {
     constructor (props) {
@@ -9,7 +10,7 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        window.location.href = 'https://shuffle.cahillaw.me/login'
+        window.location.href = serverBase + "/login"
     }
 
     render = () => {

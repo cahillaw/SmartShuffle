@@ -35,7 +35,7 @@ class LoginPage extends React.Component {
             <Helmet>
                 <title>Login | SmartShuffle.io</title>
                 <meta property="og:title" content = "Login | SmartShuffle.io"/>
-                <meta property="og:url" content = "http://smartshuffle.io"/>
+                <meta property="og:url" content = "/"/>
             </Helmet>
             <Row className="align-items-center">
               <Col>
@@ -43,7 +43,7 @@ class LoginPage extends React.Component {
                 <h5 id = "catch">Shuffling like you have never seen it before</h5>
                 <div id = "premreq">Spotify Premium Required</div>
                 <div id = "centered">
-                  <Button id = "loginbutton" variant= "dark" size= "sm" href="https://smartshuffle.io/login">Login with Spotify</Button>{' '}
+                  <Button id = "loginbutton" variant= "dark" size= "sm" href="/login">Login with Spotify</Button>{' '}
                 </div>
               </Col>
             </Row>

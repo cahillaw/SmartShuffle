@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './playlist.css'
 import { Button, Card, Accordion, Spinner, Modal } from 'react-bootstrap'
 import EditPlaylist from './editPlaylist'
+import { serverBase } from '../misc/constants'
 
 class Playlist extends React.Component {
     constructor (props) {
@@ -111,7 +112,7 @@ class Playlist extends React.Component {
 
     deletePlaylist = () => { 
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/playlists/" + this.props.data.playlistID
+        var url = serverBase + "/v1/playlists/" + this.props.data.playlistID
         fetch(url, {
           method: 'delete',
           headers: {
@@ -200,9 +201,9 @@ class Playlist extends React.Component {
       if(this.props.data.NumTracks <= 0) {
           return "N/A"
       } else if (this.props.data.order) {
-        return "First Added"
+        return "First"
       }
-      return "Recently Added"
+      return "Last"
     }
 
     checkSign() {

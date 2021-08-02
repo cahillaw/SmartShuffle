@@ -1,4 +1,17 @@
 # Changelog
+
+### [0.4.0] - 8/2/21
+- Fixed a bug that caused first added to not select from the correct pool of tracks.
+- Fixed a bug that caused songs near the center of playlists over 100 songs to be more likely to be queued than songs at the start or end.
+- Fixed an issue that caused the site to load incorrectly when the Spotify API rate limit was hit.
+- Fixed editing playlist order, previously the order would not be changed after hitting update.
+- Renamed First Addded to First and Recently Added to Last to more accuratly portray what playlist order means.
+- Internal improvements
+
+### [0.3.1] - 10/9/20
+- Added cookie banner
+- Fixed a few misaligned buttons
+
 ### [0.3.0] - 10/3/20
 - Mobile site is now live!
 - Button names are now less verbose.

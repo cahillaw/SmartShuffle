@@ -1,6 +1,7 @@
 import React from 'react'
 import './create.css'
 import { Button, Container, Row, Col, Form, Alert} from 'react-bootstrap'
+import { serverBase } from '../misc/constants'
 
 class Create extends React.Component {
     constructor (props) {
@@ -105,7 +106,7 @@ class Create extends React.Component {
 
     createNewPreset = () => {
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/presets"
+        var url = serverBase + "/v1/presets"
         var rl = parseInt(this.state.repeatLimit, 10)
         fetch(url, {
           method: 'post',

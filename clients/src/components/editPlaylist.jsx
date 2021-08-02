@@ -1,6 +1,7 @@
 import React from 'react'
 import './editPlaylist.css'
 import { Button, Form, Alert} from 'react-bootstrap'
+import { serverBase } from '../misc/constants'
 
 class EditPlaylist extends React.Component {
     constructor (props) {
@@ -66,15 +67,15 @@ class EditPlaylist extends React.Component {
                 <Form.Control as="select" defaultValue={
                     this.props.data.order ? 1 : 0 }
                     onChange={this.handleOrderChange}>
-                    <option value = "1">First Added</option>
-                    <option value = "0">Recently Added</option>
+                    <option value = "1">First</option>
+                    <option value = "0">Last</option>
                 </Form.Control>
               </Form.Group>
             <Form.Group controlId="pluri">
               <Form.Label><strong>Number of Tracks</strong></Form.Label>
               <Form.Control type="number" size="sm" min="0" max = "10000" placeholder="20" defaultValue={this.props.data.NumTracks >=0 ? this.props.data.NumTracks : ""} onChange={this.handleNumTracksChange}/>
               <Form.Text>
-              Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First Added is selected, only the first X songs will be selected, where if Recently Added is selected, the most recently added X songs will be selected.
+              Number of tracks from the playlist. The tracks selected depend on the order of the playlist, if First is selected, only the first X songs will be selected, where if Last is selected, the bottom X songs will be selected.
               </Form.Text>
             </Form.Group>
             </div>
@@ -127,13 +128,13 @@ class EditPlaylist extends React.Component {
     }
 
     handleOrderChange = (event) => {
-      if(event.target.value === "First Added") {
+      if(event.target.value === "1") {
         this.setState({
-        order: true
+          order: true
         })
       } else {
         this.setState({
-        order: false
+          order: false
         })
       }
     }
@@ -204,7 +205,7 @@ class EditPlaylist extends React.Component {
 
     editPlaylist = () => {
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/playlists/" + this.props.data.playlistID
+        var url = serverBase + "/v1/playlists/" + this.props.data.playlistID
         var nT = parseInt(this.state.numTracks, 10)
         var w = parseInt(this.state.weight, 10)
         if(this.state.isChecked) {

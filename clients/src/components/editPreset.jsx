@@ -1,6 +1,7 @@
 import React from 'react'
 import './editPreset.css'
 import { Button, Container, Row, Col, Form, Alert} from 'react-bootstrap'
+import { serverBase } from '../misc/constants'
 
 class EditPreset extends React.Component {
     constructor (props) {
@@ -91,7 +92,7 @@ class EditPreset extends React.Component {
 
     editNewPreset = () => {
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/presets/" + this.props.data.presetId
+        var url = serverBase + "/v1/presets/" + this.props.data.presetId
         var rl = parseInt(this.state.repeatLimit, 10)
         fetch(url, {
           method: 'PATCH',

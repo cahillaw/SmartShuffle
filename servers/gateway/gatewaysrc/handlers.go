@@ -67,20 +67,15 @@ func (ctx *GatewayContext) HandleCallback(w http.ResponseWriter, r *http.Request
 	cookie, _ := r.Cookie("spotify_auth_state")
 
 	if r.FormValue("state") != cookie.Value {
-		fmt.Println("state is not valid")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
 	token, err := spotifyOauthConfig.Exchange(oauth2.NoContext, r.FormValue("code"))
 	if err != nil {
-		fmt.Println("state is nots valid")
 		http.Redirect(w, r, "/presets", http.StatusTemporaryRedirect)
 		return
 	}
-
-	fmt.Println(token.AccessToken)
-	fmt.Println(token.RefreshToken)
 
 	url := os.Getenv("SS_CLIENT_URL") + "/redirect?access_token=" + token.AccessToken + "&refresh_token=" + token.RefreshToken
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
@@ -122,23 +117,6 @@ func (ctx *GatewayContext) GetNewAccessToken(w http.ResponseWriter, r *http.Requ
 	}
 
 	defer response.Body.Close()
-
-	/*
-		tokenResponse := &gatewaysrc.Token{}
-		json.Unmarshal(responseData, &tokenResponse)
-
-		var res map[string]interface{}
-
-		json.NewDecoder(response.Body).Decode(&res)
-
-		fmt.Println(res)
-
-		encoded, errEncode := json.Marshal(res)
-		if errEncode != nil {
-			http.Error(w, "Error encoding user to JSON", http.StatusBadRequest)
-			return
-		}
-	*/
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

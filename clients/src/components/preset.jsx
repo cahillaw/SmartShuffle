@@ -4,6 +4,7 @@ import { Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap'
 import Playlist from './playlist'
 import NewPlaylist from './newPlaylist'
 import EditPreset from './editPreset'
+import { serverBase } from '../misc/constants'
 
 class Preset extends React.Component {
     constructor (props) {
@@ -423,7 +424,7 @@ class Preset extends React.Component {
 
     deletePreset = () => { 
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/presets/" + this.props.data.presetId
+        var url = serverBase + "/v1/presets/" + this.props.data.presetId
         fetch(url, {
           method: 'delete',
           headers: {
@@ -443,7 +444,7 @@ class Preset extends React.Component {
 
     editWeights = (pldata) => {
       setTimeout(() => {
-        var url = "https://shuffle.cahillaw.me/v1/updateplaylists/" + this.props.data.presetId
+        var url = serverBase = "/v1/updateplaylists/" + this.props.data.presetId
         fetch(url, {
           method: 'PATCH',
           headers: {

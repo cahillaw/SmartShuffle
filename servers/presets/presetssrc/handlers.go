@@ -418,9 +418,9 @@ func (ctx *PresetContext) TestGPT(w http.ResponseWriter, r *http.Request) {
 	}
 
 	TestPL := &Playlist{}
-	TestPL.SpotifyURI = "2TA9XD4kmbppLVEBWUHu5Y"
-	TestPL.NumTracks = 16
-	TestPL.Order = false
+	TestPL.SpotifyURI = "70pBTqYs03DwWiV4odCGCc"
+	TestPL.NumTracks = -1
+	TestPL.Order = true
 
 	tracks, index, err := GetPlaylistTracks(user, TestPL)
 	if err != nil {
@@ -496,10 +496,7 @@ func Queue(user *User, uri string) (int, error) {
 		return 0, err
 	}
 
-	fmt.Println(response.StatusCode)
-
 	if response.StatusCode != 204 {
-		fmt.Println(uri)
 		return response.StatusCode, errors.New("Spotify status code" + strconv.Itoa(response.StatusCode))
 	}
 
@@ -520,7 +517,6 @@ func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, int, error) {
 	if err != nil {
 		return nil, -1, err
 	}
-	fmt.Println(response.StatusCode)
 
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
@@ -532,27 +528,27 @@ func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, int, error) {
 	json.Unmarshal(responseData, &tracks)
 
 	rand.Seed(time.Now().UnixNano())
-	songIndex := rand.Intn(tracks.Total)
-	offset := (songIndex / 100) * 100
-	offsetIndex := songIndex % 100
-	if tracks.Total > 100 {
-		fmt.Println(pl.NumTracks)
-		if pl.NumTracks > 0 {
-			rand.Seed(time.Now().UnixNano())
-			songIndex = rand.Intn(pl.NumTracks)
-			if pl.Order == true {
-				offset = 0
-			} else {
-				offset = tracks.Total - 100
-			}
-			offsetIndex = songIndex % 100
-			// (songIndex / 100) * 100
-		}
-		fmt.Println(offset)
-		fmt.Println("548")
-		fmt.Println(songIndex)
-		fmt.Println("558")
 
+	//temp values
+	var songIndex = 0
+	var offset = 0
+	var offsetIndex = 0
+
+	if pl.NumTracks > 0 {
+		songIndex = rand.Intn(pl.NumTracks)
+		if pl.Order == true {
+			offset = 0
+		} else {
+			offset = tracks.Total - 100
+		}
+		offsetIndex = songIndex % 100
+	} else {
+		songIndex = rand.Intn(tracks.Total)
+		offset = (songIndex / 100) * 100
+		offsetIndex = songIndex % 100
+	}
+
+	if tracks.Total > 100 {
 		url = "https://api.spotify.com/v1/playlists/" + pl.SpotifyURI + "/tracks?offset=" + strconv.Itoa(offset) + "&limit=100"
 		client := &http.Client{}
 		req, err := http.NewRequest("GET", url, nil)
@@ -566,7 +562,6 @@ func GetPlaylistTracks(user *User, pl *Playlist) (*PlaylistTracks, int, error) {
 			return nil, -1, err
 		}
 
-		fmt.Println(response.StatusCode)
 		responseData, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			return nil, -1, err
