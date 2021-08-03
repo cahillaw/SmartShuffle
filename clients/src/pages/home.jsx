@@ -434,7 +434,6 @@ class Home extends React.Component {
     getUserPageInfo = () => {
       setTimeout(() => {
         var url = serverBase + "/v1/userpage"
-        console.log(url)
         fetch(url, {
           method: 'get',
           headers: {
