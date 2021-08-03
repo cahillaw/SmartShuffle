@@ -504,41 +504,6 @@ class Home extends React.Component {
       })
     }
 
-
-    getAccessToken2 = (callback) => {
-      var client_id = process.env.REACT_APP_SPOTIFY_CLIENT_ID
-      var client_secret = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET
-
-      let formData = {grant_type: 'refresh_token', refresh_token: this.getCookie("refresh_token")}
-
-      fetch('https://accounts.spotify.com/api/token', {
-        method: 'post',
-        headers: {
-          'Content-Type': "application/x-www-form-urlencoded",
-          'Accept': 'application/json',
-          'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-        },
-        body: this.encodeFormData(formData)
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          response.json().then((data) => {
-            var newAccessToken = "Bearer " + data.access_token
-            this.setCookie("access_token", newAccessToken, .0381944)
-            this.setState ({
-              access_token: newAccessToken
-            },
-            this.onSetStateCB(callback)
-            )
-          })
-        } else if (response.status === 400) {
-          this.setState({
-            loggedIn: false
-          })
-        } 
-      })
-    }
-
     checkIfPremium = () => {
       fetch('https://api.spotify.com/v1/me', {
         method: 'get',
